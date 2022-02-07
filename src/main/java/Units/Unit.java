@@ -1,13 +1,17 @@
 package Units;
 
-public class Unit {
+/**
+ * Abstract class of Units.
+ * Basis of what all units are derived from.
+ */
+public abstract class Unit extends Bonuses {
     private String name;
     private int health; //Total health, means the unit can take more damage before dying.
     private int attack; //Attack value to decide how much health each attack does.
-    private int defence; //Defence value to decide resistance to attacks.
+    private int armor; //Defence value to decide resistance to attacks.
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
 
-    public Unit(String name, int health, int attack, int defence) {
+    public Unit(String name, int health, int attack, int armor) {
         this.name = name;
 
         if (health < 0){
@@ -18,48 +22,40 @@ public class Unit {
             this.isAlive = true;
         }
         this.attack = attack;
-        this.defence = defence;
+        this.armor = armor;
     }
 
-    /*
+    /**
+     * Method used to attack other units.
+     * @param opponent Opposing unit object to attack.
+     */
     public void attack(Unit opponent) {
         opponent.health = opponent.health - (this.attack + getAttackBonus()) +
-                (opponent.defence + opponent.getResistBonus());
-
-        attackBonus ++;
-        opponent.resistBonus++;
+                (opponent.armor + opponent.getResistBonus());
     }
-*/
+
+    @Override
+    public String toString() {
+        return name + ", " + this.health+ " hp";
+    }
 
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public int getHealth() {
         return health;
     }
 
-    public void setHealth(int health) {
-        this.health = health;
-    }
-
     public int getAttack() {
         return attack;
     }
 
-    public void setAttack(int attack) {
-        this.attack = attack;
+    public int getArmor() {
+        return armor;
     }
 
-    public int getDefence() {
-        return defence;
-    }
-
-    public void setDefence(int defence) {
-        this.defence = defence;
+    public void setHealth(int health) {
+        this.health = health;
     }
 }
