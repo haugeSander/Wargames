@@ -13,14 +13,45 @@ class UnitTest {
         Unit unit3 = new RangedUnit("Charlie", 30);
         Unit unit4 = new CavalryUnit("Delta", 100);
 
-        unit2.attack(unit1);
-        unit1.attack(unit3);
-        unit3.attack(unit4);
-        unit4.attack(unit2);
-
         assertEquals(unit1.getAttack(), 15);
         assertEquals(unit2.getAttack(), 20);
         assertEquals(unit3.getAttack(), 20);
         assertEquals(unit4.getAttack(), 15);
+    }
+
+    @Test
+    void getHealth() {
+        Unit infantry = new InfantryUnit("Infantry", 100);
+        assertEquals(infantry.getHealth(), 100);
+        Unit ranger = new RangedUnit("Ranger", 100);
+        assertEquals(ranger.getHealth(), 100);
+
+        infantry.attack(ranger);
+        assertEquals(ranger.getHealth(), (100 - (infantry.getAttack() + infantry.getAttackBonus()) +
+                (ranger.getArmor() + ranger.getResistBonus())));
+    }
+
+    @Test
+    void getHitsTakenOrDealt() {
+        Unit infantry = new InfantryUnit("Infantry", 100);
+        assertEquals(infantry.getHitsTaken(), 0);
+        assertEquals(infantry.getHitsDealt(), 0);
+        Unit ranger = new RangedUnit("Ranger", 100);
+        assertEquals(ranger.getHitsTaken(), 0);
+        assertEquals(ranger.getHitsDealt(), 0);
+
+        ranger.attack(infantry);
+        assertEquals(infantry.getHitsTaken(), 1);
+        assertEquals(ranger.getHitsDealt(), 1);
+        assertEquals(ranger.getHitsTaken(), 0);
+    }
+
+    @Test
+    void getIsAlive() {
+        Unit infantry = new InfantryUnit("Infantry", 100);
+        assertTrue(infantry.getIsAlive());
+
+        infantry.setHealth(0);
+        assertFalse(infantry.getIsAlive());
     }
 }

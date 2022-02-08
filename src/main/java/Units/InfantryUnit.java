@@ -1,5 +1,9 @@
 package Units;
 
+/**
+ * Subclass of unit.
+ * Unit which specialises in close combat.
+ */
 public class InfantryUnit extends Unit {
 
     /**
@@ -16,10 +20,17 @@ public class InfantryUnit extends Unit {
         return 1;
     }
 
+    /**
+     * Override of abstract method.
+     * Using hitsTaken, distance is predicted.
+     * @return DamageBonus, meaning extra damage dealt.
+     */
     @Override
     protected int getAttackBonus() {
-        //if (distance < 5) { To give the unit a close range bonus.
-        return 2;
+        if (getHitsTaken() > 2) //To give the unit a close range bonus.
+            return 3;
+        else
+            return 1;
     }
 
 }

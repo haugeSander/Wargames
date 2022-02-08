@@ -1,5 +1,9 @@
 package Units;
 
+/**
+ * Subclass of unit.
+ * Unit which should function as a soldier on a horse.
+ */
 public class CavalryUnit extends Unit {
 
     /**
@@ -22,16 +26,29 @@ public class CavalryUnit extends Unit {
         super(name, health, attack, armor);
     }
 
+    /**
+     * Override of abstract method.
+     * When close range it resists more damage.
+     * @return ResistBonus, meaning resistant to damage.
+     */
     @Override
     protected int getResistBonus() {
-        //if (distance < 5) get a resistBonus if enemies attack close range.
-        return 1;
+        if (getHitsTaken() > 2) //Gets a 2 resist bonus if enemies attack close range.
+            return 2;
+        else
+            return 0;
     }
+
+    /**
+     * Override of abstract method.
+     * Using hitsTaken, the first hit gives major damage boost.
+     * @return DamageBonus, meaning extra damage dealt.
+     */
     @Override
     protected int getAttackBonus() {
-        //if (firstAttack)
-        //  return 6;
-        //else
-        return 2;
+        if (getHitsDealt() < 1)
+            return 6;
+        else
+            return 1;
     }
 }
