@@ -1,4 +1,6 @@
-package Units;
+package Army;
+
+import Army.Units.*;
 
 import org.junit.jupiter.api.Test;
 

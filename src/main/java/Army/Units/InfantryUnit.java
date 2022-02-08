@@ -1,4 +1,4 @@
-package Units;
+package Army.Units;
 
 /**
  * Subclass of unit.
@@ -16,7 +16,7 @@ public class InfantryUnit extends Unit {
     }
 
     @Override
-    protected int getResistBonus() {
+    public int getResistBonus() {
         return 1;
     }
 
@@ -26,7 +26,7 @@ public class InfantryUnit extends Unit {
      * @return DamageBonus, meaning extra damage dealt.
      */
     @Override
-    protected int getAttackBonus() {
+    public int getAttackBonus() {
         if (getHitsTaken() > 2) //To give the unit a close range bonus.
             return 3;
         else

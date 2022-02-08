@@ -1,4 +1,4 @@
-package Units;
+package Army.Units;
 
 /**
  * Subclass of CavalryUnit.
@@ -21,7 +21,7 @@ public class CommanderUnit extends CavalryUnit {
      * @return ResistBonus, meaning resistant to damage.
      */
     @Override
-    protected int getResistBonus() {
+    public int getResistBonus() {
         if (getHitsTaken() > 2) //Gets a 2 resist bonus if enemies attack close range.
             return 2;
         else
@@ -34,7 +34,7 @@ public class CommanderUnit extends CavalryUnit {
      * @return DamageBonus, meaning extra damage dealt.
      */
     @Override
-    protected int getAttackBonus() {
+    public int getAttackBonus() {
         if (getHitsDealt() < 1)
             return 6;
         else

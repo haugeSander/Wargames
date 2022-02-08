@@ -1,5 +1,5 @@
-import Units.CavalryUnit;
-import Units.Unit;
+import Army.Units.CavalryUnit;
+import Army.Units.Unit;
 
 public class Main {
 

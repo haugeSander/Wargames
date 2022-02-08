@@ -1,7 +1,7 @@
-package Units;
+package Army.Units;
 
 /**
- * Abstract class of Units.
+ * Abstract class of Army.Army.Units.
  * Basis of what all units are derived from.
  */
 public abstract class Unit extends Bonuses {
@@ -18,7 +18,7 @@ public abstract class Unit extends Bonuses {
     public Unit(String name, int health, int attack, int armor) {
         this.name = name;
 
-        if (health >= 0){
+        if (health <= 0){
             health = 0;
             isAlive = false;
          }else {

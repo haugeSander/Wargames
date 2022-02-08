@@ -1,4 +1,4 @@
-package Units;
+package Army.Units;
 
 /**
  * Subclass of unit.
@@ -21,7 +21,7 @@ public class RangedUnit extends Unit {
      * @return ResistBonus, meaning resistant to damage.
      */
     @Override
-    protected int getResistBonus() {
+    public int getResistBonus() {
         if (getHitsTaken() <= 1) //First hit gives 6 resist.
             return 6;
         else if (getHitsTaken() == 2) //Second hit gives 4 resist.
@@ -36,7 +36,7 @@ public class RangedUnit extends Unit {
      * @return DamageBonus, meaning extra damage dealt.
      */
     @Override
-    protected int getAttackBonus() {
+    public int getAttackBonus() {
         if (getHitsTaken() < 1) //If the unit is far away from target gain bonus.
             return 3;
         else
