@@ -33,10 +33,10 @@ public class Army {
 
     /**
      * Method to add a list of units to army list.
-     * @param units Input list of type Unit.
+     * @param listOfUnits Input list of type Unit.
      */
-    public void addAll(List<Unit> units) {
-        units.addAll(this.units);
+    public void addAll(List<Unit> listOfUnits) {
+        units.addAll(listOfUnits);
     }
 
     /**
@@ -96,5 +96,9 @@ public class Army {
     @Override
     public String toString() {
         return super.toString();
+    }
+
+    public String getName() {
+        return name;
     }
 }
