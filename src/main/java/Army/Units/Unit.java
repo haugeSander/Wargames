@@ -4,7 +4,7 @@ package Army.Units;
  * Abstract class of Army.Army.Units.
  * Basis of what all units are derived from.
  */
-public abstract class Unit extends Bonuses {
+public abstract class Unit implements Bonuses {
     private String name;
 
     private int health; //Total health, means the unit can take more damage before dying.

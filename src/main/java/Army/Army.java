@@ -3,6 +3,8 @@ import Army.Units.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
+import java.util.stream.IntStream;
 
 /**
  * Constructor for army class.
@@ -56,6 +58,26 @@ public class Army {
         }
     }
 
+    /**
+     * Method to return boolean value if army list is empty or has units.
+     * @return hasUnits, returns false if army list is empty.
+     */
+    public boolean hasUnits() {
+        return !units.isEmpty();
+    }
+
+    /**
+     * Method to get random unit from list.
+     * Using random number generator, between 0 and size of arrayList.
+     * @return Random unit.
+     */
+    public Unit getRandom() {
+        Random randomUnit = new Random();
+        if (!hasUnits())
+            return null;
+        else
+            return units.get(randomUnit.nextInt(0, units.size()));
+    }
 
     /**
      * Override methods made by IntelliJ.
