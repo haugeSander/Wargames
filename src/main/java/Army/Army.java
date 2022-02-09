@@ -4,7 +4,6 @@ import Army.Units.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 /**
  * Constructor for army class.
@@ -72,11 +71,12 @@ public class Army {
      * @return Random unit.
      */
     public Unit getRandom() {
-        Random randomUnit = new Random();
+        int bound = units.size();
+        int randomUnit = new Random().nextInt(0, bound);
         if (!hasUnits())
             return null;
         else
-            return units.get(randomUnit.nextInt(0, units.size()));
+            return units.get(randomUnit);
     }
 
     /**
@@ -95,7 +95,7 @@ public class Army {
 
     @Override
     public String toString() {
-        return super.toString();
+        return name + ", forces left: " + units.size();
     }
 
     public String getName() {

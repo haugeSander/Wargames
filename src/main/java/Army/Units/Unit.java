@@ -40,12 +40,11 @@ public abstract class Unit implements Bonuses {
     public void attack(Unit opponent) {
         opponent.health = opponent.health - (this.attack + getAttackBonus()) +
                 (opponent.armor + opponent.getResistBonus());
-        if (opponent.health >= 0){
+        if (opponent.health <= 0){
             opponent.isAlive = false;
         }
         this.hitsDealt++;
         opponent.hitsTaken++;
-
     }
 
     /**
@@ -54,7 +53,8 @@ public abstract class Unit implements Bonuses {
      */
     @Override
     public String toString() {
-        return name + ", " + health+ " hp";
+        return name + ", " + health + " hp" + ". Hits taken: "
+                + hitsTaken + ". Hits dealt: " + hitsDealt + ".";
     }
 
     public String getName() {

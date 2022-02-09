@@ -15,12 +15,16 @@ public class ArmyTest {
     void getRandomAndRemove() {
         Army fedArmy = new Army("Fed Army");
         Unit sSquad = new InfantryUnit("S squad", 100);
+        Unit unit2 = new InfantryUnit("1", 10);
+
         fedArmy.add(sSquad);
+        fedArmy.add(unit2);
         Unit temp = fedArmy.getRandom();
 
         assertEquals(temp, sSquad);
 
         fedArmy.remove(sSquad);
+        fedArmy.remove(unit2);
         assertEquals(fedArmy.getRandom(), null);
     }
 

@@ -1,9 +1,8 @@
 package Simulation;
 
 import Army.Army;
+import Army.Units.Unit;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
 
 public class Battle {
@@ -18,36 +17,55 @@ public class Battle {
     }
 
     /**
-     * Simulator.
+     * Simulator of a battle.
      * @return String of who won.
+     * Returns specific Strings depending on who won.
+     * If both forces are wiped out, a draw String is returned.
+     *
+     * Still a bug where a dead unit could attack!
      */
     public String simulate() {
-        //for (Army army : armyList)
-        //  armyList.add(army);
-        Random randint = new Random();
+        Unit tempUnit1 = null;
+        Unit tempUnit2 = null;
+        boolean battleFinished = false;
 
-        while (army1.hasUnits() || army2.hasUnits()) {
-            if (randint.nextInt(0, 1) == 0) {
-                army1.getRandom().attack(army2.getRandom());
+        Random random = new Random(); //May not be random when initiated here.
 
-                if (!army2.getRandom().getIsAlive()) {
-                    army2.remove(army2.getRandom());
+        while (!battleFinished) {
+
+            if (!army1.hasUnits() || !army2.hasUnits())
+                battleFinished = true;
+            else {
+                tempUnit1 = army1.getRandom();
+                tempUnit2 = army2.getRandom();
+            }
+
+            int randint = random.nextInt(0,2); //0<= Random int < 2
+
+            if (randint == 0 || !battleFinished) { //Army 1 gets to attack.
+                tempUnit1.attack(tempUnit2);
+
+                if (!tempUnit2.getIsAlive()) {
+                    army2.remove(tempUnit2);
                 }
             }
 
-            if (randint.nextInt(0,1) == 1) {
+            if (randint == 1 || !battleFinished) { //Army 2 gets to attack.
+                tempUnit2.attack(tempUnit1);
 
+                if (!tempUnit1.getIsAlive()) {
+                    army1.remove(tempUnit1);
+                }
             }
-
         }
 
-        if (!army2.hasUnits()) {
-            return "Army 1: " + army1.getName() + " has won!";
-        } else if (!army1.hasUnits()) {
-            return "Army 2: " + army2.getName() + " has won!";
+        if (!army2.hasUnits() && army1.hasUnits()) {
+            return "Winner is " + army1.toString() + "! \n"
+                    + "MVP: " + army1.getRandom().toString();
+        } else if (!army1.hasUnits() && army2.hasUnits()) {
+            return "Winner is " + army2.toString() + "! \n"
+                    + "MVP: " + army2.getRandom().toString();
         } else
-            return "Draw!";
+            return "Draw! " + army1.toString() + ". " + army2.toString();
     }
-
-
 }
