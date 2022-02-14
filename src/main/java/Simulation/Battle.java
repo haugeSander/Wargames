@@ -28,10 +28,10 @@ public class Battle {
         Unit tempUnit1 = null;
         Unit tempUnit2 = null;
         boolean battleFinished = false;
-
         Random random = new Random(); //May not be random when initiated here.
 
         while (!battleFinished) {
+
 
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;
@@ -42,7 +42,7 @@ public class Battle {
 
             int randint = random.nextInt(0,2); //0<= Random int < 2
 
-            if (randint == 0 || !battleFinished && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
+            if ((randint == 0 && !battleFinished) && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
                 tempUnit1.attack(tempUnit2);
 
                 if (!tempUnit2.getIsAlive()) {
@@ -50,7 +50,7 @@ public class Battle {
                 }
             }
 
-            if (randint == 1 || !battleFinished && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
+            if ((randint == 1 && !battleFinished) && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
                 tempUnit2.attack(tempUnit1);
 
                 if (!tempUnit1.getIsAlive()) {

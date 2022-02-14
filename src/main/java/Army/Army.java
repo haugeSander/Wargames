@@ -12,6 +12,7 @@ import java.util.Random;
 public class Army {
     private String name;
     List<Unit> units;
+    Random randomUnit;
 
     /**
      * Constructor of the army class.
@@ -20,6 +21,7 @@ public class Army {
     public Army(String name) {
         this.name = name;
         units = new ArrayList<>();
+        this.randomUnit = new Random();
     }
 
     /**
@@ -72,11 +74,10 @@ public class Army {
      */
     public Unit getRandom() {
         int bound = units.size();
-        int randomUnit = new Random().nextInt(0, bound);
         if (!hasUnits())
             return null;
         else
-            return units.get(randomUnit);
+            return units.get(randomUnit.nextInt(0, bound));
     }
 
     /**
