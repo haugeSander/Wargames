@@ -14,7 +14,9 @@ public class Main {
      * All is added and simulate() is run.
      */
     private static void init() {
-        for (int i = 0; i < 1000; i++) {
+
+
+        for (int i = 0; i < 10; i++) {
             Unit CavalryBlue = new CavalryUnit("Alfa Blue", 20);
             Unit CavalryRed = new CavalryUnit("Alfa Red", 20);
             Unit InfantryBlue = new InfantryUnit("Bravo Blue", 10);
@@ -22,8 +24,8 @@ public class Main {
             Unit RangerBlue = new RangedUnit("Charlie Blue", 10);
             Unit RangerRed = new RangedUnit("Charlie Red", 10);
 
-            Army blueArmy = new Army("Blue");
-            Army redArmy = new Army("Red");
+            Army blueArmy = new Army("Ukraina");
+            Army redArmy = new Army("Russland");
 
             blueArmy.add(CavalryBlue);
             blueArmy.add(InfantryBlue);

@@ -11,6 +11,10 @@ import static org.junit.jupiter.api.Assertions.*;
 
 public class ArmyTest {
 
+    /**
+     * Adds a single unit to list, only avalible to getRandom() is the newly added.
+     * Checks if it is selected and then removes it to test remove().
+     */
     @Test
     void getRandomAndRemove() {
         Army fedArmy = new Army("Fed Army");
@@ -28,6 +32,10 @@ public class ArmyTest {
         assertEquals(fedArmy.getRandom(), null);
     }
 
+    /**
+     * Tests if addAll method works.
+     * Create and adds to an arrayList.
+     */
     @Test
     void addAll() {
         List<Unit> list = new ArrayList<>();
@@ -37,6 +45,7 @@ public class ArmyTest {
         list.add(unit2);
 
         Army fedArmy = new Army("Fed army");
+        assertFalse(fedArmy.hasUnits());
         fedArmy.addAll(list);
 
         assertTrue(fedArmy.hasUnits()); //Returns true if any units are added to army list.

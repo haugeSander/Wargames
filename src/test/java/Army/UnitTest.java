@@ -2,12 +2,24 @@ package Army;
 
 import Army.Units.*;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnitTest {
 
+    @BeforeEach
+    void createUnits() {
+        Unit unit1 = new InfantryUnit("Alpha", 40);
+        Unit unit2 = new CommanderUnit("Bravo-Six", 120);
+        Unit unit3 = new RangedUnit("Charlie", 30);
+        Unit unit4 = new CavalryUnit("Delta", 100);
+    }
+
+    /**
+     * Checks if attack value is correct.
+     */
     @Test
     void getAttack() {
         Unit unit1 = new InfantryUnit("Alpha", 40);
@@ -21,6 +33,31 @@ class UnitTest {
         assertEquals(unit4.getAttack(), 15);
     }
 
+    /**
+     * Checks first the attackBonus and then attacks once.
+     * Checks again after attack to see change of attackBonus work.
+     */
+    @Test
+    void getAttackBonus() {
+        Unit infantry = new InfantryUnit("Alpha", 40);
+        Unit commander = new CommanderUnit("Bravo-Six", 120);
+        Unit range = new RangedUnit("Charlie", 30);
+        Unit cavalry = new CavalryUnit("Delta", 100);
+
+        assertEquals(infantry.getAttackBonus(), 1);
+        assertEquals(commander.getAttackBonus(), 6);
+        assertEquals(range.getAttackBonus(), 3);
+        assertEquals(cavalry.getAttackBonus(), 6);
+
+        cavalry.attack(range);
+
+        assertEquals(range.getAttackBonus(), 0);
+        assertEquals(cavalry.getAttackBonus(), 1);
+    }
+
+    /**
+     * Checks if health is correctly calculated after attacks.
+     */
     @Test
     void getHealth() {
         Unit infantry = new InfantryUnit("Infantry", 100);
@@ -33,6 +70,9 @@ class UnitTest {
                 (ranger.getArmor() + ranger.getResistBonus())));
     }
 
+    /**
+     * Checks that hits dealt/taken increments after attacks.
+     */
     @Test
     void getHitsTakenOrDealt() {
         Unit infantry = new InfantryUnit("Infantry", 100);
@@ -48,6 +88,9 @@ class UnitTest {
         assertEquals(ranger.getHitsTaken(), 0);
     }
 
+    /**
+     * Checks if a unit is set to isAlive = false, when hp < 0.
+     */
     @Test
     void getIsAlive() {
         Unit infantry = new InfantryUnit("Infantry", 100);
