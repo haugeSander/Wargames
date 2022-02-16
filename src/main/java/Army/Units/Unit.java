@@ -17,14 +17,7 @@ public abstract class Unit implements Bonuses {
 
     public Unit(String name, int health, int attack, int armor) {
         this.name = name;
-
-        if (health <= 0){
-            health = 0;
-            isAlive = false;
-         }else {
-            this.health = health;
-            isAlive = true;
-        }
+        setHealth(health);
         this.attack = attack;
         this.armor = armor;
 
@@ -38,11 +31,8 @@ public abstract class Unit implements Bonuses {
      * @param opponent Opposing unit object to attack.
      */
     public void attack(Unit opponent) {
-        opponent.health = opponent.health - (this.attack + getAttackBonus()) +
-                (opponent.armor + opponent.getResistBonus());
-        if (opponent.health <= 0){
-            opponent.isAlive = false;
-        }
+        opponent.setHealth(opponent.health - (this.attack + getAttackBonus()) +
+                (opponent.armor + opponent.getResistBonus()));
         this.hitsDealt++;
         opponent.hitsTaken++;
     }
@@ -86,7 +76,7 @@ public abstract class Unit implements Bonuses {
     }
 
     public void setHealth(int health) {
-        if (health >= 0) {
+        if (health <= 0) {
             this.health = 0;
             isAlive = false;
         } else

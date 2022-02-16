@@ -44,7 +44,7 @@ public class Army {
      * Method to remove Unit object from army list.
      * @param unit Inputted unit object.
      */
-    public void remove(Unit unit) {
+    public void remove(Unit unit)throws IllegalArgumentException {
         boolean isFound = false;
         int i = 0;
 
@@ -56,6 +56,9 @@ public class Army {
                 isFound = true;
             }
             i++;
+        }
+        if (!isFound) {
+            throw new IllegalArgumentException("Unit does not exist.");
         }
     }
 
