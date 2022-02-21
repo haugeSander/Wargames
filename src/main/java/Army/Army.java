@@ -44,22 +44,10 @@ public class Army {
      * Method to remove Unit object from army list.
      * @param unit Inputted unit object.
      */
-    public void remove(Unit unit)throws IllegalArgumentException {
-        boolean isFound = false;
-        int i = 0;
-
-        while (units.size() > i && !isFound) {
-            Unit tempUnit = units.get(i);
-
-            if (tempUnit.equals(unit)) {
-                units.remove(tempUnit);
-                isFound = true;
-            }
-            i++;
-        }
-        if (!isFound) {
-            throw new IllegalArgumentException("Unit does not exist.");
-        }
+    public void remove(Unit unit) throws NullPointerException {
+        if (units.contains(unit)) {
+            units.remove(unit);
+        } else  throw new NullPointerException("Unit does not exist.");
     }
 
     /**
