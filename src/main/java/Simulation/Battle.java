@@ -21,17 +21,14 @@ public class Battle {
      * @return String of who won.
      * Returns specific Strings depending on who won.
      * If both forces are wiped out, a draw String is returned.
-     *
-     * Still a bug where a dead unit could attack!
      */
     public String simulate() {
         Unit tempUnit1 = null;
         Unit tempUnit2 = null;
         boolean battleFinished = false;
-        Random random = new Random(); //May not be random when initiated here.
+        Random random = new Random();
 
         while (!battleFinished) {
-
 
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;

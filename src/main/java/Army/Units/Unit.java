@@ -79,7 +79,9 @@ public abstract class Unit implements Bonuses {
         if (health <= 0) {
             this.health = 0;
             isAlive = false;
-        } else
+        } else {
             this.health = health;
+            isAlive = true;
+        }
     }
 }
