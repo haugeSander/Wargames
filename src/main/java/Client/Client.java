@@ -18,6 +18,10 @@ public class Client {
         armies = new ArrayList<>();
     }
 
+    /**
+     * Menu method, prints a menu and calls for methods
+     * in client class depending on input.
+     */
     public void menu() {
         fillWithPresets();
         String message = "--* Army battle simulator *--" + '\n' +
@@ -31,7 +35,7 @@ public class Client {
 
         do {
             System.out.println(message);
-            menuChoice = validator(sc.nextLine());
+            menuChoice = validator();
 
             switch (menuChoice) {
                 case 1:
@@ -46,13 +50,18 @@ public class Client {
                 case 4:
                     finished = true;
                     break;
+                default:
+                    System.err.print("Invalid input (1-4): ");
             }
         } while (!finished);
     }
 
+    /**
+     * Method to fill Armies arraylist with presets.
+     */
     private void fillWithPresets() {
-        Army preset1 = new Army("Preset1");
-        Army preset2 = new Army("Preset2");
+        Army preset1 = new Army("Russia");
+        Army preset2 = new Army("America");
         fillArmy(preset1, "infantry", 100);
         fillArmy(preset2, "infantry", 100);
 
@@ -60,6 +69,9 @@ public class Client {
         armies.add(preset2);
     }
 
+    /**
+     * Method using scanner to make new armies and fill it with units.
+     */
     private void makeArmyFromConsole() {
         boolean satisfied = false;
 
@@ -74,7 +86,7 @@ public class Client {
             if (unitToAdd.equalsIgnoreCase("infantry") || unitToAdd.equalsIgnoreCase("commander")
             || unitToAdd.equalsIgnoreCase("cavalry") || unitToAdd.equalsIgnoreCase("ranged")) {
                 System.out.print("Amount: ");
-                int amountToAdd = validator(sc.nextLine());
+                int amountToAdd = validator();
                 fillArmy(army, unitToAdd, amountToAdd);
             } else {
                 System.err.println("No such unit exist, try again.");
@@ -91,6 +103,9 @@ public class Client {
         System.out.println("Successfully added.\n");
     }
 
+    /**
+     * Simple method to start a battle simulation.
+     */
     private void startBattleSimulation() {
         if (armies.isEmpty() || armies.size() == 1)
             System.out.println("No armies to battle.");
@@ -100,11 +115,16 @@ public class Client {
         }
     }
 
-    private int validator(String stringToConvert) {
+    /**
+     * Menu choice validator, prevents crashes if user enters anything but an int.
+     * @return NextLine input converted to int.
+     */
+    private int validator() {
         boolean isValid = false;
         int valid = 0;
 
         while (!isValid) {
+            String stringToConvert = sc.nextLine();
             try {
                 valid = Integer.parseInt(stringToConvert);
                 isValid = true;
@@ -124,27 +144,29 @@ public class Client {
         int i = 0;
         Unit unit = null;
 
+        while (i < amount) {
         switch (typeOfUnit.toLowerCase(Locale.ROOT)) {
             case "infantry":
                 unit = new InfantryUnit("Footman", 100);
+                army.add(unit);
                 break;
             case "commander":
                 unit = new CommanderUnit("Mountain King", 180);
+                army.add(unit);
                 break;
             case "ranged":
                 unit = new RangedUnit("Archer", 100);
+                army.add(unit);
                 break;
             case "cavalry":
                 unit = new CavalryUnit("Knight", 100);
+                army.add(unit);
                 break;
             default:
                 System.err.println("No possible unit selected, choose from: Infantry, Commander, " +
                         "Ranged and Cavalry!");
         }
-
-        while (i < amount) {
-            army.add(unit);
-            i++;
+        i++;
         }
     }
 }

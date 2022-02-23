@@ -15,7 +15,7 @@ public class Main {
      * All is added and simulate() is run.
      */
     private static void init() {
-        for (int i = 0; i < 5; i++) {
+        /*for (int i = 0; i < 5; i++) {
             Unit CavalryBlue = new CavalryUnit("Alfa Blue", 20);
             Unit CavalryRed = new CavalryUnit("Alfa Red", 20);
             Unit InfantryBlue = new InfantryUnit("Bravo Blue", 10);
@@ -36,7 +36,7 @@ public class Main {
 
             Battle WW1 = new Battle(blueArmy, redArmy);
             System.out.println(WW1.simulate() + '\n');
-        }
+        }*/
         Client c = new Client();
         c.menu();
     }

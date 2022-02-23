@@ -12,7 +12,7 @@ import static org.junit.jupiter.api.Assertions.*;
 public class ArmyTest {
 
     /**
-     * Adds a single unit to list, only avalible to getRandom() is the newly added.
+     * Adds a single unit to list, only available to getRandom() is the newly added.
      * Checks if it is selected and then removes it to test remove().
      */
     @Test
