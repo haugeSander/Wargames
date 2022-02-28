@@ -11,8 +11,8 @@ import java.util.Random;
  */
 public class Army {
     private String name;
-    List<Unit> units;
-    Random randomUnit;
+    private List<Unit> units;
+    private Random randomUnit;
 
     /**
      * Constructor of the army class.

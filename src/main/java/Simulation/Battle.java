@@ -20,7 +20,7 @@ public class Battle {
      * Simulator of a battle.
      * @return String of who won.
      * Returns specific Strings depending on who won.
-     * If both forces are wiped out, a draw String is returned.
+     * If both forces are wiped out, a draw String is returned. (Should not happen)
      */
     public String simulate() {
         Unit tempUnit1 = null;

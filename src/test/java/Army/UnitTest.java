@@ -2,6 +2,7 @@ package Army;
 
 import Army.Units.*;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -98,5 +99,20 @@ class UnitTest {
 
         infantry.setHealth(0);
         assertFalse(infantry.getIsAlive());
+    }
+
+    /**
+     * Tests setHealth and setName. Negative test which expects a thrown exception for name
+     * and hp being set to 0.
+     */
+    @Test
+    void setHealthAndName() {
+        CommanderUnit commander = new CommanderUnit("Commadore", 10);
+
+        NullPointerException name_cannot_be_null = Assertions.assertThrows(NullPointerException.class, () ->
+        commander.setName(""), "Name cannot be null");
+
+        commander.setHealth(-5);
+        assertEquals(commander.getHealth(), 0);
     }
 }

@@ -16,7 +16,7 @@ public abstract class Unit implements Bonuses {
     private int hitsTaken;
 
     public Unit(String name, int health, int attack, int armor) {
-        this.name = name;
+        setName(name);
         setHealth(health);
         this.attack = attack;
         this.armor = armor;
@@ -75,13 +75,26 @@ public abstract class Unit implements Bonuses {
         return hitsTaken;
     }
 
+    /**
+     * Sets health and changes states of being dead or alive based on hp.
+     * Throws exception if unit goes below 0 hp.
+     * @param health Integer of the health points the unit should have.
+     */
     public void setHealth(int health) {
         if (health <= 0) {
             this.health = 0;
             isAlive = false;
-        } else {
+        }else {
             this.health = health;
             isAlive = true;
+        }
+    }
+
+    public void setName(String name) throws NullPointerException {
+        if (name.isEmpty()) {
+            throw new NullPointerException("Name cannot be null.");
+        } else {
+            this.name = name;
         }
     }
 }
