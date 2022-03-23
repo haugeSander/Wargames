@@ -91,9 +91,8 @@ public class Army {
      * @return list of unit type infantry.
      */
     public List<Unit> getInfantryUnits() {
-        List<Unit> filteredList = units.stream()
-            .filter(Unit -> Unit instanceof InfantryUnit).collect(Collectors.toList());
-        return filteredList;
+        return units.stream()
+            .filter(InfantryUnit.class::isInstance).toList();
     }
 
     /**
@@ -101,9 +100,8 @@ public class Army {
      * @return list of unit type ranged.
      */
     public List<Unit> getRangedUnits() {
-        List<Unit> filteredList = units.stream()
-            .filter(Unit -> Unit instanceof RangedUnit).collect(Collectors.toList());
-        return filteredList;
+        return units.stream()
+            .filter(RangedUnit.class::isInstance).toList();
     }
 
     /**
@@ -111,9 +109,8 @@ public class Army {
      * @return list of unit type Cavalry.
      */
     public List<Unit> getCavalryUnits() {
-        List<Unit> filteredList = units.stream()
-            .filter(Unit -> Unit instanceof CavalryUnit).collect(Collectors.toList());
-        return filteredList;
+        return units.stream()
+            .filter(u -> u.getClass().equals(CavalryUnit.class)).toList();
     }
 
     /**
@@ -121,9 +118,8 @@ public class Army {
      * @return list of unit type Commander.
      */
     public List<Unit> getCommanderUnits() {
-        List<Unit> filteredList = units.stream()
-            .filter(Unit -> Unit instanceof CommanderUnit).collect(Collectors.toList());
-        return filteredList;
+        return units.stream()
+            .filter(CommanderUnit.class::isInstance).toList();
     }
 
     /**

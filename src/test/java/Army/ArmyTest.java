@@ -1,7 +1,12 @@
 package Army;
 
+import Army.Units.CavalryUnit;
+import Army.Units.CommanderUnit;
 import Army.Units.InfantryUnit;
+import Army.Units.RangedUnit;
 import Army.Units.Unit;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.ArrayList;
@@ -10,6 +15,22 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.*;
 
 public class ArmyTest {
+    private List<Unit> list;
+    private Unit infantry1;
+    private Unit cavalry1;
+    private Unit commander1;
+    private Unit ranged1;
+    private Army armyOne;
+
+    @BeforeEach
+    void constructor() {
+        list = new ArrayList<>();
+        armyOne = new Army("ArmyOne");
+        infantry1 = new InfantryUnit("Alpha", 100);
+        ranged1 = new RangedUnit("Bravo", 100);
+        cavalry1 = new CavalryUnit("Charlie", 100);
+        commander1 = new CommanderUnit("Delta", 100);
+    }
 
     /**
      * Adds a single unit to list, only available to getRandom() is the newly added.
@@ -17,17 +38,16 @@ public class ArmyTest {
      */
     @Test
     void getRandomAndRemove() {
-        Army fedArmy = new Army("Fed Army");
-        Unit sSquad = new InfantryUnit("S squad", 100);
-        Unit unit2 = new InfantryUnit("1", 10);
+        armyOne.add(infantry1);
+        Unit temp = armyOne.getRandom();
 
-        fedArmy.add(sSquad);
-        Unit temp = fedArmy.getRandom();
+        assertEquals(temp, infantry1);
 
-        assertEquals(temp, sSquad);
+        armyOne.remove(infantry1);
+        assertNull(armyOne.getRandom());
 
-        fedArmy.remove(sSquad);
-        assertEquals(fedArmy.getRandom(), null);
+        NullPointerException unitDoesNotExist = Assertions.assertThrows(NullPointerException.class, () ->
+            armyOne.remove(ranged1), "Unit does not exist.");
     }
 
     /**
@@ -36,22 +56,68 @@ public class ArmyTest {
      */
     @Test
     void addAll() {
-        List<Unit> list = new ArrayList<>();
-        Unit unit1 = new InfantryUnit("1", 10);
-        Unit unit2 = new InfantryUnit("1", 10);
-        list.add(unit1);
-        list.add(unit2);
+        list.add(infantry1);
+        list.add(ranged1);
 
-        Army fedArmy = new Army("Fed army");
-        assertFalse(fedArmy.hasUnits());
-        fedArmy.addAll(list);
+        assertFalse(armyOne.hasUnits());
+        armyOne.addAll(list);
 
-        assertTrue(fedArmy.hasUnits()); //Returns true if any units are added to army list.
+        assertTrue(armyOne.hasUnits()); //Returns true if any units are added to army list.
+    }
+
+    /**
+     * Tests the four methods in Army,
+     * which returns a list of a specified class type.
+     */
+    @Test
+    void getEachSpecificUnit() {
+        armyOne.add(infantry1);
+        armyOne.add(ranged1);
+        armyOne.add(cavalry1);
+        armyOne.add(commander1);
+
+        list.add(infantry1);
+        assertEquals(armyOne.getInfantryUnits(), list);
+        armyOne.remove(infantry1);
+        assertNotEquals(armyOne.getInfantryUnits(), list);
     }
 
     @Test
-    void getInfantryUnits() {
-        
+    void getRangedUnit() {
+        armyOne.add(infantry1);
+        armyOne.add(ranged1);
+        armyOne.add(cavalry1);
+        armyOne.add(commander1);
 
+        list.add(ranged1);
+        assertEquals(armyOne.getRangedUnits(), list);
+        armyOne.remove(ranged1);
+        assertNotEquals(armyOne.getRangedUnits(), list);
+    }
+
+    @Test
+    void getCavalryUnit() {
+        armyOne.add(infantry1);
+        armyOne.add(ranged1);
+        armyOne.add(cavalry1);
+        armyOne.add(commander1);
+
+        list.add(cavalry1);
+        assertEquals(armyOne.getCavalryUnits(), list);
+        armyOne.remove(cavalry1);
+        assertNotEquals(armyOne.getCavalryUnits(), list);
+    }
+
+    @Test
+    void getCommanderUnit() {
+        armyOne.add(infantry1);
+        armyOne.add(ranged1);
+        armyOne.add(cavalry1);
+        armyOne.add(commander1);
+
+        list.add(commander1);
+        assertEquals(armyOne.getCommanderUnits(), list);
+        armyOne.remove(commander1);
+        assertNotEquals(armyOne.getCommanderUnits(), list);
     }
 }
