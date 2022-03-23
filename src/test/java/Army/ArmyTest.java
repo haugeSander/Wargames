@@ -48,4 +48,10 @@ public class ArmyTest {
 
         assertTrue(fedArmy.hasUnits()); //Returns true if any units are added to army list.
     }
+
+    @Test
+    void getInfantryUnits() {
+        
+
+    }
 }
