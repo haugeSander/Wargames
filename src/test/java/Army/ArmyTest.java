@@ -5,7 +5,6 @@ import Army.Units.CommanderUnit;
 import Army.Units.InfantryUnit;
 import Army.Units.RangedUnit;
 import Army.Units.Unit;
-import java.net.URL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -66,13 +65,24 @@ public class ArmyTest {
         assertTrue(armyOne.hasUnits()); //Returns true if any units are added to army list.
     }
 
+    /**
+     * Tests saving of files as well as writing.
+     */
     @Test
     void testSave() {
         armyOne.add(infantry1);
         armyOne.add(ranged1);
         ArmyFileHandler.saveFile(armyOne, armyOne.getName());
-    }
 
+        Army readFromFile = ArmyFileHandler.readFile("ArmyOne.csv");
+        assertEquals(armyOne.toString(), readFromFile.toString());
+
+        Army armyTwo = new Army("Russia");
+
+        ArmyFileHandler.saveFile(armyTwo, armyTwo.getName());
+
+        assertNotEquals(ArmyFileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
+    }
 
     /**
      * Tests the four methods in Army,

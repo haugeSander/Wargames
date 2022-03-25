@@ -1,5 +1,9 @@
 package Army;
 
+import Army.Units.CavalryUnit;
+import Army.Units.CommanderUnit;
+import Army.Units.InfantryUnit;
+import Army.Units.RangedUnit;
 import Army.Units.Unit;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -7,15 +11,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class ArmyFileHandler {
-  private Army army;
-  String saveFile;
 
+  /**
+   * Static method which writes a file based on inputs.
+   * @param army Army object which is to be saved.
+   * @param fileName Name of file as String.
+   */
   public static void saveFile(Army army, String fileName) {
     try {
       BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
@@ -25,16 +28,20 @@ public class ArmyFileHandler {
       }
       writer.close();
     } catch (IOException e) {
-      e.printStackTrace();
+      System.err.println(e.getMessage());
     }
   }
 
-  public static List<Unit> readFile(String fileName) {
+  /**
+   * Static method which reads a saved file from army.
+   * @param fileName String of
+   * @return
+   */
+  public static Army readFile(String fileName) {
     Path path = Path.of(fileName);
-    List<Unit> list = new ArrayList<>();
+    Army army = new Army("");
 
     try(BufferedReader reader = Files.newBufferedReader(path)) {
-      Army army = new Army("");
       String lineOfText;
       int i = 0;
 
@@ -44,13 +51,28 @@ public class ArmyFileHandler {
         if (i == 0) {
           army.setName(lineOfText);
         } else {
-          
-
+          if (words[0].equals(InfantryUnit.class.getTypeName())) {
+            InfantryUnit infantryUnit =
+                new InfantryUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
+            army.add(infantryUnit);
+          } else if (words[0].equals(RangedUnit.class.getTypeName())) {
+            RangedUnit rangedUnit =
+                new RangedUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
+            army.add(rangedUnit);
+          } else if (words[0].equals(CavalryUnit.class.getTypeName())) {
+            CavalryUnit cavalryUnit =
+                new CavalryUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
+            army.add(cavalryUnit);
+          } else if (words[0].equals(CommanderUnit.class.getTypeName())) {
+            CommanderUnit commanderUnit =
+                new CommanderUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
+            army.add(commanderUnit);
+          }
         } i++;
       }
     } catch (IOException e) {
       System.err.println(e.getMessage());
     }
-    return list;
+    return army;
   }
 }
