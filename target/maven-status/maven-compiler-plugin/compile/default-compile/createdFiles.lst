@@ -1,0 +1,12 @@
+Army\Units\Unit.class
+Simulation\Battle.class
+Army\Units\CavalryUnit.class
+Army\ArmyFileHandler.class
+Army\Army.class
+Client\Client.class
+Army\Units\InfantryUnit.class
+Army\Units\CommanderUnit.class
+Army\Units\RangedUnit.class
+UI\GUI.class
+Army\Units\Bonuses.class
+UI\Controllers\Controller.class
