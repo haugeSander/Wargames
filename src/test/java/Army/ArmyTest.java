@@ -5,6 +5,7 @@ import Army.Units.CommanderUnit;
 import Army.Units.InfantryUnit;
 import Army.Units.RangedUnit;
 import Army.Units.Unit;
+import java.net.URL;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -65,12 +66,20 @@ public class ArmyTest {
         assertTrue(armyOne.hasUnits()); //Returns true if any units are added to army list.
     }
 
+    @Test
+    void testSave() {
+        armyOne.add(infantry1);
+        armyOne.add(ranged1);
+        ArmyFileHandler.saveFile(armyOne, armyOne.getName());
+    }
+
+
     /**
      * Tests the four methods in Army,
      * which returns a list of a specified class type.
      */
     @Test
-    void getEachSpecificUnit() {
+    void getInfantryUnit() {
         armyOne.add(infantry1);
         armyOne.add(ranged1);
         armyOne.add(cavalry1);

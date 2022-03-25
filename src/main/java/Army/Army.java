@@ -1,6 +1,9 @@
 package Army;
 import Army.Units.*;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -12,9 +15,9 @@ import java.util.stream.Collectors;
  */
 public class Army {
     private String name;
+
     private List<Unit> units;
     private Random randomUnit;
-
     /**
      * Constructor of the army class.
      *
@@ -78,12 +81,28 @@ public class Army {
             return units.get(randomUnit.nextInt(0, bound));
     }
 
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public void setUnits(List<Unit> units) {
+        this.units = units;
+    }
+
     /**
      * Get name.
      * @return String name of army.
      */
     public String getName() {
         return name;
+    }
+
+    /**
+     * Get the units list from Army.
+     * @return List of units.
+     */
+    public List<Unit> getUnits() {
+        return units;
     }
 
     /**
