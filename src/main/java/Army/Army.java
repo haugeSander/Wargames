@@ -81,12 +81,15 @@ public class Army {
             return units.get(randomUnit.nextInt(0, bound));
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
-    public void setUnits(List<Unit> units) {
-        this.units = units;
+    /**
+     * Sets name of Army.
+     * @param name String of name.
+     */
+    public void setName(String name) throws IllegalArgumentException {
+        if (name.isEmpty() || name.isBlank())
+            throw new IllegalArgumentException("Name cannot be null or empty.");
+        else
+            this.name = name;
     }
 
     /**

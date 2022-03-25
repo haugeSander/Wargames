@@ -35,7 +35,7 @@ public class ArmyFileHandler {
   /**
    * Static method which reads a saved file from army.
    * @param fileName String of
-   * @return
+   * @return Army from save file.
    */
   public static Army readFile(String fileName) {
     Path path = Path.of(fileName);

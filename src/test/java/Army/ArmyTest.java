@@ -102,6 +102,15 @@ public class ArmyTest {
     }
 
     @Test
+    void setName() {
+        armyOne.setName("Test");
+        assertEquals(armyOne.getName(), "Test");
+
+        IllegalArgumentException test = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        armyOne.setName(""), "Name cannot be null or empty.");
+    }
+
+    @Test
     void getRangedUnit() {
         armyOne.add(infantry1);
         armyOne.add(ranged1);
