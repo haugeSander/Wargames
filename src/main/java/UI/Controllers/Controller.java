@@ -27,6 +27,8 @@ public class Controller implements Initializable {
   public TableView<Unit> armyTwoTableView;
   public TableColumn army1TableColumn;
   public TableView<Unit> armyOneTableView;
+  private ObservableList<Unit> observableListOfUnits;
+  private Battle battleSimulation;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -35,11 +37,11 @@ public class Controller implements Initializable {
     army1.add(new InfantryUnit("Delta", 10));
     army2.add(new InfantryUnit("Charlie", 10));
 
-    Battle battleSimulation = new Battle(army1,army2);
+    battleSimulation = new Battle(army1,army2);
 
-    ObservableList<Unit> observableListOfUnits = FXCollections.observableList(new ArrayList<>());
+    observableListOfUnits = FXCollections.observableList(new ArrayList<>());
     armyOneTableView.setItems(observableListOfUnits);
-    //armyTwoTableView.setItems(observableListOfUnits);
+
     army1TableColumn.setCellFactory(new PropertyValueFactory<>("name"));
   }
 
@@ -61,7 +63,7 @@ public class Controller implements Initializable {
   }
 
   public void onStartSimulationClicked() {
-
+    winnerLabel.setText(battleSimulation.simulate());
   }
 
   public void onStopSimulationClicked() {

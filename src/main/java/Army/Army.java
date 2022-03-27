@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
  */
 public class Army {
     private String name;
-
     private List<Unit> units;
     private Random randomUnit;
+
     /**
      * Constructor of the army class.
      *
