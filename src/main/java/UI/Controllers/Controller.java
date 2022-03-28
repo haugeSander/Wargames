@@ -6,11 +6,9 @@ import Army.Units.Unit;
 import Simulation.Battle;
 
 import java.net.URL;
-import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -23,26 +21,30 @@ import javafx.stage.FileChooser;
 public class Controller implements Initializable {
   public Label winnerLabel;
   public ListView actionsListView;
-  public TableColumn armyTwoTableColumn;
-  public TableView<Unit> armyTwoTableView;
-  public TableColumn army1TableColumn;
   public TableView<Unit> armyOneTableView;
-  private ObservableList<Unit> observableListOfUnits;
+  public TableView<Unit> armyTwoTableView;
+  public TableColumn<Unit, String> armyOneTableColumn;
+  public TableColumn<Unit, String> armyTwoTableColumn;
+  private ObservableList<Unit> observableListOfUnitsArmyOne;
+  private ObservableList<Unit> observableListOfUnitsArmyTwo;
   private Battle battleSimulation;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     Army army1 = new Army("Blue");
     Army army2 = new Army("Red");
-    army1.add(new InfantryUnit("Delta", 10));
-    army2.add(new InfantryUnit("Charlie", 10));
+    army1.add(new InfantryUnit("Infantry delta", 10));
+    army2.add(new InfantryUnit("Infantry charlie", 10));
+
+    observableListOfUnitsArmyOne = FXCollections.observableList(army1.getUnits());
+    observableListOfUnitsArmyTwo = FXCollections.observableList(army2.getUnits());
+
+    armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyOneTableView.setItems(observableListOfUnitsArmyOne);
+    armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
 
     battleSimulation = new Battle(army1,army2);
-
-    observableListOfUnits = FXCollections.observableList(new ArrayList<>());
-    armyOneTableView.setItems(observableListOfUnits);
-
-    army1TableColumn.setCellFactory(new PropertyValueFactory<>("name"));
   }
 
   public void onOpenButtonClicked() {
