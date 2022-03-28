@@ -1,5 +1,6 @@
 Army\Units\Unit.class
 Simulation\Battle.class
+UI\MakeArmyPopup.class
 Army\Units\CavalryUnit.class
 Army\ArmyFileHandler.class
 Army\Army.class

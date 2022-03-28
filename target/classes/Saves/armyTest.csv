@@ -1,0 +1,8 @@
+Royal Norwegian Army
+Army.Units.InfantryUnit,Alpha,100
+Army.Units.RangedUnit,Bravo,100
+Army.Units.CommanderUnit,Charlie,150
+Army.Units.CommanderUnit,Delta,150
+Army.Units.CommanderUnit,Echo,150
+Army.Units.CommanderUnit,Foxtrot,150
+Army.Units.CommanderUnit,Golf,150

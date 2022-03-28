@@ -8,12 +8,10 @@ import java.util.Random;
 public class Battle {
     private Army army1;
     private Army army2;
-    //private List<Army> armyList;
 
     public Battle(Army army1, Army army2) {
         this.army1 = army1;
         this.army2 = army2;
-        //armyList = new ArrayList<>();
     }
 
     /**
@@ -62,5 +60,34 @@ public class Battle {
             return army2;
         } else
             return null;
+    }
+
+    /**
+     * Updates the armies in the simulation.
+     * If null is input, nothing is done.
+     * @param newArmyOne The updated army1.
+     * @param newArmyTwo The updated army2.
+     */
+    public void updateArmies(Army newArmyOne, Army newArmyTwo) {
+        if (newArmyOne != null)
+            this.army1 = newArmyOne;
+        if (newArmyTwo != null)
+            this.army2 = newArmyTwo;
+    }
+
+    /**
+     * Getter for army 1.
+     * @return Army for army1.
+     */
+    public Army getArmy1() {
+        return army1;
+    }
+
+    /**
+     * Getter for army 2.
+     * @return Army for army2.
+     */
+    public Army getArmy2() {
+        return army2;
     }
 }

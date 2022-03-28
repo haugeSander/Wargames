@@ -1,16 +1,21 @@
 package UI.Controllers;
 
 import Army.Army;
+import Army.ArmyFileHandler;
 import Army.Units.InfantryUnit;
 import Army.Units.Unit;
 import Simulation.Battle;
 
+import java.io.File;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -19,44 +24,116 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 
 public class Controller implements Initializable {
-  public Label winnerLabel;
-  public ListView actionsListView;
-  public TableView<Unit> armyOneTableView;
-  public TableView<Unit> armyTwoTableView;
-  public TableColumn<Unit, String> armyOneTableColumn;
-  public TableColumn<Unit, String> armyTwoTableColumn;
+  @FXML private Label winnerLabel;
+  @FXML private ListView actionsListView;
+  @FXML private TableView<Unit> armyOneTableView;
+  @FXML private TableView<Unit> armyTwoTableView;
+  @FXML private TableColumn<Unit, String> armyOneTableColumn;
+  @FXML private TableColumn<Unit, String> armyTwoTableColumn;
+
   private ObservableList<Unit> observableListOfUnitsArmyOne;
   private ObservableList<Unit> observableListOfUnitsArmyTwo;
   private Battle battleSimulation;
 
+  private Army army1;
+  private Army army2;
+
+  /**
+   * Constructor for the controller.
+   */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    Army army1 = new Army("Blue");
-    Army army2 = new Army("Red");
+    army1 = new Army("Blue");
+    army2 = new Army("Red");
     army1.add(new InfantryUnit("Infantry delta", 10));
     army2.add(new InfantryUnit("Infantry charlie", 10));
 
-    observableListOfUnitsArmyOne = FXCollections.observableList(army1.getUnits());
-    observableListOfUnitsArmyTwo = FXCollections.observableList(army2.getUnits());
-
-    armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyOneTableView.setItems(observableListOfUnitsArmyOne);
-    armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
-
     battleSimulation = new Battle(army1,army2);
+    updateArmies(army1, army2);
   }
 
-  public void onOpenButtonClicked() {
+  /**
+   * Open button in menu.
+   * When a .csv file is selected, the selected
+   * army will be switched with the file.
+   */
+  @FXML
+  private void onOpenButtonClicked() {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("Select");
+    alert.setHeaderText("Select which army to import into.");
+    alert.setContentText("Import .csv files, all other filetypes will not work!");
+
+    ButtonType army1Button = new ButtonType("Army 1");
+    ButtonType army2Button = new ButtonType("Army 2");
+    ButtonType cancel = new ButtonType("Cancel");
+
+    alert.getButtonTypes().clear();
+    alert.getButtonTypes().addAll(army1Button,army2Button,cancel);
+
+    Optional<ButtonType> option = alert.showAndWait();
     FileChooser chooser = new FileChooser();
-    chooser.showOpenDialog(null);
+    File selectedFile;
+
+    if (option.get() == army1Button) {
+      selectedFile = chooser.showOpenDialog(null);
+
+      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
+        army1 = ArmyFileHandler.readFile(selectedFile.getPath());
+        updateArmies(army1, null);
+      } else {
+        Alert noFileExists = new Alert(Alert.AlertType.WARNING);
+        noFileExists.setTitle("File error");
+        noFileExists.setHeaderText("The file selected not supported or nothing selected!");
+        noFileExists.setContentText("Remember only .csv files are supported.");
+        noFileExists.showAndWait();
+      }
+    } else if (option.get() == army2Button) {
+      selectedFile = chooser.showOpenDialog(null);
+      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
+        army2 = ArmyFileHandler.readFile(selectedFile.getPath());
+        updateArmies(null, army2);
+      } else {
+        Alert noFileExists = new Alert(Alert.AlertType.WARNING);
+        noFileExists.setTitle("File error");
+        noFileExists.setHeaderText("The file selected not supported or nothing selected!");
+        noFileExists.setContentText("Remember only .csv files are supported.");
+        noFileExists.showAndWait();
+      }
+    } else
+      alert.close();
+    }
+
+  /**
+   * Method to update the lists and army.
+    * @param armyOne New army1.
+   * @param armyTwo New army2.
+   */
+  private void updateArmies(Army armyOne, Army armyTwo) {
+     battleSimulation.updateArmies(armyOne, armyTwo);
+
+     observableListOfUnitsArmyOne = FXCollections.observableList(battleSimulation.getArmy1().getUnits());
+     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+     armyOneTableView.setItems(observableListOfUnitsArmyOne);
+
+     observableListOfUnitsArmyTwo = FXCollections.observableList(battleSimulation.getArmy2().getUnits());
+     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+     armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
   }
 
-  public void onCloseButtonClicked() {
+  /**
+   * Close button in menu, exits application.
+   */
+  @FXML
+  private void onCloseButtonClicked() {
     System.exit(0);
   }
 
-  public void onAboutButtonClicked() {
+  /**
+   * About button in menu shows information about creator and program.
+   */
+  @FXML
+  private void onAboutButtonClicked() {
     Alert alert = new Alert(Alert.AlertType.INFORMATION, "About");
     alert.setContentText("This is an application made by Sander!");
     alert.setTitle("About");
@@ -64,12 +141,22 @@ public class Controller implements Initializable {
     alert.showAndWait();
   }
 
-  public void onStartSimulationClicked() {
+  /**
+   * Runs the simulation.
+   */
+  @FXML
+  private void onStartSimulationClicked() {
     winnerLabel.setText(battleSimulation.simulate().getName());
     ObservableList<Unit> listOfUnits = FXCollections.observableList(battleSimulation.simulate().getUnits());
     actionsListView.setItems(listOfUnits);
   }
 
-  public void onStopSimulationClicked() {
+  /**
+   * Button to open dialog box where user may
+   * make their own army.
+   */
+  @FXML
+  private void onMakeArmyClicked() {
+
   }
 }

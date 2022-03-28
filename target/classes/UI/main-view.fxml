@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -40,12 +39,12 @@
    <bottom>
       <HBox alignment="CENTER" prefHeight="67.0" prefWidth="600.0" spacing="100.0" BorderPane.alignment="CENTER">
          <children>
-            <Button mnemonicParsing="false" onAction="#onStartSimulationClicked" text="Start simulation">
+            <Button mnemonicParsing="false" onAction="#onMakeArmyClicked" text="Make Army">
                <font>
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onStopSimulationClicked" text="Stop simulation">
+            <Button mnemonicParsing="false" onAction="#onStartSimulationClicked" text="Start simulation">
                <font>
                   <Font size="18.0" />
                </font>
@@ -54,7 +53,7 @@
       </HBox>
    </bottom>
    <left>
-      <TableView fx:id="armyOneTableView" prefHeight="200.0" prefWidth="125.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="armyOneTableView" prefHeight="262.0" prefWidth="126.0" BorderPane.alignment="CENTER">
         <columns>
           <TableColumn fx:id="armyOneTableColumn" prefWidth="125.0" text="Army 1" />
         </columns>
@@ -84,8 +83,7 @@
                   </Label>
                </children>
             </HBox>
-            <Separator prefWidth="200.0" />
-            <ListView fx:id="actionsListView" prefHeight="200.0" prefWidth="200.0" />
+            <ListView fx:id="actionsListView" prefHeight="282.0" prefWidth="348.0" />
          </children>
       </VBox>
    </center>
