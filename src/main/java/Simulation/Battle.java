@@ -22,7 +22,7 @@ public class Battle {
      * Returns specific Strings depending on who won.
      * If both forces are wiped out, a draw String is returned. (Should not happen)
      */
-    public String simulate() {
+    public Army simulate() {
         Unit tempUnit1 = null;
         Unit tempUnit2 = null;
         boolean battleFinished = false;
@@ -57,12 +57,10 @@ public class Battle {
         }
 
         if (!army2.hasUnits() && army1.hasUnits()) {
-            return "Winner is " + army1.toString() + "! \n"
-                    + "MVP: " + army1.getRandom().toString();
+            return army1;
         } else if (!army1.hasUnits() && army2.hasUnits()) {
-            return "Winner is " + army2.toString() + "! \n"
-                    + "MVP: " + army2.getRandom().toString();
+            return army2;
         } else
-            return "Draw! " + army1.toString() + ". " + army2.toString();
+            return null;
     }
 }

@@ -65,7 +65,9 @@ public class Controller implements Initializable {
   }
 
   public void onStartSimulationClicked() {
-    winnerLabel.setText(battleSimulation.simulate());
+    winnerLabel.setText(battleSimulation.simulate().getName());
+    ObservableList<Unit> listOfUnits = FXCollections.observableList(battleSimulation.simulate().getUnits());
+    actionsListView.setItems(listOfUnits);
   }
 
   public void onStopSimulationClicked() {
