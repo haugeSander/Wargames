@@ -15,6 +15,8 @@ public abstract class Unit implements Bonuses {
     private int hitsDealt;
     private int hitsTaken;
 
+    private String listViewGUI;
+
     public Unit(String name, int health, int attack, int armor) {
         setName(name);
         setHealth(health);
@@ -23,6 +25,8 @@ public abstract class Unit implements Bonuses {
 
         hitsDealt = 0;
         hitsTaken = 0;
+
+        listViewGUI = name + ": " + health + " hp";
     }
 
     /**
@@ -73,6 +77,14 @@ public abstract class Unit implements Bonuses {
 
     public int getHitsTaken() {
         return hitsTaken;
+    }
+
+    /**
+     * Only getter for list view in GUI observable list.
+     * @return String of important values.
+     */
+    public String getListViewGUI() {
+        return listViewGUI;
     }
 
     /**

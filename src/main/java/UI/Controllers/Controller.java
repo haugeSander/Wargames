@@ -73,36 +73,34 @@ public class Controller implements Initializable {
 
     Optional<ButtonType> option = alert.showAndWait();
     FileChooser chooser = new FileChooser();
+    Army buttonSelect = null;
     File selectedFile;
 
     if (option.get() == army1Button) {
-      selectedFile = chooser.showOpenDialog(null);
-
-      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        army1 = ArmyFileHandler.readFile(selectedFile.getPath());
-        updateArmies(army1, null);
-      } else {
-        Alert noFileExists = new Alert(Alert.AlertType.WARNING);
-        noFileExists.setTitle("File error");
-        noFileExists.setHeaderText("The file selected not supported or nothing selected!");
-        noFileExists.setContentText("Remember only .csv files are supported.");
-        noFileExists.showAndWait();
-      }
+      buttonSelect = army1;
     } else if (option.get() == army2Button) {
-      selectedFile = chooser.showOpenDialog(null);
-      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        army2 = ArmyFileHandler.readFile(selectedFile.getPath());
-        updateArmies(null, army2);
-      } else {
-        Alert noFileExists = new Alert(Alert.AlertType.WARNING);
-        noFileExists.setTitle("File error");
-        noFileExists.setHeaderText("The file selected not supported or nothing selected!");
-        noFileExists.setContentText("Remember only .csv files are supported.");
-        noFileExists.showAndWait();
-      }
-    } else
+      buttonSelect = army2;
+    } else {
       alert.close();
     }
+    selectedFile = chooser.showOpenDialog(null);
+
+    if (selectedFile != null && buttonSelect == army1 && selectedFile.getName().contains(".csv")) {
+      army1 = ArmyFileHandler.readFile(selectedFile.getPath());
+      updateArmies(army1, null);
+      armyOneTableColumn.setText(army1.getName());
+    } else if (selectedFile != null && buttonSelect == army2 && selectedFile.getName().contains(".csv")) {
+      army2 = ArmyFileHandler.readFile(selectedFile.getPath());
+      updateArmies(null, army2);
+      armyTwoTableColumn.setText(army2.getName());
+    } else {
+      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
+      noFileExists.setTitle("File error");
+      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
+      noFileExists.setContentText("Remember only .csv files are supported.");
+      noFileExists.showAndWait();
+    }
+  }
 
   /**
    * Method to update the lists and army.
@@ -113,11 +111,11 @@ public class Controller implements Initializable {
      battleSimulation.updateArmies(armyOne, armyTwo);
 
      observableListOfUnitsArmyOne = FXCollections.observableList(battleSimulation.getArmy1().getUnits());
-     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
      armyOneTableView.setItems(observableListOfUnitsArmyOne);
 
      observableListOfUnitsArmyTwo = FXCollections.observableList(battleSimulation.getArmy2().getUnits());
-     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
      armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
   }
 

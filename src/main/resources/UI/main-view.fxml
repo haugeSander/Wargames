@@ -53,16 +53,16 @@
       </HBox>
    </bottom>
    <left>
-      <TableView fx:id="armyOneTableView" prefHeight="262.0" prefWidth="126.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="armyOneTableView" prefHeight="262.0" prefWidth="150.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="armyOneTableColumn" prefWidth="125.0" text="Army 1" />
+          <TableColumn fx:id="armyOneTableColumn" prefWidth="150.0" text="Army 1" />
         </columns>
       </TableView>
    </left>
    <right>
-      <TableView fx:id="armyTwoTableView" prefHeight="200.0" prefWidth="125.0" BorderPane.alignment="CENTER">
+      <TableView fx:id="armyTwoTableView" prefHeight="200.0" prefWidth="150.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="armyTwoTableColumn" prefWidth="125.0" text="Army 2" />
+          <TableColumn fx:id="armyTwoTableColumn" prefWidth="150.0" text="Army 2" />
         </columns>
       </TableView>
    </right>
@@ -76,7 +76,7 @@
                         <Font size="17.0" />
                      </font>
                   </Label>
-                  <Label fx:id="winnerLabel" text="null">
+                  <Label fx:id="winnerLabel">
                      <font>
                         <Font size="17.0" />
                      </font>
