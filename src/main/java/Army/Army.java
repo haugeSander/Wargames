@@ -78,7 +78,7 @@ public class Army {
         if (!hasUnits())
             return null;
         else
-            return units.get(randomUnit.nextInt(0, bound));
+            return units.get(randomUnit.nextInt(bound));
     }
 
     /**
@@ -114,7 +114,7 @@ public class Army {
      */
     public List<Unit> getInfantryUnits() {
         return units.stream()
-            .filter(InfantryUnit.class::isInstance).toList();
+            .filter(InfantryUnit.class::isInstance).collect(Collectors.toList());
     }
 
     /**
@@ -123,7 +123,7 @@ public class Army {
      */
     public List<Unit> getRangedUnits() {
         return units.stream()
-            .filter(RangedUnit.class::isInstance).toList();
+            .filter(RangedUnit.class::isInstance).collect(Collectors.toList());
     }
 
     /**
@@ -132,7 +132,7 @@ public class Army {
      */
     public List<Unit> getCavalryUnits() {
         return units.stream()
-            .filter(u -> u.getClass().equals(CavalryUnit.class)).toList();
+            .filter(u -> u.getClass().equals(CavalryUnit.class)).collect(Collectors.toList());
     }
 
     /**
@@ -141,7 +141,7 @@ public class Army {
      */
     public List<Unit> getCommanderUnits() {
         return units.stream()
-            .filter(CommanderUnit.class::isInstance).toList();
+            .filter(CommanderUnit.class::isInstance).collect(Collectors.toList());
     }
 
     /**

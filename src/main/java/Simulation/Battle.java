@@ -35,7 +35,7 @@ public class Battle {
                 tempUnit2 = army2.getRandom();
             }
 
-            int randint = random.nextInt(0,2); //0<= Random int < 2
+            int randint = random.nextInt(2); //0<= Random int < 2
 
             if ((randint == 0 && !battleFinished) && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
                 tempUnit1.attack(tempUnit2);
