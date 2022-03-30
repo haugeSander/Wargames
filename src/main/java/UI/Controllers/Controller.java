@@ -6,6 +6,7 @@ import Army.Units.InfantryUnit;
 import Army.Units.Unit;
 import Simulation.Battle;
 
+import UI.MakeArmyPopup;
 import java.io.File;
 import java.net.URL;
 import java.util.Optional;
