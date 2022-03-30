@@ -12,7 +12,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -51,6 +50,10 @@ public class Controller implements Initializable {
 
     battleSimulation = new Battle(army1,army2);
     updateArmies(army1, army2);
+
+    armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
+    armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
+
   }
 
   /**
@@ -105,18 +108,16 @@ public class Controller implements Initializable {
 
   /**
    * Method to update the lists and army.
-    * @param armyOne New army1.
+   * @param armyOne New army1.
    * @param armyTwo New army2.
    */
   private void updateArmies(Army armyOne, Army armyTwo) {
      battleSimulation.updateArmies(armyOne, armyTwo);
 
      observableListOfUnitsArmyOne = FXCollections.observableList(battleSimulation.getArmy1().getUnits());
-     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
      armyOneTableView.setItems(observableListOfUnitsArmyOne);
 
      observableListOfUnitsArmyTwo = FXCollections.observableList(battleSimulation.getArmy2().getUnits());
-     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
      armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
   }
 
