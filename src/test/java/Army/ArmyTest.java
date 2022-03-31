@@ -69,7 +69,7 @@ public class ArmyTest {
      * Tests saving of files as well as writing.
      */
     @Test
-    void testSave() {
+    void testSaveAndRead() {
         armyOne.add(infantry1);
         armyOne.add(ranged1);
         ArmyFileHandler.saveFile(armyOne, armyOne.getName());
@@ -82,6 +82,7 @@ public class ArmyTest {
         ArmyFileHandler.saveFile(armyTwo, armyTwo.getName());
 
         assertNotEquals(ArmyFileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
+        assertEquals(ArmyFileHandler.readFile("Russia.csv").toString(),armyTwo.toString());
     }
 
     /**

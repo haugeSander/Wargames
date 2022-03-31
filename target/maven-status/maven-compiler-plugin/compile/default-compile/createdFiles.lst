@@ -2,12 +2,13 @@ Army\Units\Unit.class
 Simulation\Battle.class
 UI\MakeArmyPopup.class
 Army\Units\CavalryUnit.class
+Army\Units\UnitFactory.class
 Army\ArmyFileHandler.class
 Army\Army.class
-Client\Client.class
 Army\Units\InfantryUnit.class
 Army\Units\CommanderUnit.class
 Army\Units\RangedUnit.class
+module-info.class
 UI\GUI.class
 Army\Units\Bonuses.class
 UI\Controllers\Controller.class

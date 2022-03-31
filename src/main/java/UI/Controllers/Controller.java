@@ -158,7 +158,7 @@ public class Controller implements Initializable {
    */
   @FXML
   private void onMakeArmyClicked() {
-
+    MakeArmyPopup makeArmy = new MakeArmyPopup();
   }
 
   @FXML
