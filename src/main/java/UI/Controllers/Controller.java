@@ -2,9 +2,7 @@ package UI.Controllers;
 
 import Army.Army;
 import Army.ArmyFileHandler;
-import Army.Units.InfantryUnit;
 import Army.Units.Unit;
-import Army.Units.UnitFactory;
 import Simulation.Battle;
 
 import UI.MakeArmyPopup;
@@ -15,7 +13,6 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -52,15 +49,12 @@ public class Controller implements Initializable {
   public void initialize(URL url, ResourceBundle resourceBundle) {
     army1 = new Army("Blue");
     army2 = new Army("Red");
-    army1.add(UnitFactory.createUnit("InfantryUnit", "Infantry", 10));
-    army2.add(UnitFactory.createUnit("InfantryUnit", "Infantry",10));
 
     battleSimulation = new Battle(army1,army2);
     updateArmies(army1, army2);
 
     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
-
   }
 
   /**
@@ -129,7 +123,7 @@ public class Controller implements Initializable {
   }
 
   /**
-   * Close button in menu, exits application.
+   * Close button in menu, exits application after a confirmation.
    */
   @FXML
   private void onCloseButtonClicked() {
@@ -153,13 +147,22 @@ public class Controller implements Initializable {
   }
 
   /**
-   * Runs the simulation.
+   * If units are available a simulation will be run.
+   * If not an alert telling user to add units will show.
    */
   @FXML
   private void onStartSimulationClicked() {
-    winnerLabel.setText(battleSimulation.simulate().getName());
-    ObservableList<Unit> listOfUnits = FXCollections.observableList(battleSimulation.simulate().getUnits());
-    actionsListView.setItems(listOfUnits);
+    try {
+      winnerLabel.setText(battleSimulation.simulate().getName());
+      ObservableList<Unit> listOfUnits =
+          FXCollections.observableList(battleSimulation.simulate().getUnits());
+      actionsListView.setItems(listOfUnits);
+    }catch (Exception e) {
+      Alert alert = new Alert(Alert.AlertType.WARNING);
+      alert.setHeaderText("No units to fight each other..");
+      alert.setContentText("To simulate add units.");
+      alert.showAndWait();
+    }
   }
 
   /**
@@ -171,11 +174,17 @@ public class Controller implements Initializable {
     MakeArmyPopup makeArmy = new MakeArmyPopup();
   }
 
+  /**
+   * Button to save armies made.
+   * Awaits the makeArmyPopup feature.
+   */
   @FXML
   private void onSaveButtonClicked() {
-
   }
 
+  /**
+   * Button which sends user back to front page.
+   */
   public void onBackButtonClicked() throws IOException {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
     alert.setHeaderText("Are you sure you want to exit?");
