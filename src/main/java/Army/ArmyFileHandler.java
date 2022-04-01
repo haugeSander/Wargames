@@ -1,9 +1,5 @@
 package Army;
 
-import Army.Units.CavalryUnit;
-import Army.Units.CommanderUnit;
-import Army.Units.InfantryUnit;
-import Army.Units.RangedUnit;
 import Army.Units.Unit;
 import Army.Units.UnitFactory;
 import java.io.BufferedReader;
@@ -52,23 +48,8 @@ public class ArmyFileHandler {
         if (i == 0) {
           army.setName(lineOfText);
         } else {
-          if (words[0].equals(InfantryUnit.class.getTypeName())) {
-            InfantryUnit infantryUnit =
-                new InfantryUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
-            army.add(infantryUnit);
-          } else if (words[0].equals(RangedUnit.class.getTypeName())) {
-            RangedUnit rangedUnit =
-                new RangedUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
-            army.add(rangedUnit);
-          } else if (words[0].equals(CavalryUnit.class.getTypeName())) {
-            CavalryUnit cavalryUnit =
-                new CavalryUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
-            army.add(cavalryUnit);
-          } else if (words[0].equals(CommanderUnit.class.getTypeName())) {
-            CommanderUnit commanderUnit =
-                new CommanderUnit(words[1].strip(), Integer.parseInt(words[2].strip()));
-            army.add(commanderUnit);
-          }
+          army.add(UnitFactory.createUnit(words[0].strip(), words[1].strip(),
+              Integer.parseInt(words[2].strip())));
         } i++;
       }
     } catch (IOException e) {

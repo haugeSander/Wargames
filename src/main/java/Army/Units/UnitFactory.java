@@ -28,13 +28,13 @@ public class UnitFactory {
    * @return new Unit.
    */
   public static Unit createUnit(String unit, String name, int health) {
-    if (unit.equalsIgnoreCase("InfantryUnit")) {
+    if (unit.equalsIgnoreCase("InfantryUnit") || unit.equalsIgnoreCase("Army.Units.InfantryUnit")) {
       return new InfantryUnit(name, health);
-    } else if (unit.equalsIgnoreCase("RangedUnit")) {
+    } else if (unit.equalsIgnoreCase("RangedUnit") || unit.equalsIgnoreCase("Army.Units.RangedUnit")) {
       return new RangedUnit(name, health);
-    } else if (unit.equalsIgnoreCase("CavalryUnit")) {
+    } else if (unit.equalsIgnoreCase("CavalryUnit") || unit.equalsIgnoreCase("Army.Units.CavalryUnit")) {
       return new CavalryUnit(name, health);
-    } else if (unit.equalsIgnoreCase("CommanderUnit")) {
+    } else if (unit.equalsIgnoreCase("CommanderUnit") || unit.equalsIgnoreCase("Army.Units.CommanderUnit")) {
       return new CommanderUnit(name, health);
     } else
       return null;
