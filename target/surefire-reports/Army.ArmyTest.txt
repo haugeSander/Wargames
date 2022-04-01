@@ -1,0 +1,8 @@
+-------------------------------------------------------------------------------
+Test set: Army.ArmyTest
+-------------------------------------------------------------------------------
+Tests run: 2, Failures: 0, Errors: 1, Skipped: 0, Time elapsed: 0.035 s <<< FAILURE! - in Army.ArmyTest
+Army.ArmyTest.getRandomAndRemove  Time elapsed: 0.003 s  <<< ERROR!
+java.lang.IllegalArgumentException: bound must be greater than origin
+	at Army.ArmyTest.getRandomAndRemove(ArmyTest.java:28)
+

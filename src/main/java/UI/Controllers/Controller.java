@@ -4,17 +4,22 @@ import Army.Army;
 import Army.ArmyFileHandler;
 import Army.Units.InfantryUnit;
 import Army.Units.Unit;
+import Army.Units.UnitFactory;
 import Simulation.Battle;
 
 import UI.MakeArmyPopup;
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
@@ -23,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 public class Controller implements Initializable {
   @FXML private Label winnerLabel;
@@ -46,8 +52,8 @@ public class Controller implements Initializable {
   public void initialize(URL url, ResourceBundle resourceBundle) {
     army1 = new Army("Blue");
     army2 = new Army("Red");
-    army1.add(new InfantryUnit("Infantry delta", 10));
-    army2.add(new InfantryUnit("Infantry charlie", 10));
+    army1.add(UnitFactory.createUnit("InfantryUnit", "Infantry", 10));
+    army2.add(UnitFactory.createUnit("InfantryUnit", "Infantry",10));
 
     battleSimulation = new Battle(army1,army2);
     updateArmies(army1, army2);
@@ -127,7 +133,11 @@ public class Controller implements Initializable {
    */
   @FXML
   private void onCloseButtonClicked() {
-    System.exit(0);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
+    alert.setHeaderText("Are you sure you want to exit?");
+    alert.showAndWait()
+        .filter(response -> response == ButtonType.OK)
+        .ifPresent(response -> System.exit(0));
   }
 
   /**
@@ -164,5 +174,19 @@ public class Controller implements Initializable {
   @FXML
   private void onSaveButtonClicked() {
 
+  }
+
+  public void onBackButtonClicked() throws IOException {
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
+    alert.setHeaderText("Are you sure you want to exit?");
+    Optional<ButtonType> result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      Stage stage = (Stage) winnerLabel.getScene().getWindow();
+      stage.setScene(scene);
+    } else
+      alert.close();
   }
 }

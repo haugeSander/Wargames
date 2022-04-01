@@ -5,6 +5,7 @@ import Army.Units.CommanderUnit;
 import Army.Units.InfantryUnit;
 import Army.Units.RangedUnit;
 import Army.Units.Unit;
+import Army.Units.UnitFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
