@@ -16,6 +16,7 @@ public abstract class Unit implements Bonuses {
     private int hitsTaken;
 
     private String listViewGUI;
+    private terrain terrain;
 
     public Unit(String name, int health, int attack, int armor) {
         setName(name);
@@ -79,6 +80,10 @@ public abstract class Unit implements Bonuses {
         return hitsTaken;
     }
 
+    public terrain getTerrain() {
+        return terrain;
+    }
+
     /**
      * Only getter for list view in GUI observable list.
      * @return String of important values.
@@ -102,11 +107,29 @@ public abstract class Unit implements Bonuses {
         }
     }
 
+    /**
+     * Sets name if it is valid.
+     * @param name String representation of name.
+     * @throws NullPointerException If name is blank or null.
+     */
     public void setName(String name) throws NullPointerException {
         if (name.isEmpty()) {
             throw new NullPointerException("Name cannot be null.");
         } else {
             this.name = name;
+        }
+    }
+
+    /**
+     * Set terrain type.
+     * @param terrain String representation of a terrain type.
+     * @throws IllegalArgumentException
+     */
+    public void setTerrain(String terrain) throws IllegalArgumentException {
+        for (Bonuses.terrain b : Bonuses.terrain.values()) {
+            if (b.name().equalsIgnoreCase(terrain)) {
+                this.terrain = b;
+            }
         }
     }
 }

@@ -1,8 +1,10 @@
 package Simulation;
 
 import Army.Army;
+import Army.Units.Bonuses;
 import Army.Units.Unit;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Battle {
@@ -12,6 +14,9 @@ public class Battle {
     public Battle(Army army1, Army army2) {
         this.army1 = army1;
         this.army2 = army2;
+    }
+
+    public Battle() {
     }
 
     /**
@@ -73,6 +78,16 @@ public class Battle {
             this.army1 = newArmyOne;
         if (newArmyTwo != null)
             this.army2 = newArmyTwo;
+    }
+
+    public void setTerrain(String terrain) throws IllegalArgumentException {
+        if (terrain.contains(Arrays.toString(Bonuses.terrain.values())))
+            throw new IllegalArgumentException("No such terrain exist");
+
+        for (Unit unit : army1.getUnits())
+            unit.setTerrain(terrain);
+        for (Unit unit : army2.getUnits())
+            unit.setTerrain(terrain);
     }
 
     /**
