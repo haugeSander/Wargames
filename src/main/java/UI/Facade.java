@@ -6,6 +6,7 @@ import Simulation.Battle;
 public class Facade {
   private static volatile Facade instance;
   private Battle battle;
+  private String terrain;
 
   private Facade() {
   }
@@ -25,10 +26,14 @@ public class Facade {
 
   public void newSimulation(String terrain) {
     battle = new Battle(new Army(""), new Army(""));
-    battle.setTerrain(terrain);
+    this.terrain = terrain;
   }
 
   public Battle getBattle() {
     return battle;
+  }
+
+  public String getTerrain() {
+    return terrain;
   }
 }

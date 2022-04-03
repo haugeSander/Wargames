@@ -5,6 +5,7 @@ import Army.ArmyFileHandler;
 import Army.Units.Unit;
 import Simulation.Battle;
 
+import UI.Facade;
 import UI.MakeArmyPopup;
 import java.io.File;
 import java.io.IOException;
@@ -28,6 +29,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller implements Initializable {
+  @FXML private Label terrain;
   @FXML private Label winnerLabel;
   @FXML private ListView actionsListView;
   @FXML private TableView<Unit> armyOneTableView;
@@ -50,8 +52,10 @@ public class Controller implements Initializable {
     army1 = new Army("Blue");
     army2 = new Army("Red");
 
-    battleSimulation = new Battle(army1,army2);
+    Facade facade = Facade.getInstance();
+    battleSimulation = facade.getBattle();
     updateArmies(army1, army2);
+    terrain.setText(facade.getTerrain().toUpperCase());
 
     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
     armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
@@ -114,6 +118,7 @@ public class Controller implements Initializable {
    */
   private void updateArmies(Army armyOne, Army armyTwo) {
      battleSimulation.updateArmies(armyOne, armyTwo);
+     battleSimulation.setTerrain(Facade.getInstance().getTerrain());
 
      observableListOfUnitsArmyOne = FXCollections.observableList(battleSimulation.getArmy1().getUnits());
      armyOneTableView.setItems(observableListOfUnitsArmyOne);

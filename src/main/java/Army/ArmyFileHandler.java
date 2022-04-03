@@ -40,17 +40,16 @@ public class ArmyFileHandler {
 
     try(BufferedReader reader = Files.newBufferedReader(path)) {
       String lineOfText;
-      int i = 0;
 
       while ((lineOfText = reader.readLine()) != null) {
         String[] words = lineOfText.split(",");
 
-        if (i == 0) {
+        if (words.length < 2) {
           army.setName(lineOfText);
         } else {
           army.add(UnitFactory.createUnit(words[0].strip(), words[1].strip(),
               Integer.parseInt(words[2].strip())));
-        } i++;
+        }
       }
     } catch (IOException e) {
       e.getMessage();
