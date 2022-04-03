@@ -20,8 +20,12 @@ public class Facade {
     return instance;
   }
 
-  private void buildFacade() {
+  public void setBattle(Battle battle) {
+    this.battle = battle;
+  }
 
+  public void setTerrain(String terrain) {
+    this.terrain = terrain;
   }
 
   public void newSimulation(String terrain) {

@@ -49,12 +49,9 @@ public class Controller implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    army1 = new Army("Blue");
-    army2 = new Army("Red");
-
-    Facade facade = Facade.getInstance();
+   Facade facade = Facade.getInstance();
     battleSimulation = facade.getBattle();
-    updateArmies(army1, army2);
+    updateArmies(facade.getBattle().getArmy1(), facade.getBattle().getArmy2());
     terrain.setText(facade.getTerrain().toUpperCase());
 
     armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
