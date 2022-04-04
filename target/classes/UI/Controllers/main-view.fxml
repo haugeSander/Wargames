@@ -6,6 +6,7 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
+<?import javafx.scene.control.MenuButton?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
@@ -28,7 +29,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Delete" />
+              <MenuItem mnemonicParsing="false" onAction="#onRefreshButtonPressed" text="Refresh" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -52,11 +53,15 @@
                   <Font size="18.0" />
                </font>
             </Button>
-            <Button mnemonicParsing="false" onAction="#onStartSimulationClicked" text="Start simulation">
+            <MenuButton mnemonicParsing="false" text="Simulate!">
+              <items>
+                <MenuItem mnemonicParsing="false" onAction="#onStartSimulationClicked" text="Run once" />
+                <MenuItem mnemonicParsing="false" onAction="#onRunMultipleSimulationsClicked" text="Multiple runs" />
+              </items>
                <font>
                   <Font size="18.0" />
                </font>
-            </Button>
+            </MenuButton>
          </children>
       </HBox>
    </bottom>

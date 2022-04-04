@@ -27,7 +27,7 @@ public abstract class Unit implements Bonuses {
         hitsDealt = 0;
         hitsTaken = 0;
 
-        listViewGUI = name + ": " + health + " hp";
+        listViewGUI = getClass().getSimpleName() + ": " + name + ", " + health + " hp";
     }
 
     /**

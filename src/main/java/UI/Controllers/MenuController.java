@@ -2,8 +2,8 @@ package UI.Controllers;
 
 import Simulation.BattleFileHandler;
 import UI.Facade;
+import UI.GUI;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -38,31 +38,26 @@ public class MenuController implements Initializable {
    * Opens the main page with no units.
    * Prompts user to select a type of terrain.
    */
-  public void onNewSimulationButtonPressed() throws IOException {
-    Facade facade = Facade.getInstance();
-
-      try {
-        facade.newSimulation(selectTerrainTypeDialog());
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-        Stage stage = (Stage) logo.getScene().getWindow();
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-        stage.setScene(scene);
-      } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-        alert.setHeaderText("No such terrain exist!");
-        alert.showAndWait();
-      }
+  public void onNewSimulationButtonPressed() {
+    try {
+      Facade facade = Facade.getInstance();
+      facade.newSimulation(selectTerrainTypeDialog());
+      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+      Stage stage = (Stage) logo.getScene().getWindow();
+      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      stage.setScene(scene);
+    } catch (Exception e) {
+      Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+      alert.setHeaderText("No such terrain exist!");
+      alert.showAndWait();
+    }
   }
 
   /**
    * Exit button, exits application after a confirmation.
    */
   public void onExitButtonPressed() {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
-    alert.setHeaderText("Are you sure you want to exit?");
-    alert.showAndWait()
-        .filter(response -> response == ButtonType.OK)
-        .ifPresent(response -> System.exit(0));
+    GUI.exit((Stage)logo.getScene().getWindow());
   }
 
   /**
@@ -94,7 +89,7 @@ public class MenuController implements Initializable {
     td.setHeaderText("Enter a terrain type.");
     BorderPane pane = new BorderPane();
     pane.setPrefHeight(200);
-    pane.setPrefWidth(200);
+    pane.setPrefWidth(400);
 
     ComboBox<String> combo = new ComboBox<>();
     td.getDialogPane().getChildren().addAll(combo);

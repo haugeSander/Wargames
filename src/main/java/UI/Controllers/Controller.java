@@ -6,12 +6,16 @@ import Army.Units.Unit;
 import Simulation.Battle;
 
 import UI.Facade;
+import UI.GUI;
 import UI.MakeArmyPopup;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -24,6 +28,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
@@ -49,7 +54,7 @@ public class Controller implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-   Facade facade = Facade.getInstance();
+    Facade facade = Facade.getInstance();
     battleSimulation = facade.getBattle();
     updateArmies(facade.getBattle().getArmy1(), facade.getBattle().getArmy2());
     terrain.setText(facade.getTerrain().toUpperCase());
@@ -129,11 +134,7 @@ public class Controller implements Initializable {
    */
   @FXML
   private void onCloseButtonClicked() {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
-    alert.setHeaderText("Are you sure you want to exit?");
-    alert.showAndWait()
-        .filter(response -> response == ButtonType.OK)
-        .ifPresent(response -> System.exit(0));
+    GUI.exit((Stage) winnerLabel.getScene().getWindow());
   }
 
   /**
@@ -187,9 +188,10 @@ public class Controller implements Initializable {
   /**
    * Button which sends user back to front page.
    */
-  public void onBackButtonClicked() throws IOException {
+  @FXML
+  private void onBackButtonClicked() throws IOException {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
-    alert.setHeaderText("Are you sure you want to exit?");
+    alert.setHeaderText("Are you sure you want to go back?");
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
@@ -200,4 +202,49 @@ public class Controller implements Initializable {
     } else
       alert.close();
   }
+
+  private void refreshArmies() {
+
+  }
+
+  /**
+   * When run multiple simulation button is pressed,
+   * user is prompted to type how many times to run.
+   *
+   * Not functioning because army is not updated.
+   */
+  @FXML
+  private void onRunMultipleSimulationsClicked() {
+    TextInputDialog inputDialog = new TextInputDialog();
+    Optional<String> result = inputDialog.showAndWait();
+    List<String> winnerEachRound = new ArrayList<>();
+    int amount = 0;
+    army1 = Facade.getInstance().getBattle().getArmy1();
+    army2 = Facade.getInstance().getBattle().getArmy2();
+
+    if (result.isPresent() && !result.get().isEmpty()) {
+      try {
+        amount = Integer.parseInt(result.get());
+
+        for (int i = 0; i < amount; i++) {
+          winnerEachRound.add(battleSimulation.simulate().getName());
+          battleSimulation.updateArmies(army1, army2);
+        }
+
+        System.out.println(winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting())));
+
+        ObservableList<String> observableList =
+            FXCollections.observableList(winnerEachRound);
+        actionsListView.setItems(observableList);
+
+
+      } catch (Exception e) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(e.getMessage());
+        alert.showAndWait();
+      }
+    }
+  }
+
+
 }
