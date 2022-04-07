@@ -89,6 +89,13 @@ public class Army {
             this.name = name;
     }
 
+    public void setUnits(List<Unit> units) throws IllegalArgumentException {
+        if (units == null) {
+            throw new IllegalArgumentException("List may not be null or empty!");
+        } else
+            this.units = units;
+    }
+
     /**
      * Get name.
      * @return String name of army.

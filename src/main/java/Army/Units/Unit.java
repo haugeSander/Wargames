@@ -14,8 +14,7 @@ public abstract class Unit implements Bonuses {
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
     private int hitsDealt;
     private int hitsTaken;
-
-    private String listViewGUI;
+    private String className;
     private terrain terrain;
 
     public Unit(String name, int health, int attack, int armor) {
@@ -23,11 +22,10 @@ public abstract class Unit implements Bonuses {
         setHealth(health);
         this.attack = attack;
         this.armor = armor;
+        className = getClass().getSimpleName();
 
         hitsDealt = 0;
         hitsTaken = 0;
-
-        listViewGUI = getClass().getSimpleName() + ": " + name + ", " + health + " hp";
     }
 
     /**
@@ -84,12 +82,8 @@ public abstract class Unit implements Bonuses {
         return terrain;
     }
 
-    /**
-     * Only getter for list view in GUI observable list.
-     * @return String of important values.
-     */
-    public String getListViewGUI() {
-        return listViewGUI;
+    public String getClassName() {
+        return className;
     }
 
     /**

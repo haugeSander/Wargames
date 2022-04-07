@@ -13,6 +13,7 @@ Army\Units\Bonuses$terrain.class
 Simulation\BattleFileHandler.class
 UI\Controllers\MenuController.class
 module-info.class
+UI\Controllers\SimulationView.class
 UI\GUI.class
 Army\Units\Bonuses.class
 UI\Controllers\Controller.class

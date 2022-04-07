@@ -40,8 +40,6 @@ public class MenuController implements Initializable {
    */
   public void onNewSimulationButtonPressed() {
     try {
-      Facade facade = Facade.getInstance();
-      facade.newSimulation(selectTerrainTypeDialog());
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
       Scene scene = new Scene(fxmlLoader.load(), 800, 600);
@@ -70,7 +68,6 @@ public class MenuController implements Initializable {
 
     try {
       facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
-      facade.setTerrain(selectTerrainTypeDialog());
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
       Scene scene = new Scene(fxmlLoader.load(), 800, 600);

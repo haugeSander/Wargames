@@ -5,6 +5,7 @@ import Army.ArmyFileHandler;
 import Army.Units.Unit;
 import Simulation.Battle;
 
+import Simulation.BattleFileHandler;
 import UI.Facade;
 import UI.GUI;
 import UI.MakeArmyPopup;
@@ -18,12 +19,14 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -34,18 +37,38 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class Controller implements Initializable {
-  @FXML private Label terrain;
-  @FXML private Label winnerLabel;
-  @FXML private ListView actionsListView;
-  @FXML private TableView<Unit> armyOneTableView;
-  @FXML private TableView<Unit> armyTwoTableView;
-  @FXML private TableColumn<Unit, String> armyOneTableColumn;
-  @FXML private TableColumn<Unit, String> armyTwoTableColumn;
+  @FXML
+  private Label armyOneName;
+  @FXML
+  private TableView<Unit> armyOneTableView;
+  @FXML
+  private TableColumn armyOneTypeColumn;
+  @FXML
+  private TableColumn armyOneNameColumn;
+  @FXML
+  private TableColumn armyOneHPColumn;
+  @FXML
+  private TableColumn armyOneAmountColumn; //Supposed to show amount if there a clones
 
+  @FXML
+  private Label armyTwoName;
+  @FXML
+  private TableView<Unit> armyTwoTableView;
+  @FXML
+  private TableColumn armyTwoTypeColumn;
+  @FXML
+  private TableColumn armyTwoNameColumn;
+  @FXML
+  private TableColumn armyTwoHPColumn;
+  @FXML
+  private TableColumn armyTwoAmountColumn; //Supposed to show amount if there a clones
+
+  @FXML
+  private ComboBox terrainSelection;
   private ObservableList<Unit> observableListOfUnitsArmyOne;
   private ObservableList<Unit> observableListOfUnitsArmyTwo;
-  private Battle battleSimulation;
 
+  private Battle battleSimulation;
   private Army army1;
   private Army army2;
 
@@ -54,79 +77,46 @@ public class Controller implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    terrainSelection.getItems().add("Hill");
+    terrainSelection.getItems().add("Forest");
+    terrainSelection.getItems().add("Plains");
+    init();
+  }
+
+  private void init() {
     Facade facade = Facade.getInstance();
-    battleSimulation = facade.getBattle();
-    updateArmies(facade.getBattle().getArmy1(), facade.getBattle().getArmy2());
-    terrain.setText(facade.getTerrain().toUpperCase());
-
-    armyOneTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
-    armyTwoTableColumn.setCellValueFactory(new PropertyValueFactory<>("listViewGUI"));
-  }
-
-  /**
-   * Open button in menu.
-   * When a .csv file is selected, the selected
-   * army will be switched with the file.
-   */
-  @FXML
-  private void onOpenButtonClicked() {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setHeaderText("Select");
-    alert.setHeaderText("Select which army to import into.");
-    alert.setContentText("Import .csv files, all other filetypes will not work!");
-
-    ButtonType army1Button = new ButtonType("Army 1");
-    ButtonType army2Button = new ButtonType("Army 2");
-    ButtonType cancel = new ButtonType("Cancel");
-
-    alert.getButtonTypes().clear();
-    alert.getButtonTypes().addAll(army1Button,army2Button,cancel);
-
-    Optional<ButtonType> option = alert.showAndWait();
-    FileChooser chooser = new FileChooser();
-    Army buttonSelect = null;
-    File selectedFile;
-
-    if (option.get() == army1Button) {
-      buttonSelect = army1;
-    } else if (option.get() == army2Button) {
-      buttonSelect = army2;
+    if (facade.getBattle() == null) {
+      army1 = new Army("Army 1");
+      army2 = new Army("Army 2");
+      battleSimulation = new Battle(army1, army2);
+      facade.setBattle(battleSimulation);
     } else {
-      alert.close();
+      battleSimulation = facade.getBattle();
+      army1 = battleSimulation.getArmy1();
+      army2 = battleSimulation.getArmy2();
     }
-    selectedFile = chooser.showOpenDialog(null);
+    observableListOfUnitsArmyOne =
+        FXCollections.observableList(battleSimulation.getArmy1().getUnits());
+    observableListOfUnitsArmyTwo =
+        FXCollections.observableList(battleSimulation.getArmy2().getUnits());
 
-    if (selectedFile != null && buttonSelect == army1 && selectedFile.getName().contains(".csv")) {
-      army1 = ArmyFileHandler.readFile(selectedFile.getPath());
-      updateArmies(army1, null);
-      armyOneTableColumn.setText(army1.getName());
-    } else if (selectedFile != null && buttonSelect == army2 && selectedFile.getName().contains(".csv")) {
-      army2 = ArmyFileHandler.readFile(selectedFile.getPath());
-      updateArmies(null, army2);
-      armyTwoTableColumn.setText(army2.getName());
-    } else {
-      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
-      noFileExists.setTitle("File error");
-      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
-      noFileExists.setContentText("Remember only .csv files are supported.");
-      noFileExists.showAndWait();
-    }
-  }
+    battleSimulation.getArmy1().setUnits(observableListOfUnitsArmyOne);
+    battleSimulation.getArmy2().setUnits(observableListOfUnitsArmyTwo);
+    armyOneTableView.setItems(
+        observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
+    armyTwoTableView.setItems(
+        observableListOfUnitsArmyTwo); //By doing this the list does not need to be updated.
 
-  /**
-   * Method to update the lists and army.
-   * @param armyOne New army1.
-   * @param armyTwo New army2.
-   */
-  private void updateArmies(Army armyOne, Army armyTwo) {
-     battleSimulation.updateArmies(armyOne, armyTwo);
-     battleSimulation.setTerrain(Facade.getInstance().getTerrain());
+    armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
-     observableListOfUnitsArmyOne = FXCollections.observableList(battleSimulation.getArmy1().getUnits());
-     armyOneTableView.setItems(observableListOfUnitsArmyOne);
+    armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
-     observableListOfUnitsArmyTwo = FXCollections.observableList(battleSimulation.getArmy2().getUnits());
-     armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
+    armyOneName.setText(army1.getName());
+    armyTwoName.setText(army2.getName());
   }
 
   /**
@@ -134,7 +124,7 @@ public class Controller implements Initializable {
    */
   @FXML
   private void onCloseButtonClicked() {
-    GUI.exit((Stage) winnerLabel.getScene().getWindow());
+    GUI.exit((Stage) terrainSelection.getScene().getWindow());
   }
 
   /**
@@ -154,27 +144,15 @@ public class Controller implements Initializable {
    * If not an alert telling user to add units will show.
    */
   @FXML
-  private void onStartSimulationClicked() {
+  private void onSimulateButtonClicked() {
     try {
-      winnerLabel.setText(battleSimulation.simulate().getName());
-      ObservableList<Unit> listOfUnits =
-          FXCollections.observableList(battleSimulation.simulate().getUnits());
-      actionsListView.setItems(listOfUnits);
-    }catch (Exception e) {
+      Facade.getInstance().setTerrain(terrainSelection.getValue().toString().toLowerCase());
+    } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.WARNING);
       alert.setHeaderText("No units to fight each other..");
       alert.setContentText("To simulate add units.");
       alert.showAndWait();
     }
-  }
-
-  /**
-   * Button to open dialog box where user may
-   * make their own army.
-   */
-  @FXML
-  private void onMakeArmyClicked() {
-    MakeArmyPopup makeArmy = new MakeArmyPopup();
   }
 
   /**
@@ -195,56 +173,126 @@ public class Controller implements Initializable {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
+      battleSimulation = null;
+      army1 = null;
+      army2 = null;
+      Facade.getInstance().setBattle(null);
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-      Stage stage = (Stage) winnerLabel.getScene().getWindow();
+      Stage stage = (Stage) terrainSelection.getScene().getWindow();
       stage.setScene(scene);
     } else
       alert.close();
   }
 
-  private void refreshArmies() {
-
-  }
-
-  /**
-   * When run multiple simulation button is pressed,
-   * user is prompted to type how many times to run.
-   *
-   * Not functioning because army is not updated.
-   */
   @FXML
-  private void onRunMultipleSimulationsClicked() {
-    TextInputDialog inputDialog = new TextInputDialog();
-    Optional<String> result = inputDialog.showAndWait();
-    List<String> winnerEachRound = new ArrayList<>();
-    int amount = 0;
-    army1 = Facade.getInstance().getBattle().getArmy1();
-    army2 = Facade.getInstance().getBattle().getArmy2();
+  private void onOpenBattleClicked() {
+    FileChooser chooser = new FileChooser();
+    File selectedFile = chooser.showOpenDialog(null);
+    Facade facade = Facade.getInstance();
 
-    if (result.isPresent() && !result.get().isEmpty()) {
-      try {
-        amount = Integer.parseInt(result.get());
-
-        for (int i = 0; i < amount; i++) {
-          winnerEachRound.add(battleSimulation.simulate().getName());
-          battleSimulation.updateArmies(army1, army2);
-        }
-
-        System.out.println(winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting())));
-
-        ObservableList<String> observableList =
-            FXCollections.observableList(winnerEachRound);
-        actionsListView.setItems(observableList);
-
-
-      } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(e.getMessage());
-        alert.showAndWait();
-      }
+    try {
+      facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
+      init();
+    } catch (Exception e) {
+      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
+      noFileExists.setTitle("File error");
+      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
+      noFileExists.setContentText("Remember only .csv files are supported.");
+      noFileExists.showAndWait();
     }
   }
 
+  @FXML
+  private void onOpenToArmy1ButtonClicked() {
+    army1 = addArmyFromFile();
+    if (army1 != null) {
+      armyOneName.setText(army1.getName());
+      observableListOfUnitsArmyOne.addAll(army1.getUnits());
+    }
+  }
 
+  @FXML
+  private void onAddUnitArmy1Clicked() {
+  }
+
+  @FXML
+  private void onOpenToArmy2ButtonClicked() {
+    army2 = addArmyFromFile();
+    if (army2 != null) {
+      armyTwoName.setText(army2.getName());
+      observableListOfUnitsArmyTwo.addAll(army2.getUnits());
+    }
+  }
+
+  @FXML
+  private void onRemoveUnitArmy1Clicked() {
+    removeUnit(1);
+  }
+
+  @FXML
+  private void onRemoveUnitArmy2Clicked() {
+    removeUnit(2);
+  }
+
+  @FXML
+  private void onAddUnitArmyTwoClicked() {
+  }
+
+  /**
+   * Remove units from either army1 or 2 list.
+   *
+   * @param armyNumber integer representing the army number.
+   */
+  private void removeUnit(int armyNumber) {
+    try {
+      Unit unitToRemove = null;
+
+      if (armyNumber == 1) {
+        unitToRemove = armyOneTableView.getSelectionModel().getSelectedItem();
+      } else if (armyNumber == 2)
+        unitToRemove = armyTwoTableView.getSelectionModel().getSelectedItem();
+
+      if (unitToRemove != null) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+            "Are you sure you want to delete " + unitToRemove.getName() + "?");
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.isPresent() && result.get() == ButtonType.OK && armyNumber == 1) {
+          battleSimulation.getArmy1().getUnits().remove(unitToRemove);
+        } else if (result.isPresent() && result.get() == ButtonType.OK && armyNumber == 2) {
+          battleSimulation.getArmy2().getUnits().remove(unitToRemove);
+        }
+      }
+    } catch (Exception e) {
+      Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+      alert.setHeaderText("Unit does not exist.");
+      alert.showAndWait();
+    }
+  }
+
+  /**
+   * Method to get a csv file then return the army object.
+   *
+   * @return Army object.
+   */
+  private Army addArmyFromFile() {
+    FileChooser chooser = new FileChooser();
+    Army tempArmy = null;
+    File selectedFile;
+
+    selectedFile = chooser.showOpenDialog(null);
+
+    try {
+      if (selectedFile != null && selectedFile.getName().contains(".csv"))
+        tempArmy = ArmyFileHandler.readFile(selectedFile.getPath());
+    }catch(Exception e){
+      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
+      noFileExists.setTitle("File error");
+      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
+      noFileExists.setContentText("Remember only .csv files are supported.");
+      noFileExists.showAndWait();
+    }
+    return tempArmy;
+  }
 }
