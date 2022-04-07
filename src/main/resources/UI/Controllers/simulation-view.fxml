@@ -45,7 +45,7 @@
                <children>
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Army 1">
+                        <Label fx:id="army1Name" text="Army 1">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>
@@ -62,7 +62,7 @@
                   <Separator layoutX="410.0" layoutY="10.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="10.0" />
                   <VBox alignment="CENTER">
                      <children>
-                        <Label text="Army 2">
+                        <Label fx:id="army2Name" text="Army 2">
                            <font>
                               <Font name="System Bold" size="13.0" />
                            </font>

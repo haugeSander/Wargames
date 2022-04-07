@@ -81,6 +81,13 @@ public class MenuController implements Initializable {
     }
   }
 
+  /**
+   * Opens a dialog window for user to select terrain.
+   * User may use a combobox to do this.
+   * No longer used as user may select right before simulation.
+   * @return String representation of terrain.
+   * @deprecated
+   */
   private String selectTerrainTypeDialog() {
     Dialog<ButtonType> td = new Dialog<>();
     td.setHeaderText("Enter a terrain type.");

@@ -36,7 +36,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
-public class Controller implements Initializable {
+public class BattleManagerController implements Initializable {
   @FXML
   private Label armyOneName;
   @FXML
@@ -257,7 +257,6 @@ public class Controller implements Initializable {
   private void onAddUnitArmyTwoClicked() {
     List<Unit> list = addUnitsFromDialog();
     observableListOfUnitsArmyTwo.addAll(list);
-
   }
 
   /**
@@ -265,7 +264,6 @@ public class Controller implements Initializable {
    * @return List of units made by unitFactory.
    */
   private List<Unit> addUnitsFromDialog() {
-    List<Unit> units = new ArrayList<>();
     Dialog addUnits = new Dialog();
     ComboBox<String> typeUnit = new ComboBox<>();
     typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
