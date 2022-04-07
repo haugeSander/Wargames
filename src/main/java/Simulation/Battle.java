@@ -80,6 +80,11 @@ public class Battle {
             this.army2 = newArmyTwo;
     }
 
+    /**
+     * Sets terrain on for all units, units may still be different terrain.
+     * @param terrain String representation of terrain enum.
+     * @throws IllegalArgumentException When terrain param is not valid.
+     */
     public void setTerrain(String terrain) throws IllegalArgumentException {
         if (terrain.contains(Arrays.toString(Bonuses.terrain.values())))
             throw new IllegalArgumentException("No such terrain exist");

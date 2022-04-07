@@ -7,13 +7,30 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.chart.LineChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 
-public class SimulationView {
+public class SimulationController {
 
-  public SimulationView() {
+  public TableView army1View;
+  public TableColumn army1TypeColumn;
+  public TableColumn army1AmountColumn;
+  public TableView army2View;
+  public TableColumn army2TypeColumn;
+  public TableColumn army2AmountColumn;
+  public Label terrain;
+  public Label winnerLabel;
+  public LineChart chart;
+  public ListView log;
+
+  public SimulationController() {
 
   }
 
@@ -71,5 +88,14 @@ public class SimulationView {
         alert.showAndWait();
       }
     }
+  }
+
+  public void onGoBackPressed(ActionEvent actionEvent) {
+  }
+
+  public void onRunSimulationPressed(ActionEvent actionEvent) {
+  }
+
+  public void onMultipleSimulationsPressed(ActionEvent actionEvent) {
   }
 }
