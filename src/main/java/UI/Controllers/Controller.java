@@ -3,12 +3,12 @@ package UI.Controllers;
 import Army.Army;
 import Army.ArmyFileHandler;
 import Army.Units.Unit;
+import Army.Units.UnitFactory;
 import Simulation.Battle;
 
 import Simulation.BattleFileHandler;
 import UI.Facade;
 import UI.GUI;
-import UI.MakeArmyPopup;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -16,10 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -27,12 +25,14 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextInputDialog;
+import javafx.scene.control.TextField;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -145,12 +145,28 @@ public class Controller implements Initializable {
    */
   @FXML
   private void onSimulateButtonClicked() {
+    Alert alert = new Alert(Alert.AlertType.WARNING);
+
     try {
       Facade.getInstance().setTerrain(terrainSelection.getValue().toString().toLowerCase());
+      Facade.getInstance().setBattle(battleSimulation);
+
+      if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
+        alert.setHeaderText("No units to fight each other..");
+        alert.setContentText("To simulate add units.");
+        alert.showAndWait();
+      } else {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
+        Stage stage = (Stage) terrainSelection.getScene().getWindow();
+        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        stage.setScene(scene);
+      }
     } catch (Exception e) {
-      Alert alert = new Alert(Alert.AlertType.WARNING);
-      alert.setHeaderText("No units to fight each other..");
-      alert.setContentText("To simulate add units.");
+      if (terrainSelection.getValue() == null) {
+        alert.setHeaderText("Select a terrain to continue.");
+      } else {
+        alert.setHeaderText(e.getMessage());
+      }
       alert.showAndWait();
     }
   }
@@ -214,6 +230,8 @@ public class Controller implements Initializable {
 
   @FXML
   private void onAddUnitArmy1Clicked() {
+    List<Unit> list = addUnitsFromDialog();
+    observableListOfUnitsArmyOne.addAll(list);
   }
 
   @FXML
@@ -237,11 +255,50 @@ public class Controller implements Initializable {
 
   @FXML
   private void onAddUnitArmyTwoClicked() {
+    List<Unit> list = addUnitsFromDialog();
+    observableListOfUnitsArmyTwo.addAll(list);
+
+  }
+
+  /**
+   * Add units from dialog window.
+   * @return List of units made by unitFactory.
+   */
+  private List<Unit> addUnitsFromDialog() {
+    List<Unit> units = new ArrayList<>();
+    Dialog addUnits = new Dialog();
+    ComboBox<String> typeUnit = new ComboBox<>();
+    typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
+    addUnits.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    addUnits.getDialogPane().getChildren().addAll(typeUnit);
+    addUnits.getDialogPane().setPrefHeight(300);
+    addUnits.getDialogPane().setPrefWidth(300);
+    TextField name = new TextField();
+    TextField hp = new TextField();
+    TextField amount = new TextField();
+    Label type = new Label("Select type: ");
+    Label labelName = new Label("Name of unit: ");
+    Label labelHp = new Label("HP: ");
+    Label labelAmount = new Label("Amount: ");
+    HBox hBox1 = new HBox(type, typeUnit);
+    HBox hBox2 = new HBox(labelName, name);
+    HBox hBox3 = new HBox(labelHp, hp);
+    HBox hBox4 = new HBox(labelAmount, amount);
+    VBox vBox = new VBox(hBox1,hBox2,hBox3,hBox4);
+    vBox.setSpacing(10);
+
+    addUnits.getDialogPane().setContent(vBox);
+    addUnits.showAndWait();
+
+    if (amount.getLength() < 1)
+      amount.setText("0");
+
+    return UnitFactory.createListOfUnits(typeUnit.getValue(),name.getText(),
+        Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText()));
   }
 
   /**
    * Remove units from either army1 or 2 list.
-   *
    * @param armyNumber integer representing the army number.
    */
   private void removeUnit(int armyNumber) {
