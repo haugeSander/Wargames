@@ -21,41 +21,24 @@ public class Battle {
 
     /**
      * Simulator of a battle.
+     *
      * @return String of who won.
      * Returns specific Strings depending on who won.
      * If both forces are wiped out, a draw String is returned. (Should not happen)
      */
     public Army simulate() {
-        Unit tempUnit1 = null;
-        Unit tempUnit2 = null;
         boolean battleFinished = false;
-        Random random = new Random();
+        Unit tempUnit1;
+        Unit tempUnit2;
 
         while (!battleFinished) {
-
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;
             else {
                 tempUnit1 = army1.getRandom();
                 tempUnit2 = army2.getRandom();
-            }
 
-            int randint = random.nextInt(2); //0<= Random int < 2
-
-            if ((randint == 0 && !battleFinished) && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
-                tempUnit1.attack(tempUnit2);
-
-                if (!tempUnit2.getIsAlive()) {
-                    army2.remove(tempUnit2);
-                }
-            }
-
-            if ((randint == 1 && !battleFinished) && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
-                tempUnit2.attack(tempUnit1);
-
-                if (!tempUnit1.getIsAlive()) {
-                    army1.remove(tempUnit1);
-                }
+                simulateStep(tempUnit1, tempUnit2);
             }
         }
 
@@ -65,6 +48,29 @@ public class Battle {
             return army2;
         } else
             return null;
+    }
+
+    public String simulateStep(Unit tempUnit1, Unit tempUnit2) {
+        Random random = new Random();
+        int randint = random.nextInt(2); //0<= Random int < 2
+
+        if (randint == 0 && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
+            tempUnit1.attack(tempUnit2);
+
+            if (!tempUnit2.getIsAlive()) {
+                army2.remove(tempUnit2);
+                return tempUnit1.getName() + " died whilst fighting " + tempUnit2.getName();
+            }
+        }
+            if (randint == 1 && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
+                tempUnit2.attack(tempUnit1);
+            }
+
+        if (!tempUnit1.getIsAlive()) {
+            army1.remove(tempUnit1);
+            return tempUnit2.getName() + " died whilst fighting " + tempUnit1.getName();
+        }
+        return "";
     }
 
     /**
