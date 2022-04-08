@@ -75,7 +75,7 @@
                 <TableColumn fx:id="armyOneTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyOneNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyOneHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyOneAmountColumn" prefWidth="60.0" text="Amount" />
+                  <TableColumn fx:id="armyOneBonusColumn" prefWidth="60.0" text="A.Bonus" />
               </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" spacing="5.0">
@@ -102,7 +102,7 @@
                   <TableColumn fx:id="armyTwoTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyTwoNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyTwoHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyTwoAmountColumn" prefWidth="60.0" text="Amount" />
+                  <TableColumn fx:id="armyTwoBonusColumn" prefWidth="60.0" text="A.Bonus" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
@@ -127,7 +127,7 @@
                         <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="terrainSelection" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
+                  <ComboBox fx:id="terrainSelection" onAction="#onTerrainSelected" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />

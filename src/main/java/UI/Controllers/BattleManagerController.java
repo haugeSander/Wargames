@@ -17,6 +17,7 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -37,34 +38,19 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BattleManagerController implements Initializable {
-  @FXML
-  private Label armyOneName;
-  @FXML
-  private TableView<Unit> armyOneTableView;
-  @FXML
-  private TableColumn armyOneTypeColumn;
-  @FXML
-  private TableColumn armyOneNameColumn;
-  @FXML
-  private TableColumn armyOneHPColumn;
-  @FXML
-  private TableColumn armyOneAmountColumn; //Supposed to show amount if there a clones
-
-  @FXML
-  private Label armyTwoName;
-  @FXML
-  private TableView<Unit> armyTwoTableView;
-  @FXML
-  private TableColumn armyTwoTypeColumn;
-  @FXML
-  private TableColumn armyTwoNameColumn;
-  @FXML
-  private TableColumn armyTwoHPColumn;
-  @FXML
-  private TableColumn armyTwoAmountColumn; //Supposed to show amount if there a clones
-
-  @FXML
-  private ComboBox terrainSelection;
+  @FXML private Label armyOneName;
+  @FXML private TableView<Unit> armyOneTableView;
+  @FXML private TableColumn armyOneTypeColumn;
+  @FXML private TableColumn armyOneNameColumn;
+  @FXML private TableColumn armyOneHPColumn;
+  @FXML private TableColumn armyOneBonusColumn;
+  @FXML private Label armyTwoName;
+  @FXML private TableView<Unit> armyTwoTableView;
+  @FXML private TableColumn armyTwoTypeColumn;
+  @FXML private TableColumn armyTwoNameColumn;
+  @FXML private TableColumn armyTwoHPColumn;
+  @FXML private TableColumn armyTwoBonusColumn;
+  @FXML private ComboBox terrainSelection;
   private ObservableList<Unit> observableListOfUnitsArmyOne;
   private ObservableList<Unit> observableListOfUnitsArmyTwo;
 
@@ -83,6 +69,10 @@ public class BattleManagerController implements Initializable {
     init();
   }
 
+  /**
+   * Initializer accessible to BattleManagerController
+   * methods. Used by import battle method.
+   */
   private void init() {
     Facade facade = Facade.getInstance();
     if (facade.getBattle() == null) {
@@ -110,10 +100,12 @@ public class BattleManagerController implements Initializable {
     armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    armyOneBonusColumn.setCellValueFactory(new PropertyValueFactory<>("AttackBonus"));
 
     armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    armyTwoBonusColumn.setCellValueFactory(new PropertyValueFactory<>("AttackBonus"));
 
     armyOneName.setText(army1.getName());
     armyTwoName.setText(army2.getName());
@@ -148,7 +140,7 @@ public class BattleManagerController implements Initializable {
     Alert alert = new Alert(Alert.AlertType.WARNING);
 
     try {
-      Facade.getInstance().setTerrain(terrainSelection.getValue().toString().toLowerCase());
+      Facade.getInstance().setTerrain(terrainSelection.getValue().toString().toUpperCase());
       Facade.getInstance().setBattle(battleSimulation);
 
       if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
@@ -418,5 +410,10 @@ public class BattleManagerController implements Initializable {
       noFileExists.showAndWait();
     }
     return tempArmy;
+  }
+
+  public void onTerrainSelected() {
+    Facade.getInstance().setTerrain(terrainSelection.getValue().toString());
+    init();
   }
 }

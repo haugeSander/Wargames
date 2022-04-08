@@ -32,46 +32,46 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
+/**
+ * Simulation controller class to control
+ * simulation-view.fxml file.
+ */
 public class SimulationController implements Initializable {
-
-  public TableView army1View;
-  public TableColumn army1NameColumn;
-  public TableColumn army1HPColumn;
-  public TableView army2View;
-  public TableColumn army2NameColumn;
-  public TableColumn army2HPColumn;
-
-  public Label terrain;
-  public Label winnerLabel;
-
-  public LineChart chart;
-  public ListView log;
-  public Label army1Name;
-  public Label army2Name;
-
-  private XYChart.Series<String,Number> unitsArmy1;
-  private XYChart.Series<String,Number> unitsArmy2;
-  private int counter;
-
-  private List<String> listOfTypes;
-
-  private Timeline timeline;
+  @FXML private TableView army1View;
+  @FXML private TableColumn army1NameColumn;
+  @FXML private TableColumn army1HPColumn;
+  @FXML private TableView army2View;
+  @FXML private TableColumn army2NameColumn;
+  @FXML private TableColumn army2HPColumn;
+  @FXML private Label terrain;
+  @FXML private Label winnerLabel;
+  @FXML private LineChart chart;
+  @FXML private ListView log;
+  @FXML private Label army1Name;
+  @FXML private Label army2Name;
 
   private ObservableList<Unit> observableListArmy1;
   private ObservableList<Unit> observableListArmy2;
+  private XYChart.Series<String,Number> unitsArmy1;
+  private XYChart.Series<String,Number> unitsArmy2;
 
+  private int counter;
+  private Timeline timeline;
   private Battle battle;
   private Army army1;
-
   private Army army2;
+
   public SimulationController() {
   }
+
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     init();
-
   }
 
+  /**
+   * Initialize method available to classes in simulationController.
+   */
   private void init() {
     Facade facade = Facade.getInstance();
     terrain.setText(facade.getTerrain());
@@ -103,6 +103,12 @@ public class SimulationController implements Initializable {
     army2Name.setText(army2.getName());
   }
 
+  /**
+   * Attempt to make deep copy of armies
+   * gotten from the previous page.
+   * @param army1 Army 1 made in previous page.
+   * @param army2 Army 2 made in previous page.
+   */
   private void duplicateArmy(Army army1, Army army2) {
     Army duplicateArmy1 = new Army(army1.getName());
     Army duplicateArmy2 = new Army(army2.getName());
@@ -126,8 +132,14 @@ public class SimulationController implements Initializable {
     timeline.play();
   }
 
+  /**
+   * Uses step method from battle class to run
+   * simulation over time. When run simulation button is pressed
+   * the simulation will run with x amount of duration between
+   * steps.
+   * @param actionEvent Required to use this::step in keyframe control.
+   */
   private void step(ActionEvent actionEvent) {
-    List<String> list = new ArrayList<>();
     counter +=1;
 
     if(army1.hasUnits() && army2.hasUnits()) {
@@ -183,6 +195,10 @@ public class SimulationController implements Initializable {
     }
   }
 
+  /**
+   * When go back button is pressed user will
+   * be sent to main view fxml.
+   */
   public void onGoBackPressed() throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 800, 600);

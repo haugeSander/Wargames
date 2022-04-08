@@ -20,11 +20,10 @@ public class Battle {
     }
 
     /**
-     * Simulator of a battle.
-     *
-     * @return String of who won.
-     * Returns specific Strings depending on who won.
-     * If both forces are wiped out, a draw String is returned. (Should not happen)
+     * Simulator of a battle, running simulate
+     * step until there is no more units in one
+     * of the armies.
+     * @return The winner army.
      */
     public Army simulate() {
         boolean battleFinished = false;
@@ -50,6 +49,12 @@ public class Battle {
             return null;
     }
 
+    /**
+     * Simulates one step at a time.
+     * @param tempUnit1 Random unit from army1.
+     * @param tempUnit2 Random unit from army2.
+     * @return String of events which happened.
+     */
     public String simulateStep(Unit tempUnit1, Unit tempUnit2) {
         Random random = new Random();
         int randint = random.nextInt(2); //0<= Random int < 2
@@ -69,7 +74,10 @@ public class Battle {
         if (!tempUnit1.getIsAlive()) {
             army1.remove(tempUnit1);
             return tempUnit2.getName() + " died whilst fighting " + tempUnit1.getName();
-        }
+        } else if (!army1.hasUnits())
+            return army2.getName() + " has won!";
+        else if (!army2.hasUnits())
+            return army1.getName() + " has won!";
         return "";
     }
 

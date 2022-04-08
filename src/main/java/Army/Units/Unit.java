@@ -12,10 +12,10 @@ public abstract class Unit implements Bonuses {
     private int armor; //Defence value to decide resistance to attacks.
 
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
-    private int hitsDealt;
-    private int hitsTaken;
-    private String className;
-    private terrain terrain;
+    private int hitsDealt; //Count hits dealt.
+    private int hitsTaken; //Count hits received.
+    private String className; //The type of unit, infantry/ranged etc.
+    private terrain terrain; //Enum terrain from bonus interface.
 
     public Unit(String name, int health, int attack, int armor) {
         setName(name);
@@ -23,7 +23,6 @@ public abstract class Unit implements Bonuses {
         this.attack = attack;
         this.armor = armor;
         className = getClass().getSimpleName();
-
         hitsDealt = 0;
         hitsTaken = 0;
     }
@@ -48,42 +47,6 @@ public abstract class Unit implements Bonuses {
     public String toString() {
         return name + ", " + health + " hp" + ". Hits taken: "
                 + hitsTaken + ". Hits dealt: " + hitsDealt + ".";
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public int getHealth() {
-        return health;
-    }
-
-    public int getAttack() {
-        return attack;
-    }
-
-    public int getArmor() {
-        return armor;
-    }
-
-    public boolean getIsAlive() {
-        return isAlive;
-    }
-
-    public int getHitsDealt() {
-        return hitsDealt;
-    }
-
-    public int getHitsTaken() {
-        return hitsTaken;
-    }
-
-    public terrain getTerrain() {
-        return terrain;
-    }
-
-    public String getClassName() {
-        return className;
     }
 
     /**
@@ -125,5 +88,41 @@ public abstract class Unit implements Bonuses {
                 this.terrain = b;
             }
         }
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getHealth() {
+        return health;
+    }
+
+    public int getAttack() {
+        return attack;
+    }
+
+    public int getArmor() {
+        return armor;
+    }
+
+    public boolean getIsAlive() {
+        return isAlive;
+    }
+
+    public int getHitsDealt() {
+        return hitsDealt;
+    }
+
+    public int getHitsTaken() {
+        return hitsTaken;
+    }
+
+    public terrain getTerrain() {
+        return terrain;
+    }
+
+    public String getClassName() {
+        return className;
     }
 }
