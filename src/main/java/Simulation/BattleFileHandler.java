@@ -5,6 +5,7 @@ import Army.Units.Unit;
 import Army.Units.UnitFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -15,9 +16,14 @@ public class BattleFileHandler {
   public BattleFileHandler() {
   }
 
-  public static void writeFile(Battle battle, String fileName) {
+  /**
+   * Method which saves battle.csv files.
+   * @param battle Battle object to save.
+   * @param fileName File to be saved.
+   */
+  public static void writeFile(Battle battle, File fileName) {
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
+      BufferedWriter writer = new BufferedWriter(new FileWriter(fileName));
       writer.write(battle.getArmy1().getName());
       for (Unit u : battle.getArmy1().getUnits()) {
         writer.write("\n" + u.getClass().getName() + "," + u.getName() + "," + u.getHealth());
@@ -33,7 +39,12 @@ public class BattleFileHandler {
     }
   }
 
-  public static Battle readFile(String fileName) throws IOException {
+  /**
+   * Method which reads battle .csv files.
+   * @param fileName String name of file.
+   * @return Battle object created from file.
+   */
+  public static Battle readFile(String fileName) {
     Battle battle = new Battle();
 
     Path path = Path.of(fileName);

@@ -52,8 +52,8 @@
                         </Label>
                         <TableView fx:id="army1View" prefHeight="200.0" prefWidth="150.0">
                           <columns>
-                            <TableColumn fx:id="army1TypeColumn" prefWidth="75.0" text="Type" />
-                            <TableColumn fx:id="army1AmountColumn" prefWidth="75.0" text="Amount" />
+                            <TableColumn fx:id="army1NameColumn" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="army1HPColumn" prefWidth="75.0" text="HP" />
                           </columns>
                         </TableView>
                         <Separator minHeight="10.0" prefWidth="150.0" />
@@ -69,8 +69,8 @@
                         </Label>
                         <TableView fx:id="army2View" prefHeight="200.0" prefWidth="150.0">
                           <columns>
-                            <TableColumn fx:id="army2TypeColumn" prefWidth="75.0" text="Type" />
-                            <TableColumn fx:id="army2AmountColumn" prefWidth="75.0" text="Amount" />
+                            <TableColumn fx:id="army2NameColumn" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="army2HPColumn" prefWidth="75.0" text="HP" />
                           </columns>
                         </TableView>
                         <Separator minHeight="10.0" prefWidth="150.0" />

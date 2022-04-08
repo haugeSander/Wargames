@@ -12,15 +12,15 @@ import UI.GUI;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
@@ -173,10 +173,23 @@ public class BattleManagerController implements Initializable {
 
   /**
    * Button to save armies made.
-   * Awaits the makeArmyPopup feature.
+   * Allows user to select save location.
    */
   @FXML
   private void onSaveButtonClicked() {
+    try {
+      FileChooser chooser = new FileChooser();
+      chooser.setInitialFileName(army1.getName().strip()+"-vs-"+ army2.getName().strip());
+      chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
+      File selectedPath = chooser.showSaveDialog(terrainSelection.getScene().getWindow());
+      chooser.setInitialDirectory(selectedPath.getParentFile()); //Save chosen directory.
+      BattleFileHandler.writeFile(battleSimulation,selectedPath);
+    } catch (Exception e) {
+      Alert alert = new Alert(Alert.AlertType.ERROR);
+      alert.setHeaderText("File saving went wrong.");
+      alert.setContentText(e.getMessage());
+      alert.showAndWait();
+    }
   }
 
   /**
@@ -201,10 +214,14 @@ public class BattleManagerController implements Initializable {
       alert.close();
   }
 
+  /**
+   * Method to open battle formatted .csv save file into both
+   * army1 and 2.
+   */
   @FXML
   private void onOpenBattleClicked() {
     FileChooser chooser = new FileChooser();
-    File selectedFile = chooser.showOpenDialog(null);
+    File selectedFile = chooser.showOpenDialog(terrainSelection.getScene().getWindow());
     Facade facade = Facade.getInstance();
 
     try {
@@ -219,6 +236,9 @@ public class BattleManagerController implements Initializable {
     }
   }
 
+  /**
+   * Method to open army formatted .csv save file into army1.
+   */
   @FXML
   private void onOpenToArmy1ButtonClicked() {
     army1 = addArmyFromFile();
@@ -228,12 +248,25 @@ public class BattleManagerController implements Initializable {
     }
   }
 
+  /**
+   * Army 1's method to open add units dialog.
+   */
   @FXML
   private void onAddUnitArmy1Clicked() {
-    List<Unit> list = addUnitsFromDialog();
-    observableListOfUnitsArmyOne.addAll(list);
+    addUnitsFromDialog(1);
   }
 
+  /**
+   * Army 2's method to open add units dialog.
+   */
+  @FXML
+  private void onAddUnitArmyTwoClicked() {
+    addUnitsFromDialog(2);
+  }
+
+  /**
+   * Method to open army formatted .csv save file into army2.
+   */
   @FXML
   private void onOpenToArmy2ButtonClicked() {
     army2 = addArmyFromFile();
@@ -243,56 +276,92 @@ public class BattleManagerController implements Initializable {
     }
   }
 
+  /**
+   * Method to remove unit from army1 by selecting from list.
+   * Sends integer 1 representing army1.
+   */
   @FXML
   private void onRemoveUnitArmy1Clicked() {
     removeUnit(1);
   }
 
+  /**
+   * Method to remove unit from army2 by selecting from list.
+   * Sends integer 2 representing army2.
+   */
   @FXML
   private void onRemoveUnitArmy2Clicked() {
     removeUnit(2);
   }
 
-  @FXML
-  private void onAddUnitArmyTwoClicked() {
-    List<Unit> list = addUnitsFromDialog();
-    observableListOfUnitsArmyTwo.addAll(list);
+  /**
+   * Method which restricts textfield input to only being ints.
+   * @param textField TextField in GUI.
+   */
+  private void textFieldListener(TextField textField) {
+    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
+      if (!newValue.matches("\\d*")) {
+        textField.setText(newValue.replaceAll("[^\\d]", ""));
+      }
+    };
+    textField.textProperty().addListener(cl);
   }
 
   /**
-   * Add units from dialog window.
-   * @return List of units made by unitFactory.
+   * Method which allows user to add units from dialog.
+   * @param armyNumber Integer representation of army to add to.
    */
-  private List<Unit> addUnitsFromDialog() {
+  private void addUnitsFromDialog(int armyNumber) {
     Dialog addUnits = new Dialog();
     ComboBox<String> typeUnit = new ComboBox<>();
     typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
     addUnits.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
     addUnits.getDialogPane().getChildren().addAll(typeUnit);
-    addUnits.getDialogPane().setPrefHeight(300);
-    addUnits.getDialogPane().setPrefWidth(300);
+    addUnits.getDialogPane().setPrefHeight(200);
+    addUnits.getDialogPane().setPrefWidth(250);
+
     TextField name = new TextField();
     TextField hp = new TextField();
+    textFieldListener(hp);
     TextField amount = new TextField();
+    textFieldListener(amount);
+
     Label type = new Label("Select type: ");
     Label labelName = new Label("Name of unit: ");
     Label labelHp = new Label("HP: ");
     Label labelAmount = new Label("Amount: ");
-    HBox hBox1 = new HBox(type, typeUnit);
-    HBox hBox2 = new HBox(labelName, name);
-    HBox hBox3 = new HBox(labelHp, hp);
-    HBox hBox4 = new HBox(labelAmount, amount);
-    VBox vBox = new VBox(hBox1,hBox2,hBox3,hBox4);
+
+    HBox typeHBox = new HBox(type, typeUnit);
+    typeHBox.setAlignment(Pos.CENTER);
+    HBox nameHBox = new HBox(labelName, name);
+    nameHBox.setAlignment(Pos.CENTER);
+    HBox HPHBox = new HBox(labelHp, hp);
+    HPHBox.setAlignment(Pos.CENTER);
+    HBox amountHBox = new HBox(labelAmount, amount);
+    amountHBox.setAlignment(Pos.CENTER);
+    VBox vBox = new VBox(typeHBox, nameHBox, HPHBox, amountHBox);
     vBox.setSpacing(10);
-
     addUnits.getDialogPane().setContent(vBox);
-    addUnits.showAndWait();
 
-    if (amount.getLength() < 1)
-      amount.setText("0");
+    Optional<ButtonType> result = addUnits.showAndWait();
 
-    return UnitFactory.createListOfUnits(typeUnit.getValue(),name.getText(),
-        Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText()));
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+      try {
+        if (armyNumber == 1)
+          observableListOfUnitsArmyOne.addAll(
+              UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
+                  Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
+        else if (armyNumber == 2)
+          observableListOfUnitsArmyTwo.addAll(
+              UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
+                  Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
+      } catch (Exception e) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setHeaderText("Some values were invalid.");
+        alert.setContentText(e.getMessage());
+        alert.showAndWait();
+      }
+    }
   }
 
   /**
@@ -336,7 +405,7 @@ public class BattleManagerController implements Initializable {
     Army tempArmy = null;
     File selectedFile;
 
-    selectedFile = chooser.showOpenDialog(null);
+    selectedFile = chooser.showOpenDialog(terrainSelection.getScene().getWindow());
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv"))

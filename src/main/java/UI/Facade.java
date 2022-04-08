@@ -1,6 +1,5 @@
 package UI;
 
-import Army.Army;
 import Simulation.Battle;
 
 public class Facade {
@@ -25,11 +24,6 @@ public class Facade {
   }
 
   public void setTerrain(String terrain) {
-    this.terrain = terrain;
-  }
-
-  public void newSimulation(String terrain) {
-    battle = new Battle(new Army(""), new Army(""));
     this.terrain = terrain;
   }
 

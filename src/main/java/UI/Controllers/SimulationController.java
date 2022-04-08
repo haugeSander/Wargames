@@ -7,7 +7,6 @@ import UI.Facade;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -21,9 +20,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
-import javafx.scene.chart.AreaChart;
 import javafx.scene.chart.LineChart;
-import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
@@ -38,11 +35,11 @@ import javafx.util.Duration;
 public class SimulationController implements Initializable {
 
   public TableView army1View;
-  public TableColumn army1TypeColumn;
-  public TableColumn army1AmountColumn;
+  public TableColumn army1NameColumn;
+  public TableColumn army1HPColumn;
   public TableView army2View;
-  public TableColumn army2TypeColumn;
-  public TableColumn army2AmountColumn;
+  public TableColumn army2NameColumn;
+  public TableColumn army2HPColumn;
 
   public Label terrain;
   public Label winnerLabel;
@@ -56,20 +53,19 @@ public class SimulationController implements Initializable {
   private XYChart.Series<String,Number> unitsArmy2;
   private int counter;
 
+  private List<String> listOfTypes;
+
   private Timeline timeline;
+
   private ObservableList<Unit> observableListArmy1;
   private ObservableList<Unit> observableListArmy2;
-  private List<String> listOfTypes;
-  private List<Integer> listOfAmountArmy1;
-  private List<Integer> listOfAmountArmy2;
 
   private Battle battle;
   private Army army1;
-  private Army army2;
 
+  private Army army2;
   public SimulationController() {
   }
-
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     init();
@@ -94,15 +90,15 @@ public class SimulationController implements Initializable {
 
     observableListArmy1 = FXCollections.observableList(army1.getUnits());
     observableListArmy2 = FXCollections.observableList(army2.getUnits());
-
-    army1.setUnits(observableListArmy1);
-    army2.setUnits(observableListArmy2);
     army1View.setItems(observableListArmy1); //Sets the list in armies as the observable list
     army2View.setItems(observableListArmy2); //By doing this the list does not need to be updated.
+    army1.setUnits(observableListArmy1);
+    army2.setUnits(observableListArmy2);
 
-    army1TypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-    army2TypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-
+    army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    army1HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
     army1Name.setText(army1.getName());
     army2Name.setText(army2.getName());
   }
@@ -117,29 +113,6 @@ public class SimulationController implements Initializable {
     for (Unit u : army2.getUnits()) {
       duplicateArmy2.add(u);
     }
-  }
-
-  private void gatherTypesToList() {
-    Facade facade = Facade.getInstance();
-
-    listOfTypes = new ArrayList<>();
-    listOfAmountArmy1 = new ArrayList<>();
-    listOfAmountArmy2 = new ArrayList<>();
-
-    listOfTypes.add("InfantryUnit");
-    listOfTypes.add("RangedUnit");
-    listOfTypes.add("CavalryUnit");
-    listOfTypes.add("CommanderUnit");
-
-    listOfAmountArmy1.add(facade.getBattle().getArmy1().getInfantryUnits().size());
-    listOfAmountArmy1.add(facade.getBattle().getArmy1().getRangedUnits().size());
-    listOfAmountArmy1.add(facade.getBattle().getArmy1().getCavalryUnits().size());
-    listOfAmountArmy1.add(facade.getBattle().getArmy1().getCommanderUnits().size());
-
-    listOfAmountArmy2.add(facade.getBattle().getArmy2().getInfantryUnits().size());
-    listOfAmountArmy2.add(facade.getBattle().getArmy2().getRangedUnits().size());
-    listOfAmountArmy2.add(facade.getBattle().getArmy2().getCavalryUnits().size());
-    listOfAmountArmy2.add(facade.getBattle().getArmy2().getCommanderUnits().size());
   }
 
   /**
@@ -158,10 +131,11 @@ public class SimulationController implements Initializable {
     counter +=1;
 
     if(army1.hasUnits() && army2.hasUnits()) {
-      list.add(battle.simulateStep(army1.getRandom(), army2.getRandom()));
-      log.getItems().add(list);
+      String simStep = battle.simulateStep(army1.getRandom(), army2.getRandom());
       unitsArmy1.getData().add(new XYChart.Data<>(String.valueOf(counter),army1.getUnits().size()));
       unitsArmy2.getData().add(new XYChart.Data<>(String.valueOf(counter),army2.getUnits().size()));
+      if (!simStep.isEmpty())
+        log.getItems().add(simStep);
       log.refresh();
     }else{
       if(!army1.hasUnits()){
