@@ -127,7 +127,7 @@
                         <Font name="System Bold" size="17.0" />
                      </font>
                   </Label>
-                  <ComboBox fx:id="terrainSelection" onAction="#onTerrainSelected" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
+                  <ComboBox fx:id="terrainSelection" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
                </children>
             </VBox>
             <Separator orientation="VERTICAL" prefHeight="200.0" />

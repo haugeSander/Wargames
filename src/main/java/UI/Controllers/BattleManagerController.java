@@ -411,9 +411,4 @@ public class BattleManagerController implements Initializable {
     }
     return tempArmy;
   }
-
-  public void onTerrainSelected() {
-    Facade.getInstance().setTerrain(terrainSelection.getValue().toString());
-    init();
-  }
 }
