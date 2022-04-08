@@ -2,8 +2,10 @@ package UI.Controllers;
 
 import Army.Army;
 import Army.Units.Unit;
+import Army.Units.UnitFactory;
 import Simulation.Battle;
 import UI.Facade;
+import UI.GUI;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -29,6 +31,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -60,6 +63,9 @@ public class SimulationController implements Initializable {
   private Battle battle;
   private Army army1;
   private Army army2;
+
+  private Army duplicateArmy1;
+  private Army duplicateArmy2;
 
   public SimulationController() {
   }
@@ -101,6 +107,8 @@ public class SimulationController implements Initializable {
     army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
     army1Name.setText(army1.getName());
     army2Name.setText(army2.getName());
+
+    duplicateArmy(army1, army2);
   }
 
   /**
@@ -110,14 +118,14 @@ public class SimulationController implements Initializable {
    * @param army2 Army 2 made in previous page.
    */
   private void duplicateArmy(Army army1, Army army2) {
-    Army duplicateArmy1 = new Army(army1.getName());
-    Army duplicateArmy2 = new Army(army2.getName());
+    duplicateArmy1 = new Army(army1.getName());
+    duplicateArmy2 = new Army(army2.getName());
 
     for (Unit u : army1.getUnits()) {
-      duplicateArmy1.add(u);
+      duplicateArmy1.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
     }
     for (Unit u : army2.getUnits()) {
-      duplicateArmy2.add(u);
+      duplicateArmy2.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
     }
   }
 
@@ -129,6 +137,10 @@ public class SimulationController implements Initializable {
   private void onRunSimulationPressed() {
     timeline = new Timeline(new KeyFrame(Duration.millis(200),this::step));
     timeline.setCycleCount(Timeline.INDEFINITE);
+    chart.getXAxis().setTickLabelsVisible(false);
+    chart.verticalGridLinesVisibleProperty().setValue(false);
+    chart.horizontalGridLinesVisibleProperty().setValue(false);
+    chart.getXAxis().setLabel("Time");
     timeline.play();
   }
 
@@ -141,6 +153,8 @@ public class SimulationController implements Initializable {
    */
   private void step(ActionEvent actionEvent) {
     counter +=1;
+    unitsArmy1.setName(army1.getName());
+    unitsArmy2.setName(army2.getName());
 
     if(army1.hasUnits() && army2.hasUnits()) {
       String simStep = battle.simulateStep(army1.getRandom(), army2.getRandom());
@@ -180,10 +194,10 @@ public class SimulationController implements Initializable {
 
         for (int i = 0; i < amount; i++) {
           winnerEachRound.add(battle.simulate().getName());
-          //battle.updateArmies(duplicateArmy1,duplicateArmy2);
+          onRefreshPressed(); //Simple way of allowing multiple simulations.
         }
-
-        System.out.println(winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting())));
+        winnerLabel.setText(winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting())).toString());
+        winnerLabel.setFont(new Font(13));
 
         ObservableList<String> observableList = FXCollections.observableList(winnerEachRound);
         log.setItems(observableList);
@@ -199,10 +213,32 @@ public class SimulationController implements Initializable {
    * When go back button is pressed user will
    * be sent to main view fxml.
    */
-  public void onGoBackPressed() throws IOException {
+  @FXML
+  private void onGoBackPressed() throws IOException {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 800, 600);
     Stage stage = (Stage) winnerLabel.getScene().getWindow();
     stage.setScene(scene);
+  }
+
+  /**
+   * Button in menu to refresh armies.
+   */
+  @FXML
+  private void onRefreshPressed() {
+    army1 = duplicateArmy1;
+    army2 = duplicateArmy2;
+    observableListArmy1.setAll(duplicateArmy1.getUnits());
+    observableListArmy2.setAll(duplicateArmy2.getUnits());
+    winnerLabel.setText("");
+    init();
+  }
+
+  /**
+   * Button in menu to exit program.
+   */
+  @FXML
+  private void onClosePressed() {
+    GUI.exit((Stage)winnerLabel.getScene().getWindow());
   }
 }
