@@ -45,7 +45,7 @@ public class MenuController implements Initializable {
     try {
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
-      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      Scene scene = new Scene(fxmlLoader.load(), 815, 600);
       stage.setScene(scene);
     } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
@@ -73,7 +73,7 @@ public class MenuController implements Initializable {
       facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
-      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      Scene scene = new Scene(fxmlLoader.load(), 815, 600);
       stage.setScene(scene);
     } catch (Exception e) {
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);

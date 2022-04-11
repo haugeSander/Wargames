@@ -23,8 +23,10 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
+import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
@@ -72,6 +74,16 @@ public class SimulationController implements Initializable {
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    terrain.setText(Facade.getInstance().getTerrain());
+
+
+    chart.setCreateSymbols(false);
+
+    army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    army1HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+
     init();
   }
 
@@ -79,18 +91,12 @@ public class SimulationController implements Initializable {
    * Initialize method available to classes in simulationController.
    */
   private void init() {
-    Facade facade = Facade.getInstance();
-    terrain.setText(facade.getTerrain());
-
     unitsArmy1 = new XYChart.Series<>();
     unitsArmy2 = new XYChart.Series<>();
+    chart.getData().addAll(unitsArmy1,unitsArmy2);
     counter = 0;
 
-    chart.getData().addAll(unitsArmy1,unitsArmy2);
-
-    chart.setCreateSymbols(false);
-
-    battle = facade.getBattle();
+    battle = Facade.getInstance().getBattle();
     army1 = battle.getArmy1();
     army2 = battle.getArmy2();
 
@@ -101,10 +107,6 @@ public class SimulationController implements Initializable {
     army1.setUnits(observableListArmy1);
     army2.setUnits(observableListArmy2);
 
-    army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    army1HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
     army1Name.setText(army1.getName());
     army2Name.setText(army2.getName());
 
@@ -135,6 +137,9 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onRunSimulationPressed() {
+    if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
+      onRefreshPressed();
+    }
     timeline = new Timeline(new KeyFrame(Duration.millis(200),this::step));
     timeline.setCycleCount(Timeline.INDEFINITE);
     chart.getXAxis().setTickLabelsVisible(false);
@@ -186,6 +191,7 @@ public class SimulationController implements Initializable {
     TextInputDialog inputDialog = new TextInputDialog();
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
+    PieChart pie = new PieChart();
     int amount = 0;
 
     if (result.isPresent() && !result.get().isEmpty()) {
@@ -202,23 +208,30 @@ public class SimulationController implements Initializable {
         ObservableList<String> observableList = FXCollections.observableList(winnerEachRound);
         log.setItems(observableList);
       } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText(e.getMessage());
+        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
+        alert.setHeaderText("Please enter a number.");
         alert.showAndWait();
       }
     }
   }
 
   /**
-   * When go back button is pressed user will
-   * be sent to main view fxml.
+   * When go back button is pressed user will be prompted first
+   * if user presses ok, they will be sent to main view fxml.
    */
   @FXML
   private void onGoBackPressed() throws IOException {
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-    Scene scene = new Scene(fxmlLoader.load(), 800, 600);
-    Stage stage = (Stage) winnerLabel.getScene().getWindow();
-    stage.setScene(scene);
+    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+    alert.setHeaderText("Are you sure?");
+    Optional<ButtonType> result = alert.showAndWait();
+
+    if (result.isPresent() && result.get() == ButtonType.OK) {
+      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      Stage stage = (Stage) winnerLabel.getScene().getWindow();
+      stage.setScene(scene);
+    } else
+      alert.close();
   }
 
   /**

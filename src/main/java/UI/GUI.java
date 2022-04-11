@@ -16,7 +16,7 @@ public class GUI extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Controllers/main-menu.fxml"));
-    Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+    Scene scene = new Scene(fxmlLoader.load(), 815, 600);
 
     stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/tank.png"))));
     stage.setTitle("Wargames");

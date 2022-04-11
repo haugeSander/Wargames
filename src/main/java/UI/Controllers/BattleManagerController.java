@@ -190,7 +190,7 @@ public class BattleManagerController implements Initializable {
       } else {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
         Stage stage = (Stage) terrainSelection.getScene().getWindow();
-        Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 815, 600);
         stage.setScene(scene);
       }
     } catch (Exception e) {
@@ -239,7 +239,7 @@ public class BattleManagerController implements Initializable {
       army2 = null;
       Facade.getInstance().setBattle(null);
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
-      Scene scene = new Scene(fxmlLoader.load(), 800, 600);
+      Scene scene = new Scene(fxmlLoader.load(), 815, 600);
       Stage stage = (Stage) terrainSelection.getScene().getWindow();
       stage.setScene(scene);
     } else
@@ -462,7 +462,7 @@ public class BattleManagerController implements Initializable {
 
     if (result.isPresent() && !result.isEmpty()) {
       army1.setName(result.get());
-      init();
+      armyTwoName.setText(result.get());
     } else
       newArmy1Name.close();
   }
@@ -477,7 +477,7 @@ public class BattleManagerController implements Initializable {
 
     if (result.isPresent() && !result.isEmpty()) {
       army2.setName(result.get());
-      init();
+      armyOneName.setText(result.get());
     } else
       newArmy2Name.close();
   }
