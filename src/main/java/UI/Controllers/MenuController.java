@@ -22,8 +22,9 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class MenuController implements Initializable {
-  @FXML
-  private ImageView logo;
+  @FXML private ImageView openSimLogo;
+  @FXML private ImageView newSimLogo;
+  @FXML private ImageView logo;
 
   /**
    * Constructor for main menu.
@@ -32,6 +33,8 @@ public class MenuController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     logo.setImage(new Image(String.valueOf(getClass().getResource("tank.png"))));
+    newSimLogo.setImage(new Image(String.valueOf(getClass().getResource("file-plus.png"))));
+    openSimLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
   }
 
   /**

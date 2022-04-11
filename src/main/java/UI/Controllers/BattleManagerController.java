@@ -18,12 +18,16 @@ import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
@@ -31,13 +35,28 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BattleManagerController implements Initializable {
+  @FXML private Button changeArmy1Name;
+  @FXML private Button changeArmy2Name;
+  @FXML private ImageView simulateLogo;
+  @FXML private ImageView importBattleLogo;
+  @FXML private ImageView importA1Logo;
+  @FXML private ImageView addUnitA1Logo;
+  @FXML private ImageView removeA1Logo;
+  @FXML private ImageView importA2Logo;
+  @FXML private ImageView addA2Logo;
+  @FXML private ImageView removeA2Logo;
+
   @FXML private Label armyOneName;
   @FXML private TableView<Unit> armyOneTableView;
   @FXML private TableColumn armyOneTypeColumn;
@@ -109,6 +128,27 @@ public class BattleManagerController implements Initializable {
 
     armyOneName.setText(army1.getName());
     armyTwoName.setText(army2.getName());
+
+    setLogos();
+  }
+
+  /**
+   * Set images on each of the logos.
+   */
+  private void setLogos() {
+    changeArmy1Name.setGraphic(new ImageView(new Image(String.valueOf(getClass().getResource("edit.png")))));
+    changeArmy2Name.setGraphic(new ImageView(new Image(String.valueOf(getClass().getResource("edit.png")))));
+
+    addUnitA1Logo.setImage(new Image(String.valueOf(getClass().getResource("list-plus.png"))));
+    importA1Logo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
+    removeA1Logo.setImage(new Image(String.valueOf(getClass().getResource("list-minus.png"))));
+
+    addA2Logo.setImage(new Image(String.valueOf(getClass().getResource("list-plus.png"))));
+    importA2Logo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
+    removeA2Logo.setImage(new Image(String.valueOf(getClass().getResource("list-minus.png"))));
+
+    importBattleLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
+    simulateLogo.setImage(new Image(String.valueOf(getClass().getResource("play.png"))));
   }
 
   /**
@@ -287,7 +327,7 @@ public class BattleManagerController implements Initializable {
   }
 
   /**
-   * Method which restricts textfield input to only being ints.
+   * Method which restricts textField input to only being ints.
    * @param textField TextField in GUI.
    */
   private void textFieldListener(TextField textField) {
@@ -410,5 +450,35 @@ public class BattleManagerController implements Initializable {
       noFileExists.showAndWait();
     }
     return tempArmy;
+  }
+
+  /**
+   * Method to change army 1 name.
+   */
+  @FXML
+  private void changeArmy1Name() {
+    TextInputDialog newArmy1Name = new TextInputDialog();
+    Optional<String> result = newArmy1Name.showAndWait();
+
+    if (result.isPresent() && !result.isEmpty()) {
+      army1.setName(result.get());
+      init();
+    } else
+      newArmy1Name.close();
+  }
+
+  /**
+   * Method to change army 1 name.
+   */
+  @FXML
+  private void changeArmy2Name() {
+    TextInputDialog newArmy2Name = new TextInputDialog();
+    Optional<String> result = newArmy2Name.showAndWait();
+
+    if (result.isPresent() && !result.isEmpty()) {
+      army2.setName(result.get());
+      init();
+    } else
+      newArmy2Name.close();
   }
 }

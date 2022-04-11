@@ -7,15 +7,15 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.Controllers.BattleManagerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="UI.Controllers.BattleManagerController">
    <top>
       <MenuBar>
         <menus>
@@ -48,90 +48,112 @@
                <HBox.margin>
                   <Insets top="30.0" />
                </HBox.margin></Button>
+            <Button mnemonicParsing="false" onAction="#onSimulateButtonClicked" text="Simulate!">
+               <font>
+                  <Font size="17.0" />
+               </font>
+               <graphic>
+                  <ImageView fx:id="simulateLogo" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic></Button>
             <Button mnemonicParsing="false" onAction="#onOpenBattleClicked" text="Import battle">
                <font>
                   <Font size="16.0" />
                </font>
                <HBox.margin>
                   <Insets />
-               </HBox.margin></Button>
-            <Button mnemonicParsing="false" onAction="#onSimulateButtonClicked" text="Simulate!">
-               <font>
-                  <Font size="17.0" />
-               </font></Button>
+               </HBox.margin>
+               <graphic>
+                  <ImageView fx:id="importBattleLogo" fitHeight="25.0" fitWidth="25.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic></Button>
          </children>
       </HBox>
    </bottom>
    <left>
-      <VBox alignment="TOP_CENTER" prefWidth="275.0">
+      <VBox alignment="TOP_CENTER" prefWidth="315.0">
          <children>
             <Label fx:id="armyOneName" text="Army 1">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
+               <graphic>
+                  <Button fx:id="changeArmy1Name" contentDisplay="GRAPHIC_ONLY" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#changeArmy1Name" prefHeight="15.0" prefWidth="15.0" />
+               </graphic>
             </Label>
             <TableView fx:id="armyOneTableView" prefHeight="400.0" prefWidth="250.0">
               <columns>
                 <TableColumn fx:id="armyOneTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyOneNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyOneHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyOneBonusColumn" prefWidth="60.0" text="A.Bonus" />
+                  <TableColumn fx:id="armyOneBonusColumn" prefWidth="100.0" text="Attack Bonus" />
               </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" spacing="5.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onOpenToArmy1ButtonClicked" text="Import army" />
-                  <Button mnemonicParsing="false" onAction="#onAddUnitArmy1Clicked" text="Add units" />
-                  <Button mnemonicParsing="false" onAction="#onRemoveUnitArmy1Clicked" text="Remove unit" />
+                  <Button mnemonicParsing="false" onAction="#onOpenToArmy1ButtonClicked" text="Import army">
+                     <graphic>
+                        <ImageView fx:id="importA1Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#onAddUnitArmy1Clicked" text="Add units">
+                     <graphic>
+                        <ImageView fx:id="addUnitA1Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#onRemoveUnitArmy1Clicked" text="Remove unit">
+                     <graphic>
+                        <ImageView fx:id="removeA1Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
                </children>
             </HBox>
-            <Separator prefWidth="200.0" />
          </children>
       </VBox>
    </left>
    <right>
-      <VBox alignment="TOP_CENTER" prefWidth="275.0" BorderPane.alignment="CENTER">
+      <VBox alignment="TOP_CENTER" prefWidth="315.0" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="armyTwoName" text="Army 2">
                <font>
                   <Font name="System Bold" size="13.0" />
                </font>
+               <graphic>
+                  <Button fx:id="changeArmy2Name" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#changeArmy2Name" prefHeight="15.0" prefWidth="15.0" />
+               </graphic>
             </Label>
             <TableView fx:id="armyTwoTableView" prefHeight="400.0" prefWidth="250.0">
                <columns>
                   <TableColumn fx:id="armyTwoTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyTwoNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyTwoHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyTwoBonusColumn" prefWidth="60.0" text="A.Bonus" />
+                  <TableColumn fx:id="armyTwoBonusColumn" prefWidth="100.0" text="Attack bonus" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
-                  <Button mnemonicParsing="false" onAction="#onOpenToArmy2ButtonClicked" text="Import army" />
-                  <Button mnemonicParsing="false" onAction="#onAddUnitArmyTwoClicked" text="Add units" />
-                  <Button mnemonicParsing="false" onAction="#onRemoveUnitArmy2Clicked" text="Remove unit" />
+                  <Button mnemonicParsing="false" onAction="#onOpenToArmy2ButtonClicked" text="Import army">
+                     <graphic>
+                        <ImageView fx:id="importA2Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#onAddUnitArmyTwoClicked" text="Add units">
+                     <graphic>
+                        <ImageView fx:id="addA2Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
+                  <Button mnemonicParsing="false" onAction="#onRemoveUnitArmy2Clicked" text="Remove unit">
+                     <graphic>
+                        <ImageView fx:id="removeA2Logo" fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true" />
+                     </graphic></Button>
                </children>
             </HBox>
-            <Separator prefWidth="200.0" />
          </children>
       </VBox>
    </right>
    <center>
-      <HBox alignment="CENTER" spacing="50.0" BorderPane.alignment="CENTER">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="222.0" spacing="20.0">
          <children>
-            <Separator layoutX="110.0" layoutY="10.0" orientation="VERTICAL" prefHeight="200.0" />
-            <VBox alignment="CENTER" prefHeight="200.0" prefWidth="166.0" spacing="20.0">
-               <children>
-                  <Label text="Terrain selection">
-                     <font>
-                        <Font name="System Bold" size="17.0" />
-                     </font>
-                  </Label>
-                  <ComboBox fx:id="terrainSelection" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
-               </children>
-            </VBox>
-            <Separator orientation="VERTICAL" prefHeight="200.0" />
+            <Label text="Terrain selection">
+               <font>
+                  <Font name="System Bold" size="17.0" />
+               </font>
+            </Label>
+            <ComboBox fx:id="terrainSelection" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
          </children>
-      </HBox>
+      </VBox>
    </center>
 </BorderPane>
