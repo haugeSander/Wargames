@@ -56,8 +56,7 @@ public class Battle {
      * @return String of events which happened.
      */
     public String simulateStep(Unit tempUnit1, Unit tempUnit2) {
-        Random random = new Random();
-        int randint = random.nextInt(2); //0<= Random int < 2
+        int randint = new Random().nextInt(2); //0<= Random int < 2
 
         if (randint == 0 && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
             tempUnit1.attack(tempUnit2);

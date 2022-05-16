@@ -10,11 +10,14 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import java.util.stream.Collectors;
+import javafx.animation.Animation;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,8 +31,11 @@ import javafx.scene.chart.PieChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -37,7 +43,7 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.text.Font;
+import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -46,20 +52,22 @@ import javafx.util.Duration;
  * simulation-view.fxml file.
  */
 public class SimulationController implements Initializable {
+  @FXML private Spinner<Integer> speedSelection;
   @FXML private ImageView podium;
   @FXML private PieChart pieChart;
-  @FXML private TableView army1View;
-  @FXML private TableColumn army1NameColumn;
-  @FXML private TableColumn army1HPColumn;
-  @FXML private TableView army2View;
-  @FXML private TableColumn army2NameColumn;
-  @FXML private TableColumn army2HPColumn;
+  @FXML private TableView<Unit> army1View;
+  @FXML private TableColumn<Unit, String> army1NameColumn;
+  @FXML private TableColumn<Unit, Integer> army1HPColumn;
+  @FXML private TableView<Unit> army2View;
+  @FXML private TableColumn<Unit, String> army2NameColumn;
+  @FXML private TableColumn<Unit, Integer> army2HPColumn;
   @FXML private Label terrain;
   @FXML private Label winnerLabel;
   @FXML private LineChart chart;
-  @FXML private ListView log;
   @FXML private Label army1Name;
   @FXML private Label army2Name;
+  private ListView<String> log;
+  private int treadSpeed;
 
   private ObservableList<Unit> observableListArmy1;
   private ObservableList<Unit> observableListArmy2;
@@ -75,13 +83,19 @@ public class SimulationController implements Initializable {
   private Army duplicateArmy1;
   private Army duplicateArmy2;
 
-  public SimulationController() {
-  }
-
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     terrain.setText(Facade.getInstance().getTerrain());
     chart.setCreateSymbols(false);
+
+    SpinnerValueFactory<Integer> factory =
+        new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 1000, 10,10);
+    factory.setValue(10);
+    speedSelection.setValueFactory(factory);
+    speedSelection.setEditable(true);
+
+    speedSelection.valueProperty().addListener(
+        (observableValue, oldValue, newValue) -> treadSpeed =  (newValue));
 
     army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -97,7 +111,7 @@ public class SimulationController implements Initializable {
   private void init() {
     unitsArmy1 = new XYChart.Series<>();
     unitsArmy2 = new XYChart.Series<>();
-    chart.getData().addAll(unitsArmy1,unitsArmy2);
+    chart.getData().addAll(unitsArmy1, unitsArmy2);
     counter = 0;
 
     battle = Facade.getInstance().getBattle();
@@ -114,7 +128,7 @@ public class SimulationController implements Initializable {
     army1Name.setText(army1.getName());
     army2Name.setText(army2.getName());
 
-    duplicateArmy(army1, army2);
+    duplicateArmy(army1, army2); //Makes deep copy of armies.
   }
 
   /**
@@ -141,11 +155,17 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onRunSimulationPressed() {
+    log = new ListView<>();
+
+    if (treadSpeed == 0)
+      treadSpeed = 10;
+
     if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
       onRefreshPressed();
     }
-    timeline = new Timeline(new KeyFrame(Duration.millis(200),this::step));
-    timeline.setCycleCount(Timeline.INDEFINITE);
+
+    timeline = new Timeline(new KeyFrame(Duration.millis(treadSpeed),this::step));
+    timeline.setCycleCount(Animation.INDEFINITE);
     chart.getXAxis().setTickLabelsVisible(false);
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
@@ -161,7 +181,7 @@ public class SimulationController implements Initializable {
    * @param actionEvent Required to use this::step in keyframe control.
    */
   private void step(ActionEvent actionEvent) {
-    counter +=1;
+    counter += 1;
     unitsArmy1.setName(army1.getName());
     unitsArmy2.setName(army2.getName());
 
@@ -169,9 +189,11 @@ public class SimulationController implements Initializable {
       String simStep = battle.simulateStep(army1.getRandom(), army2.getRandom());
       unitsArmy1.getData().add(new XYChart.Data<>(String.valueOf(counter),army1.getUnits().size()));
       unitsArmy2.getData().add(new XYChart.Data<>(String.valueOf(counter),army2.getUnits().size()));
-      if (!simStep.isEmpty())
+
+      if (!simStep.isEmpty()) {
         log.getItems().add(simStep);
-      log.refresh();
+        log.refresh();
+      }
     }else{
       if(!army1.hasUnits()){
         winnerLabel.setText(army2.getName());
@@ -180,6 +202,7 @@ public class SimulationController implements Initializable {
         winnerLabel.setText(army1.getName());
         timeline.stop();
       }
+
       podium.setImage(new Image(String.valueOf(getClass().getResource("podium.png"))));
     }
   }
@@ -192,12 +215,12 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onMultipleSimulationsPressed() {
-    Battle battle = Facade.getInstance().getBattle();
     TextInputDialog inputDialog = new TextInputDialog();
+    inputDialog.getDialogPane().setHeaderText("Enter amount of simulations to run.");
     textFieldListener(inputDialog.getEditor());
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
-    int amount = 0;
+    int amount;
 
     if (result.isPresent() && !result.get().isEmpty()) {
       try {
@@ -207,11 +230,23 @@ public class SimulationController implements Initializable {
           winnerEachRound.add(battle.simulate().getName());
           onRefreshPressed(); //Simple way of allowing multiple simulations.
         }
-        winnerLabel.setText(winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting())).toString());
-        winnerLabel.setFont(new Font(13));
 
-        ObservableList<String> observableList = FXCollections.observableList(winnerEachRound);
-        log.setItems(observableList);
+        Map<Object, Long> winner =
+            winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
+        //Stores army object and amount of wins in map.
+
+        ObservableList<PieChart.Data> pie =
+            FXCollections.observableArrayList(
+                new PieChart.Data(army1.getName(), winner.get(army1.getName())),
+                new PieChart.Data(army2.getName(), winner.get(army2.getName())));
+        pieChart.setData(pie); //Sets data to pieChart.
+
+        pie.forEach(data ->
+            data.nameProperty().bind(
+                Bindings.concat(data.getName(), " ", data.pieValueProperty(), " wins"
+                ))); //Shows amount of times each army won.
+
+        log.getItems().setAll(winnerEachRound);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
         alert.setHeaderText("Please enter a number.");
@@ -271,5 +306,13 @@ public class SimulationController implements Initializable {
   @FXML
   private void onClosePressed() {
     GUI.exit((Stage)winnerLabel.getScene().getWindow());
+  }
+
+  @FXML
+  private void onShowLogPressed() {
+    Dialog<BorderPane> logDialog = new Dialog<>();
+    logDialog.getDialogPane().getButtonTypes().setAll(ButtonType.CLOSE);
+    logDialog.getDialogPane().setContent(new BorderPane(log));
+    logDialog.showAndWait();
   }
 }

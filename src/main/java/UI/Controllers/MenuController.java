@@ -5,6 +5,7 @@ import UI.Facade;
 import UI.GUI;
 import java.io.File;
 import java.net.URL;
+import java.nio.file.Path;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -32,8 +33,8 @@ public class MenuController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    logo.setImage(new Image(String.valueOf(getClass().getResource("tank.png"))));
-    newSimLogo.setImage(new Image(String.valueOf(getClass().getResource("file-plus.png"))));
+    logo.setImage(new Image(String.valueOf(getClass().getResource("Tank.png"))));
+    newSimLogo.setImage(new Image(String.valueOf(getClass().getResource("edit.png"))));
     openSimLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
   }
 
