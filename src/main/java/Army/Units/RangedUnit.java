@@ -37,9 +37,15 @@ public class RangedUnit extends Unit {
      */
     @Override
     public int getAttackBonus() {
-        if (getHitsTaken() < 1) //If the unit is far away from target gain bonus.
-            return 3;
-        else
+        if (getTerrain() == Bonuses.terrain.FOREST) //Forest makes it hard for ranged units.
+            return 1;
+        else if (getTerrain() == Bonuses.terrain.HILL && getHitsTaken() < 2) //Hills and distance is when they are strongest.
+            return 6;
+        else if (getTerrain() == Bonuses.terrain.HILL) //Hills make these units stronger.
+            return 4;
+        else if (getHitsTaken() >= 1) //If another unit has hit ranged 2 times they are considered close and ranged will do less dmg.
             return 0;
+        else
+            return 1;
     }
 }

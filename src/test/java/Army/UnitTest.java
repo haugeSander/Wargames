@@ -9,13 +9,17 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class UnitTest {
+    private Unit infantry;
+    private Unit commander;
+    private Unit ranged;
+    private Unit cavalry;
 
     @BeforeEach
     void createUnits() {
-        Unit unit1 = new InfantryUnit("Alpha", 40);
-        Unit unit2 = new CommanderUnit("Bravo-Six", 120);
-        Unit unit3 = new RangedUnit("Charlie", 30);
-        Unit unit4 = new CavalryUnit("Delta", 100);
+        infantry = new InfantryUnit("Alpha", 100);
+        commander = new CommanderUnit("Bravo-Six", 100);
+        ranged = new RangedUnit("Charlie", 100);
+        cavalry = new CavalryUnit("Delta", 100);
     }
 
     /**
@@ -23,37 +27,10 @@ class UnitTest {
      */
     @Test
     void getAttack() {
-        Unit unit1 = new InfantryUnit("Alpha", 40);
-        Unit unit2 = new CommanderUnit("Bravo-Six", 120);
-        Unit unit3 = new RangedUnit("Charlie", 30);
-        Unit unit4 = new CavalryUnit("Delta", 100);
-
-        assertEquals(unit1.getAttack(), 15);
-        assertEquals(unit2.getAttack(), 20);
-        assertEquals(unit3.getAttack(), 20);
-        assertEquals(unit4.getAttack(), 15);
-    }
-
-    /**
-     * Checks first the attackBonus and then attacks once.
-     * Checks again after attack to see change of attackBonus work.
-     */
-    @Test
-    void getAttackBonus() {
-        Unit infantry = new InfantryUnit("Alpha", 40);
-        Unit commander = new CommanderUnit("Bravo-Six", 120);
-        Unit range = new RangedUnit("Charlie", 30);
-        Unit cavalry = new CavalryUnit("Delta", 100);
-
-        assertEquals(infantry.getAttackBonus(), 1);
-        assertEquals(commander.getAttackBonus(), 6);
-        assertEquals(range.getAttackBonus(), 3);
-        assertEquals(cavalry.getAttackBonus(), 6);
-
-        cavalry.attack(range);
-
-        assertEquals(range.getAttackBonus(), 0);
-        assertEquals(cavalry.getAttackBonus(), 1);
+        assertEquals(infantry.getAttack(), 15);
+        assertEquals(commander.getAttack(), 20);
+        assertEquals(ranged.getAttack(), 20);
+        assertEquals(cavalry.getAttack(), 15);
     }
 
     /**
@@ -61,32 +38,12 @@ class UnitTest {
      */
     @Test
     void getHealth() {
-        Unit infantry = new InfantryUnit("Infantry", 100);
         assertEquals(infantry.getHealth(), 100);
-        Unit ranger = new RangedUnit("Ranger", 100);
-        assertEquals(ranger.getHealth(), 100);
+        assertEquals(ranged.getHealth(), 100);
 
-        infantry.attack(ranger);
-        assertEquals(ranger.getHealth(), (100 - (infantry.getAttack() + infantry.getAttackBonus()) +
-                (ranger.getArmor() + ranger.getResistBonus())));
-    }
-
-    /**
-     * Checks that hits dealt/taken increments after attacks.
-     */
-    @Test
-    void getHitsTakenOrDealt() {
-        Unit infantry = new InfantryUnit("Infantry", 100);
-        assertEquals(infantry.getHitsTaken(), 0);
-        assertEquals(infantry.getHitsDealt(), 0);
-        Unit ranger = new RangedUnit("Ranger", 100);
-        assertEquals(ranger.getHitsTaken(), 0);
-        assertEquals(ranger.getHitsDealt(), 0);
-
-        ranger.attack(infantry);
-        assertEquals(infantry.getHitsTaken(), 1);
-        assertEquals(ranger.getHitsDealt(), 1);
-        assertEquals(ranger.getHitsTaken(), 0);
+        infantry.attack(ranged);
+        assertEquals(ranged.getHealth(), (100 - (infantry.getAttack() + infantry.getAttackBonus()) +
+            (ranged.getArmor() + ranged.getResistBonus())));
     }
 
     /**
@@ -94,11 +51,72 @@ class UnitTest {
      */
     @Test
     void getIsAlive() {
-        Unit infantry = new InfantryUnit("Infantry", 100);
         assertTrue(infantry.getIsAlive());
-
         infantry.setHealth(0);
         assertFalse(infantry.getIsAlive());
+    }
+
+    /**
+     * Checks first the attackBonus and then attacks once.
+     * Checks again after attack to see change of attackBonus work.
+     */
+    @Test
+    void getBaseAttackBonus() {
+        assertEquals(infantry.getAttackBonus(), 0);
+        assertEquals(commander.getAttackBonus(), 6);
+        assertEquals(ranged.getAttackBonus(), 1);
+        assertEquals(cavalry.getAttackBonus(), 6);
+
+        cavalry.attack(ranged);
+
+        assertEquals(ranged.getAttackBonus(), 0);
+        assertEquals(cavalry.getAttackBonus(), 1);
+    }
+
+    /**
+     * Tests initial resist bonus.
+     */
+    @Test
+    void getBaseResistBonus() {
+        assertEquals(infantry.getResistBonus(), 1);
+        assertEquals(ranged.getResistBonus(), 6);
+        assertEquals(cavalry.getResistBonus(), 0);
+        assertEquals(commander.getResistBonus(), 0);
+    }
+
+    @Test
+    void getAndSetTerrain() {
+        assertNull(infantry.getTerrain());
+        infantry.setTerrain("Hill");
+        assertEquals(infantry.getTerrain(), Bonuses.terrain.HILL);
+        assertNotEquals(commander.getTerrain(), Bonuses.terrain.HILL);
+    }
+
+    /**
+     * Tests terrain bonuses.
+     */
+    @Test
+    void getAttackBonusWithTerrainBonus() {
+        infantry.setTerrain("Forest");
+        assertEquals(infantry.getTerrain(), Bonuses.terrain.FOREST);
+        assertEquals(infantry.getAttackBonus(), 3);
+    }
+
+    /**
+     * Checks that hits dealt/taken increments after attacks.
+     */
+    @Test
+    void getHitsTakenOrDealt() {
+        assertEquals(infantry.getHitsTaken(), 0);
+        assertEquals(infantry.getHitsDealt(), 0);
+        assertEquals(ranged.getHitsTaken(), 0);
+        assertEquals(ranged.getHitsDealt(), 0);
+
+        ranged.attack(infantry);
+
+        assertEquals(infantry.getHitsTaken(), 1);
+        assertEquals(ranged.getHitsDealt(), 1);
+        assertEquals(ranged.getHitsTaken(), 0);
     }
 
     /**
@@ -107,8 +125,6 @@ class UnitTest {
      */
     @Test
     void setHealthAndName() {
-        CommanderUnit commander = new CommanderUnit("Commadore", 10);
-
         NullPointerException name_cannot_be_null = Assertions.assertThrows(NullPointerException.class, () ->
         commander.setName(""), "Name cannot be null");
 
