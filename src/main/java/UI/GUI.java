@@ -18,7 +18,7 @@ public class GUI extends Application {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Controllers/main-menu.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 815, 600);
 
-    stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/tank.png"))));
+    stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/Logos/Tank.png"))));
     stage.setTitle("Wargames");
     stage.setResizable(false);
     stage.setScene(scene);

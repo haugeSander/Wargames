@@ -6,6 +6,7 @@ import Army.Units.UnitFactory;
 import Simulation.Battle;
 import UI.Facade;
 import UI.GUI;
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -95,7 +96,7 @@ public class SimulationController implements Initializable {
     speedSelection.setEditable(true);
 
     speedSelection.valueProperty().addListener(
-        (observableValue, oldValue, newValue) -> treadSpeed =  (newValue));
+        (observableValue, oldValue, newValue) -> treadSpeed =  (newValue)); //Spinner listener.
 
     army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -165,7 +166,7 @@ public class SimulationController implements Initializable {
     }
 
     timeline = new Timeline(new KeyFrame(Duration.millis(treadSpeed),this::step));
-    timeline.setCycleCount(Animation.INDEFINITE);
+    timeline.setCycleCount(Animation.INDEFINITE); //No time limit to timeline.
     chart.getXAxis().setTickLabelsVisible(false);
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
@@ -195,15 +196,15 @@ public class SimulationController implements Initializable {
         log.refresh();
       }
     }else{
-      if(!army1.hasUnits()){
+      if (!army1.hasUnits()){
         winnerLabel.setText(army2.getName());
         timeline.stop();
       }else {
         winnerLabel.setText(army1.getName());
         timeline.stop();
       }
-
-      podium.setImage(new Image(String.valueOf(getClass().getResource("podium.png"))));
+      File podiumImage = new File("src/main/resources/UI/Controllers/Images/podium.png");
+      podium.setImage(new Image(podiumImage.toURI().toString()));
     }
   }
 
@@ -221,6 +222,7 @@ public class SimulationController implements Initializable {
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
     int amount;
+    log = new ListView<>();
 
     if (result.isPresent() && !result.get().isEmpty()) {
       try {
@@ -243,10 +245,11 @@ public class SimulationController implements Initializable {
 
         pie.forEach(data ->
             data.nameProperty().bind(
-                Bindings.concat(data.getName(), " ", data.pieValueProperty(), " wins"
-                ))); //Shows amount of times each army won.
+                Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
+                ))); //Shows amount of times each army won on pie chart.
 
         log.getItems().setAll(winnerEachRound);
+
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
         alert.setHeaderText("Please enter a number.");
@@ -274,17 +277,19 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onGoBackPressed() throws IOException {
-    Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-    alert.setHeaderText("Are you sure?");
-    Optional<ButtonType> result = alert.showAndWait();
+    Alert goBackConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
+    goBackConfirmation.setTitle("Are you sure?");
+    goBackConfirmation.setHeaderText("Do you want to go back?");
+    Optional<ButtonType> result = goBackConfirmation.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
+      onRefreshPressed();
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 800, 600);
       Stage stage = (Stage) winnerLabel.getScene().getWindow();
       stage.setScene(scene);
     } else
-      alert.close();
+      goBackConfirmation.close();
   }
 
   /**

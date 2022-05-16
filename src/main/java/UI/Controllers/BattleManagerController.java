@@ -17,10 +17,6 @@ import java.util.ResourceBundle;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -39,7 +35,6 @@ import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
@@ -60,17 +55,17 @@ public class BattleManagerController implements Initializable {
 
   @FXML private Label armyOneName;
   @FXML private TableView<Unit> armyOneTableView;
-  @FXML private TableColumn armyOneTypeColumn;
-  @FXML private TableColumn armyOneNameColumn;
-  @FXML private TableColumn armyOneHPColumn;
-  @FXML private TableColumn armyOneBonusColumn;
+  @FXML private TableColumn<Unit, String> armyOneTypeColumn;
+  @FXML private TableColumn<Unit, String> armyOneNameColumn;
+  @FXML private TableColumn<Unit, Integer> armyOneHPColumn;
+  @FXML private TableColumn<Unit, Integer> armyOneBonusColumn;
   @FXML private Label armyTwoName;
   @FXML private TableView<Unit> armyTwoTableView;
-  @FXML private TableColumn armyTwoTypeColumn;
-  @FXML private TableColumn armyTwoNameColumn;
-  @FXML private TableColumn armyTwoHPColumn;
-  @FXML private TableColumn armyTwoBonusColumn;
-  @FXML private ComboBox terrainSelection;
+  @FXML private TableColumn<Unit, String> armyTwoTypeColumn;
+  @FXML private TableColumn<Unit, String> armyTwoNameColumn;
+  @FXML private TableColumn<Unit, Integer> armyTwoHPColumn;
+  @FXML private TableColumn<Unit, Integer> armyTwoBonusColumn;
+  @FXML private ComboBox<String> terrainSelection;
   private ObservableList<Unit> observableListOfUnitsArmyOne;
   private ObservableList<Unit> observableListOfUnitsArmyTwo;
 
@@ -137,22 +132,27 @@ public class BattleManagerController implements Initializable {
    * Set images on each of the logos.
    */
   private void setLogos() {
-    changeArmy1Name.setGraphic(new ImageView(new Image(String.valueOf(getClass().getResource("edit.png")))));
-    changeArmy2Name.setGraphic(new ImageView(new Image(String.valueOf(getClass().getResource("edit.png")))));
+    File editLogo = new File("src/main/resources/UI/Controllers/Logos/edit.png");
+    File importLogo = new File("src/main/resources/UI/Controllers/Logos/import.png");
+    File listPlusLogo = new File("src/main/resources/UI/Controllers/Logos/list-plus.png");
+    File listMinusLogo = new File("src/main/resources/UI/Controllers/Logos/list-minus.png");
+    File playLogo = new File("src/main/resources/UI/Controllers/Logos/play.png");
 
-    addUnitA1Logo.setImage(new Image(String.valueOf(getClass().getResource("list-plus.png"))));
-    importA1Logo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
-    removeA1Logo.setImage(new Image(String.valueOf(getClass().getResource("list-minus.png"))));
+    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));
+    importA1Logo.setImage(new Image(importLogo.toURI().toString()));
+    removeA1Logo.setImage(new Image(listMinusLogo.toURI().toString()));
 
-    addA2Logo.setImage(new Image(String.valueOf(getClass().getResource("list-plus.png"))));
-    importA2Logo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
-    removeA2Logo.setImage(new Image(String.valueOf(getClass().getResource("list-minus.png"))));
+    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    addA2Logo.setImage(new Image(listPlusLogo.toURI().toString()));
+    importA2Logo.setImage(new Image(importLogo.toURI().toString()));
+    removeA2Logo.setImage(new Image(listMinusLogo.toURI().toString()));
 
-    importBattleLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
-    simulateLogo.setImage(new Image(String.valueOf(getClass().getResource("play.png"))));
+    importBattleLogo.setImage(new Image(importLogo.toURI().toString()));
+    simulateLogo.setImage(new Image(playLogo.toURI().toString()));
 
-    Image forest = new Image(String.valueOf(getClass().getResource("forest.gif")));
-    forestView.setImage(forest);
+    File forestGIF = new File("src/main/resources/UI/Controllers/Images/forest.gif");
+    forestView.setImage(new Image(forestGIF.toURI().toString()));
   }
 
   /**
@@ -184,7 +184,7 @@ public class BattleManagerController implements Initializable {
     Alert alert = new Alert(Alert.AlertType.WARNING);
 
     try {
-      Facade.getInstance().setTerrain(terrainSelection.getValue().toString().toUpperCase());
+      Facade.getInstance().setTerrain(terrainSelection.getValue().toUpperCase());
       Facade.getInstance().setBattle(battleSimulation);
 
       if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
@@ -213,12 +213,13 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onSaveButtonClicked() {
+    FileChooser chooser = new FileChooser();
+    chooser.setInitialFileName(army1.getName().strip()+"-vs-"+ army2.getName().strip());
+    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
+    File selectedPath = chooser.showSaveDialog(terrainSelection.getScene().getWindow());
+    chooser.setInitialDirectory(selectedPath.getParentFile()); //Save chosen directory.
+
     try {
-      FileChooser chooser = new FileChooser();
-      chooser.setInitialFileName(army1.getName().strip()+"-vs-"+ army2.getName().strip());
-      chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
-      File selectedPath = chooser.showSaveDialog(terrainSelection.getScene().getWindow());
-      chooser.setInitialDirectory(selectedPath.getParentFile()); //Save chosen directory.
       BattleFileHandler.writeFile(battleSimulation,selectedPath);
     } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -348,7 +349,7 @@ public class BattleManagerController implements Initializable {
    * @param armyNumber Integer representation of army to add to.
    */
   private void addUnitsFromDialog(int armyNumber) {
-    Dialog addUnits = new Dialog();
+    Dialog<ButtonType> addUnits = new Dialog<>();
     ComboBox<String> typeUnit = new ComboBox<>();
     typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
     addUnits.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
@@ -420,7 +421,7 @@ public class BattleManagerController implements Initializable {
 
         if (result.isPresent() && result.get() == ButtonType.OK && armyNumber == 1) {
           battleSimulation.getArmy1().getUnits().remove(unitToRemove);
-        } else if (result.isPresent() && result.get() == ButtonType.OK && armyNumber == 2) {
+        } else if (result.isPresent() && result.get() == ButtonType.OK) {
           battleSimulation.getArmy2().getUnits().remove(unitToRemove);
         }
       }
@@ -465,7 +466,7 @@ public class BattleManagerController implements Initializable {
     newArmy1Name.setHeaderText("Enter new name.");
     Optional<String> result = newArmy1Name.showAndWait();
 
-    if (result.isPresent() && !result.isEmpty()) {
+    if (result.isPresent()) {
       army1.setName(result.get());
       armyOneName.setText(result.get());
     } else
@@ -479,8 +480,9 @@ public class BattleManagerController implements Initializable {
   private void changeArmy2Name() {
     TextInputDialog newArmy2Name = new TextInputDialog();
     Optional<String> result = newArmy2Name.showAndWait();
+    newArmy2Name.setHeaderText("Enter new name.");
 
-    if (result.isPresent() && !result.isEmpty()) {
+    if (result.isPresent()) {
       army2.setName(result.get());
       armyTwoName.setText(result.get());
     } else

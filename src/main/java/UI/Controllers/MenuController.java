@@ -6,6 +6,7 @@ import UI.GUI;
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -33,9 +34,12 @@ public class MenuController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    logo.setImage(new Image(String.valueOf(getClass().getResource("Tank.png"))));
-    newSimLogo.setImage(new Image(String.valueOf(getClass().getResource("edit.png"))));
-    openSimLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
+    File tankLogo = new File("src/main/resources/UI/Controllers/Logos/Tank.png");
+    logo.setImage(new Image(tankLogo.toURI().toString()));
+    File editLogo = new File("src/main/resources/UI/Controllers/Logos/edit.png");
+    newSimLogo.setImage(new Image(editLogo.toURI().toString()));
+    File importLogo = new File("src/main/resources/UI/Controllers/Logos/import.png");
+    openSimLogo.setImage(new Image(importLogo.toURI().toString()));
   }
 
   /**
@@ -67,7 +71,8 @@ public class MenuController implements Initializable {
    */
   public void onOpenSimulationButtonPressed() {
     FileChooser chooser = new FileChooser();
-    File selectedFile = chooser.showOpenDialog(null);
+    File selectedFile = chooser.showOpenDialog(logo.getScene().getWindow());
+    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
     Facade facade = Facade.getInstance();
 
     try {
@@ -82,41 +87,6 @@ public class MenuController implements Initializable {
       noFileExists.setHeaderText("The file selected not supported or nothing selected!");
       noFileExists.setContentText("Remember only .csv files are supported.");
       noFileExists.showAndWait();
-    }
-  }
-
-  /**
-   * Opens a dialog window for user to select terrain.
-   * User may use a combobox to do this.
-   * No longer used as user may select right before simulation.
-   * @return String representation of terrain.
-   * @deprecated
-   */
-  private String selectTerrainTypeDialog() {
-    Dialog<ButtonType> td = new Dialog<>();
-    td.setHeaderText("Enter a terrain type.");
-    BorderPane pane = new BorderPane();
-    pane.setPrefHeight(200);
-    pane.setPrefWidth(400);
-
-    ComboBox<String> combo = new ComboBox<>();
-    td.getDialogPane().getChildren().addAll(combo);
-    combo.getItems().add("Hill");
-    combo.getItems().add("Forest");
-    combo.getItems().add("Plains");
-
-    td.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-    pane.setCenter(combo);
-    td.getDialogPane().setContent(pane);
-
-    Optional<ButtonType> result = td.showAndWait();
-
-    if (result.isPresent() && result.get() == ButtonType.OK)
-      return combo.getValue().toLowerCase();
-    else {
-      td.close();
-      return null;
     }
   }
 }
