@@ -458,11 +458,12 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void changeArmy1Name() {
     TextInputDialog newArmy1Name = new TextInputDialog();
+    newArmy1Name.setHeaderText("Enter new name.");
     Optional<String> result = newArmy1Name.showAndWait();
 
     if (result.isPresent() && !result.isEmpty()) {
       army1.setName(result.get());
-      armyTwoName.setText(result.get());
+      armyOneName.setText(result.get());
     } else
       newArmy1Name.close();
   }
@@ -477,7 +478,7 @@ public class BattleManagerController implements Initializable {
 
     if (result.isPresent() && !result.isEmpty()) {
       army2.setName(result.get());
-      armyOneName.setText(result.get());
+      armyTwoName.setText(result.get());
     } else
       newArmy2Name.close();
   }

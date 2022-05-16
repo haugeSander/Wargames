@@ -15,6 +15,7 @@ import java.util.ResourceBundle;
 import java.util.stream.Collectors;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -31,6 +32,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.text.Font;
@@ -189,6 +191,7 @@ public class SimulationController implements Initializable {
   private void onMultipleSimulationsPressed() {
     Battle battle = Facade.getInstance().getBattle();
     TextInputDialog inputDialog = new TextInputDialog();
+    textFieldListener(inputDialog.getEditor());
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
     PieChart pie = new PieChart();
@@ -213,6 +216,19 @@ public class SimulationController implements Initializable {
         alert.showAndWait();
       }
     }
+  }
+
+  /**
+   * Method which restricts textField input to only being ints.
+   * @param textField TextField in GUI.
+   */
+  private void textFieldListener(TextField textField) {
+    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
+      if (!newValue.matches("\\d*")) {
+        textField.setText(newValue.replaceAll("[^\\d]", ""));
+      }
+    };
+    textField.textProperty().addListener(cl);
   }
 
   /**
