@@ -35,6 +35,8 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.util.Duration;
@@ -44,6 +46,8 @@ import javafx.util.Duration;
  * simulation-view.fxml file.
  */
 public class SimulationController implements Initializable {
+  @FXML private ImageView podium;
+  @FXML private PieChart pieChart;
   @FXML private TableView army1View;
   @FXML private TableColumn army1NameColumn;
   @FXML private TableColumn army1HPColumn;
@@ -77,8 +81,6 @@ public class SimulationController implements Initializable {
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     terrain.setText(Facade.getInstance().getTerrain());
-
-
     chart.setCreateSymbols(false);
 
     army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -178,6 +180,7 @@ public class SimulationController implements Initializable {
         winnerLabel.setText(army1.getName());
         timeline.stop();
       }
+      podium.setImage(new Image(String.valueOf(getClass().getResource("podium.png"))));
     }
   }
 
@@ -194,7 +197,6 @@ public class SimulationController implements Initializable {
     textFieldListener(inputDialog.getEditor());
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
-    PieChart pie = new PieChart();
     int amount = 0;
 
     if (result.isPresent() && !result.get().isEmpty()) {

@@ -46,6 +46,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BattleManagerController implements Initializable {
+  @FXML private ImageView forestView;
   @FXML private Button changeArmy1Name;
   @FXML private Button changeArmy2Name;
   @FXML private ImageView simulateLogo;
@@ -149,6 +150,9 @@ public class BattleManagerController implements Initializable {
 
     importBattleLogo.setImage(new Image(String.valueOf(getClass().getResource("import.png"))));
     simulateLogo.setImage(new Image(String.valueOf(getClass().getResource("play.png"))));
+
+    Image forest = new Image(String.valueOf(getClass().getResource("forest.gif")));
+    forestView.setImage(forest);
   }
 
   /**

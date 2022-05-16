@@ -46,7 +46,7 @@
                   <Font size="13.0" />
                </font>
                <HBox.margin>
-                  <Insets top="30.0" />
+                  <Insets right="50.0" />
                </HBox.margin></Button>
             <Button mnemonicParsing="false" onAction="#onSimulateButtonClicked" text="Simulate!">
                <font>
@@ -153,6 +153,11 @@
                </font>
             </Label>
             <ComboBox fx:id="terrainSelection" prefHeight="25.0" prefWidth="132.0" promptText="Select terrain" />
+            <Button mnemonicParsing="false">
+               <graphic>
+                  <ImageView fx:id="forestView" fitHeight="100.0" fitWidth="100.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+            </Button>
          </children>
       </VBox>
    </center>
