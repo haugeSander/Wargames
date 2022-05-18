@@ -221,8 +221,8 @@ public class SimulationController implements Initializable {
     textFieldListener(inputDialog.getEditor());
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
-    int amount;
     log = new ListView<>();
+    int amount;
 
     if (result.isPresent() && !result.get().isEmpty()) {
       try {

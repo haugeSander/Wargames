@@ -11,6 +11,8 @@ public abstract class Unit implements Bonuses {
     private int attack; //Attack value to decide how much health each attack does.
     private int armor; //Defence value to decide resistance to attacks.
 
+    private int unitsAmount; //Amount of units. Used to show amount of units in observableList.
+
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
     private int hitsDealt; //Count hits dealt.
     private int hitsTaken; //Count hits received.
@@ -25,6 +27,7 @@ public abstract class Unit implements Bonuses {
         className = getClass().getSimpleName();
         hitsDealt = 0;
         hitsTaken = 0;
+        unitsAmount = 1;
     }
 
     /**
@@ -45,8 +48,7 @@ public abstract class Unit implements Bonuses {
      */
     @Override
     public String toString() {
-        return name + ", " + health + " hp" + ". Hits taken: "
-                + hitsTaken + ". Hits dealt: " + hitsDealt + ".";
+        return className + ": " + name + ", HP: " + health;
     }
 
     /**
@@ -88,6 +90,26 @@ public abstract class Unit implements Bonuses {
                 this.terrain = b;
             }
         }
+    }
+
+    /**
+     * Get the unitsAmount.
+     * @return Integer amount of units.
+     */
+    public int getUnitsAmount() {
+        return unitsAmount;
+    }
+
+    /**
+     * Setter for unit amount, only used to group units to be displayed in observableList.
+     * @param unitsAmount Integer of amount units.
+     * @throws IllegalArgumentException Whenever an invalid value is attempted to be set.
+     */
+    public void setUnitsAmount(int unitsAmount) throws IllegalArgumentException {
+        if (unitsAmount <= 0)
+            throw new IllegalArgumentException("Amount of units cannot be 0 or negative!");
+        else
+            this.unitsAmount = unitsAmount;
     }
 
     public String getName() {

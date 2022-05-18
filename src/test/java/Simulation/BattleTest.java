@@ -4,8 +4,6 @@ import Army.Army;
 import Army.Units.CavalryUnit;
 import Army.Units.InfantryUnit;
 import Army.Units.Unit;
-import java.io.File;
-import java.io.IOException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -46,14 +44,5 @@ class BattleTest {
     @Test
     void testUpdateArmies() {
         battle.updateArmies(red,blue);
-    }
-
-    @Test
-    void testSaveAndRead() throws IOException {
-        File fileToSave = new File("battle.csv");
-        BattleFileHandler.writeFile(battle, fileToSave);
-        battle = BattleFileHandler.readFile("battle.csv");
-        assertEquals(battle.getArmy1().toString(), blue.toString());
-        assertEquals(battle.getArmy2().toString(), red.toString());
     }
 }

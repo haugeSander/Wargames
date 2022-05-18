@@ -1,7 +1,6 @@
 Army\Units\Unit.class
 Simulation\Battle.class
 Army\Units\UnitFactory.class
-Army\ArmyFileHandler.class
 Army\Units\InfantryUnit.class
 Army\Units\CommanderUnit.class
 module-info.class
@@ -12,7 +11,7 @@ UI\Controllers\SimulationController.class
 Army\Units\RangedUnit.class
 Army\Units\Bonuses$terrain.class
 UI\Controllers\BattleManagerController.class
-Simulation\BattleFileHandler.class
 UI\Controllers\MenuController.class
 UI\GUI.class
 Army\Units\Bonuses.class
+Army\FileHandler.class
