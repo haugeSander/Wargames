@@ -34,13 +34,19 @@
       </VBox>
    </center>
    <bottom>
-      <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+      <HBox alignment="BOTTOM_LEFT" prefHeight="100.0" prefWidth="200.0">
          <children>
-            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onExitButtonPressed" text="Exit" />
+            <Button alignment="CENTER" mnemonicParsing="false" onAction="#onExitButtonPressed">
+               <graphic>
+                  <ImageView fx:id="exitLogo" fitHeight="50.0" fitWidth="50.0" pickOnBounds="true" preserveRatio="true" />
+               </graphic>
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" />
+               </HBox.margin></Button>
          </children>
-         <padding>
-            <Insets right="750.0" top="50.0" />
-         </padding>
+         <opaqueInsets>
+            <Insets bottom="5.0" left="5.0" />
+         </opaqueInsets>
       </HBox>
    </bottom>
    <top>
@@ -52,6 +58,11 @@
                   <Font name="Lucida Calligraphy Italic" size="22.0" />
                </font>
             </Label>
+            <Button mnemonicParsing="false" onAction="#onHelpButtonPressed" text="?">
+               <HBox.margin>
+                  <Insets left="5.0" />
+               </HBox.margin>
+            </Button>
          </children>
       </HBox>
    </top>

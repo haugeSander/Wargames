@@ -84,7 +84,7 @@ public class ArmyTest {
             System.out.println(e.getMessage());
         }
 
-        Army readFromFile = FileHandler.readFile("ArmyOne.csv");
+        Army readFromFile = FileHandler.readFile("ArmyOne.csv").get(0);
         assertEquals(armyOne.toString(), readFromFile.toString());
 
         Army armyTwo = new Army("Russia");
@@ -97,7 +97,7 @@ public class ArmyTest {
         }
 
         assertNotEquals(FileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
-        assertEquals(FileHandler.readFile("Russia.csv").toString(),armyTwo.toString());
+        assertEquals(FileHandler.readFile("Russia.csv").get(0).toString(), armyTwo.toString());
     }
 
     /**

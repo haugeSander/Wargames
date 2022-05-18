@@ -6,7 +6,6 @@ import Army.Units.Unit;
 import Army.Units.UnitFactory;
 import Simulation.Battle;
 
-import Simulation.BattleFileHandler;
 import UI.Facade;
 import UI.GUI;
 import java.io.File;
@@ -43,7 +42,7 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 public class BattleManagerController implements Initializable {
-  @FXML private ImageView forestView;
+  @FXML private Label terrainLabel;
   @FXML private Button changeArmy1Name;
   @FXML private Button changeArmy2Name;
   @FXML private ImageView simulateLogo;
@@ -54,22 +53,21 @@ public class BattleManagerController implements Initializable {
   @FXML private ImageView importA2Logo;
   @FXML private ImageView addA2Logo;
   @FXML private ImageView removeA2Logo;
+  @FXML private ImageView hillView;
+  @FXML private ImageView plainsView;
+  @FXML private ImageView forestView;
 
   @FXML private Label armyOneName;
   @FXML private TableView<Unit> armyOneTableView;
   @FXML private TableColumn<Unit, String> armyOneTypeColumn;
   @FXML private TableColumn<Unit, String> armyOneNameColumn;
   @FXML private TableColumn<Unit, Integer> armyOneHPColumn;
-  @FXML private TableColumn<Integer, Integer> amountArmy1;
 
   @FXML private Label armyTwoName;
   @FXML private TableView<Unit> armyTwoTableView;
   @FXML private TableColumn<Unit, String> armyTwoTypeColumn;
   @FXML private TableColumn<Unit, String> armyTwoNameColumn;
   @FXML private TableColumn<Unit, Integer> armyTwoHPColumn;
-  @FXML private TableColumn<Integer, Integer> amountArmy2;
-
-  @FXML private ComboBox<String> terrainSelection;
 
   private Battle battleSimulation;
   private Army army1;
@@ -80,9 +78,23 @@ public class BattleManagerController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    terrainSelection.getItems().add("Hill");
-    terrainSelection.getItems().add("Forest");
-    terrainSelection.getItems().add("Plains");
+    armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+
+
+    armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+
+
+    if (Facade.getInstance().getBattle() == null) {
+      army1 = new Army("Army 1");
+      army2 = new Army("Army 2");
+      battleSimulation = new Battle(army1, army2);
+      Facade.getInstance().setBattle(battleSimulation);
+    }
+
     init();
   }
 
@@ -91,18 +103,14 @@ public class BattleManagerController implements Initializable {
    * methods. Used by import battle method.
    */
   private void init() {
-    Facade facade = Facade.getInstance();
-
-    if (facade.getBattle() == null) {
-      army1 = new Army("Army 1");
-      army2 = new Army("Army 2");
-      battleSimulation = new Battle(army1, army2);
-      facade.setBattle(battleSimulation);
-    } else {
-      battleSimulation = facade.getBattle();
+    if (Facade.getInstance().getBattle() != null){
+      battleSimulation = Facade.getInstance().getBattle();
       army1 = battleSimulation.getArmy1();
       army2 = battleSimulation.getArmy2();
     }
+
+    armyOneName.setText(army1.getName());
+    armyTwoName.setText(army2.getName());
 
     ObservableList<Unit> observableListOfUnitsArmyOne =
         FXCollections.observableList(battleSimulation.getArmy1().getUnits());
@@ -111,27 +119,14 @@ public class BattleManagerController implements Initializable {
 
     battleSimulation.getArmy1().setUnits(observableListOfUnitsArmyOne);
     battleSimulation.getArmy2().setUnits(observableListOfUnitsArmyTwo);
-
-    armyOneTableView.setItems(
-        observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
-    armyTwoTableView.setItems(
-        observableListOfUnitsArmyTwo); //By doing this the list does not need to be updated.
-
-    armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-    armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    amountArmy1.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
-
-    armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-    armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    amountArmy2.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
-
-    armyOneName.setText(army1.getName());
-    armyTwoName.setText(army2.getName());
+    armyOneTableView.setItems(observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
+    armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
 
     setLogos();
+    gifSetup();
   }
+
+
 
   /**
    * Set images on each of the logos.
@@ -155,17 +150,28 @@ public class BattleManagerController implements Initializable {
 
     importBattleLogo.setImage(new Image(importLogo.toURI().toString()));
     simulateLogo.setImage(new Image(playLogo.toURI().toString()));
-
-    File forestGIF = new File("src/main/resources/UI/Controllers/Images/forest.gif");
-    forestView.setImage(new Image(forestGIF.toURI().toString()));
   }
+
+  private void gifSetup() {
+    File forestGIF = new File("src/main/resources/UI/Controllers/Images/forest.gif");
+    File hillsGIF = new File("src/main/resources/UI/Controllers/Images/hills.gif");
+    File plainsGIF = new File("src/main/resources/UI/Controllers/Images/plains.gif");
+
+    forestView.setImage(new Image(forestGIF.toURI().toString()));
+    hillView.setImage(new Image(hillsGIF.toURI().toString()));
+    plainsView.setImage(new Image(plainsGIF.toURI().toString()));
+  }
+
+
+
+
 
   /**
    * Close button in menu, exits application after a confirmation.
    */
   @FXML
   private void onCloseButtonClicked() {
-    GUI.exit((Stage) terrainSelection.getScene().getWindow());
+    GUI.exit((Stage) simulateLogo.getScene().getWindow());
   }
 
   /**
@@ -189,7 +195,6 @@ public class BattleManagerController implements Initializable {
     Alert alert = new Alert(Alert.AlertType.WARNING);
 
     try {
-      Facade.getInstance().setTerrain(terrainSelection.getValue().toUpperCase());
       Facade.getInstance().setBattle(battleSimulation);
 
       if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
@@ -198,12 +203,12 @@ public class BattleManagerController implements Initializable {
         alert.showAndWait();
       } else {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
-        Stage stage = (Stage) terrainSelection.getScene().getWindow();
+        Stage stage = (Stage) simulateLogo.getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load(), 815, 600);
         stage.setScene(scene);
       }
     } catch (Exception e) {
-      if (terrainSelection.getValue() == null) {
+      if (Facade.getInstance().getTerrain() == null) {
         alert.setHeaderText("Select a terrain to continue.");
       } else {
         alert.setHeaderText(e.getMessage());
@@ -228,14 +233,13 @@ public class BattleManagerController implements Initializable {
 
     Optional<ButtonType> selectionOfSave = saveSelector.showAndWait();
 
-    List<Army> armiesToSave = new ArrayList<Army>();
+    ArrayList<Army> armiesToSave = new ArrayList<>();
 
     if (selectionOfSave.isPresent() && !(selectionOfSave.get() == ButtonType.CANCEL)) {
       FileChooser chooser = new FileChooser();
       chooser.getExtensionFilters().addAll
           (new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
-      File selectedPath = chooser.showSaveDialog(terrainSelection.getScene().getWindow());
-      chooser.setInitialDirectory(selectedPath.getParentFile()); //Save chosen directory.
+      File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
 
       try {
         if (selectionOfSave.get() == army1Save) {
@@ -254,7 +258,7 @@ public class BattleManagerController implements Initializable {
         FileHandler.writeFile(armiesToSave, selectedPath);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("File saving went wrong.");
+        alert.setHeaderText("Something went wrong.");
         alert.setContentText(e.getMessage());
         alert.showAndWait();
       }
@@ -277,7 +281,7 @@ public class BattleManagerController implements Initializable {
       Facade.getInstance().setBattle(null);
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 815, 600);
-      Stage stage = (Stage) terrainSelection.getScene().getWindow();
+      Stage stage = (Stage) simulateLogo.getScene().getWindow();
       stage.setScene(scene);
     } else
       alert.close();
@@ -290,12 +294,17 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void onOpenBattleClicked() {
     FileChooser chooser = new FileChooser();
-    File selectedFile = chooser.showOpenDialog(terrainSelection.getScene().getWindow());
+    File selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
+    chooser.getExtensionFilters().addAll
+        (new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
     Facade facade = Facade.getInstance();
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
+        Battle battleFromFile = new Battle();
+        List<Army> listFromFile = FileHandler.readFile(selectedFile.getPath());
+        battleFromFile.updateArmies(listFromFile.get(0), listFromFile.get(1));
+        facade.setBattle(battleFromFile);
         init();
       }
     } catch (Exception e) {
@@ -421,7 +430,6 @@ public class BattleManagerController implements Initializable {
           battleSimulation.getArmy2().getUnits().remove(unitToRemove);
         }
       }
-
     } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
       alert.setHeaderText("Unit does not exist.");
@@ -434,10 +442,10 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onOpenToArmy1ButtonClicked() {
-    army1 = addArmyFromFile();
-    if (army1 != null) {
-      armyOneName.setText(army1.getName());
-    }
+    Army armyFromFile = addArmyFromFile();
+    army1.setUnits(armyFromFile.getUnits());
+    army1.setName(armyFromFile.getName());
+    init();
   }
 
   /**
@@ -445,10 +453,10 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onOpenToArmy2ButtonClicked() {
-    army2 = addArmyFromFile();
-    if (army2 != null) {
-      armyTwoName.setText(army1.getName());
-    }
+    Army armyFromFile = addArmyFromFile();
+    army2.setUnits(armyFromFile.getUnits());
+    army2.setName(armyFromFile.getName());
+    init();
   }
 
   /**
@@ -458,13 +466,16 @@ public class BattleManagerController implements Initializable {
    */
   private Army addArmyFromFile() {
     FileChooser chooser = new FileChooser();
-    Army tempArmy = null;
+    Army armyFromFile = null;
     File selectedFile;
 
-    selectedFile = chooser.showOpenDialog(terrainSelection.getScene().getWindow());
+    selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
+    chooser.getExtensionFilters().addAll
+        (new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
 
     try {
-      tempArmy = FileHandler.readFile(selectedFile.getPath());
+      if (selectedFile != null)
+        armyFromFile = FileHandler.readFile(selectedFile.getPath()).get(0);
     }catch(Exception e){
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");
@@ -472,7 +483,7 @@ public class BattleManagerController implements Initializable {
       noFileExists.setContentText("Remember only .csv files are supported.");
       noFileExists.showAndWait();
     }
-    return tempArmy;
+    return armyFromFile;
   }
 
   /**
@@ -518,5 +529,23 @@ public class BattleManagerController implements Initializable {
       }
     };
     textField.textProperty().addListener(cl);
+  }
+
+  @FXML
+  private void onForestButtonClicked() {
+    Facade.getInstance().setTerrain("Forest");
+    terrainLabel.setText("Forest");
+  }
+
+  @FXML
+  private void onHillsButtonClicked() {
+    Facade.getInstance().setTerrain("Hill");
+    terrainLabel.setText("Hill");
+  }
+
+  @FXML
+  private void onPlainsButtonClicked() {
+    Facade.getInstance().setTerrain("Plains");
+    terrainLabel.setText("Plains");
   }
 }
