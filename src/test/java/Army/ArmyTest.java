@@ -6,8 +6,8 @@ import Army.Units.InfantryUnit;
 import Army.Units.RangedUnit;
 import Army.Units.Unit;
 import Army.Units.UnitFactory;
+import java.io.File;
 import java.util.Map;
-import javafx.fxml.FXML;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -75,17 +75,29 @@ public class ArmyTest {
     void testSaveAndRead() {
         armyOne.add(infantry1);
         armyOne.add(ranged1);
-        ArmyFileHandler.saveFile(armyOne, armyOne.getName());
+        List<Army> test = new ArrayList<>();
+        test.add(armyOne);
 
-        Army readFromFile = ArmyFileHandler.readFile("ArmyOne.csv");
+        try {
+            FileHandler.writeFile(test, new File(armyOne.getName()));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
+
+        Army readFromFile = FileHandler.readFile("ArmyOne.csv");
         assertEquals(armyOne.toString(), readFromFile.toString());
 
         Army armyTwo = new Army("Russia");
+        test.add(armyTwo);
 
-        ArmyFileHandler.saveFile(armyTwo, armyTwo.getName());
+        try {
+            FileHandler.writeFile(test, new File(armyOne.getName()));
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
 
-        assertNotEquals(ArmyFileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
-        assertEquals(ArmyFileHandler.readFile("Russia.csv").toString(),armyTwo.toString());
+        assertNotEquals(FileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
+        assertEquals(FileHandler.readFile("Russia.csv").toString(),armyTwo.toString());
     }
 
     /**
@@ -165,7 +177,4 @@ public class ArmyTest {
         assertEquals(test.get(armyOne.getUnits().get(0).toString()).size(), 10);
         assertEquals(test.get(armyOne.getUnits().get(1).toString()).size(), 10);
     }
-
-
-
 }
