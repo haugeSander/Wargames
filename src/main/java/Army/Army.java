@@ -2,7 +2,9 @@ package Army;
 import Army.Units.*;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -110,6 +112,28 @@ public class Army {
      */
     public List<Unit> getUnits() {
         return units;
+    }
+
+
+    /**
+     * Method to collect same units into map.
+     * Used to display amount of units in GUI.
+     * @return Map of string and a list of units connected to said string.
+     */
+    public Map<String, List<Unit>> getSortedList() {
+        HashMap<String, List<Unit>> sortedUnits = new HashMap<>();
+
+        for (Unit u : units) {
+            if (sortedUnits.containsKey(u.toString())) {
+                sortedUnits.get(u.toString()).add(u);
+            } else {
+                List<Unit> list = new ArrayList<>();
+                list.add(u);
+                sortedUnits.put(u.toString(), list);
+            }
+        }
+
+        return sortedUnits;
     }
 
     /**

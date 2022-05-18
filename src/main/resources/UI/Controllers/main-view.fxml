@@ -84,7 +84,7 @@
                 <TableColumn fx:id="armyOneTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyOneNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyOneHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyOneBonusColumn" prefWidth="100.0" text="Attack Bonus" />
+                  <TableColumn fx:id="amountArmy1" prefWidth="100.0" text="Amount" />
               </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" spacing="5.0">
@@ -122,7 +122,7 @@
                   <TableColumn fx:id="armyTwoTypeColumn" prefWidth="100.0" text="Type" />
                   <TableColumn fx:id="armyTwoNameColumn" prefWidth="75.0" text="Name" />
                   <TableColumn fx:id="armyTwoHPColumn" prefWidth="40.0" text="HP" />
-                  <TableColumn fx:id="armyTwoBonusColumn" prefWidth="100.0" text="Attack bonus" />
+                  <TableColumn fx:id="amountArmy2" prefWidth="100.0" text="Amount" />
                </columns>
             </TableView>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">

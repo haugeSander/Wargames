@@ -5,21 +5,14 @@ import UI.Facade;
 import UI.GUI;
 import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.BorderPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -76,11 +69,13 @@ public class MenuController implements Initializable {
     Facade facade = Facade.getInstance();
 
     try {
-      facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
-      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
-      Stage stage = (Stage) logo.getScene().getWindow();
-      Scene scene = new Scene(fxmlLoader.load(), 815, 600);
-      stage.setScene(scene);
+      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
+        facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
+        Stage stage = (Stage) logo.getScene().getWindow();
+        Scene scene = new Scene(fxmlLoader.load(), 815, 600);
+        stage.setScene(scene);
+      }
     } catch (Exception e) {
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");

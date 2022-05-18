@@ -12,8 +12,13 @@ import UI.GUI;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -58,13 +63,15 @@ public class BattleManagerController implements Initializable {
   @FXML private TableColumn<Unit, String> armyOneTypeColumn;
   @FXML private TableColumn<Unit, String> armyOneNameColumn;
   @FXML private TableColumn<Unit, Integer> armyOneHPColumn;
-  @FXML private TableColumn<Unit, Integer> armyOneBonusColumn;
+  @FXML private TableColumn<Integer, Integer> amountArmy1;
+
   @FXML private Label armyTwoName;
   @FXML private TableView<Unit> armyTwoTableView;
   @FXML private TableColumn<Unit, String> armyTwoTypeColumn;
   @FXML private TableColumn<Unit, String> armyTwoNameColumn;
   @FXML private TableColumn<Unit, Integer> armyTwoHPColumn;
-  @FXML private TableColumn<Unit, Integer> armyTwoBonusColumn;
+  @FXML private TableColumn<Integer, Integer> amountArmy2;
+
   @FXML private ComboBox<String> terrainSelection;
   private ObservableList<Unit> observableListOfUnitsArmyOne;
   private ObservableList<Unit> observableListOfUnitsArmyTwo;
@@ -90,6 +97,7 @@ public class BattleManagerController implements Initializable {
    */
   private void init() {
     Facade facade = Facade.getInstance();
+
     if (facade.getBattle() == null) {
       army1 = new Army("Army 1");
       army2 = new Army("Army 2");
@@ -100,13 +108,10 @@ public class BattleManagerController implements Initializable {
       army1 = battleSimulation.getArmy1();
       army2 = battleSimulation.getArmy2();
     }
-    observableListOfUnitsArmyOne =
-        FXCollections.observableList(battleSimulation.getArmy1().getUnits());
-    observableListOfUnitsArmyTwo =
-        FXCollections.observableList(battleSimulation.getArmy2().getUnits());
 
-    battleSimulation.getArmy1().setUnits(observableListOfUnitsArmyOne);
-    battleSimulation.getArmy2().setUnits(observableListOfUnitsArmyTwo);
+    observableListOfUnitsArmyOne = FXCollections.observableList(collectUnits(army1));
+    observableListOfUnitsArmyTwo = FXCollections.observableList(collectUnits(army2));
+
     armyOneTableView.setItems(
         observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
     armyTwoTableView.setItems(
@@ -115,17 +120,36 @@ public class BattleManagerController implements Initializable {
     armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    armyOneBonusColumn.setCellValueFactory(new PropertyValueFactory<>("AttackBonus"));
+    amountArmy1.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
 
     armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    armyTwoBonusColumn.setCellValueFactory(new PropertyValueFactory<>("AttackBonus"));
+    amountArmy2.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
+
+    battleSimulation.getArmy1().setUnits(observableListOfUnitsArmyOne);
+    battleSimulation.getArmy2().setUnits(observableListOfUnitsArmyTwo);
 
     armyOneName.setText(army1.getName());
     armyTwoName.setText(army2.getName());
 
     setLogos();
+  }
+
+  /**
+   * Collect units in inputted army and sets the amount of units grouped.
+   * @param armyNo Army number.
+   * @return List of units to be set into observableList.
+   */
+  private List<Unit> collectUnits(Army armyNo) {
+    Map<String, List<Unit>> armySortedList = armyNo.getSortedList();
+    List<Unit> displayableList = new ArrayList<>();
+
+    for (List<Unit> u : armySortedList.values()) {
+      displayableList.add(u.get(0));
+      u.get(0).setUnitsAmount(u.size());
+    }
+    return displayableList;
   }
 
   /**
@@ -215,7 +239,8 @@ public class BattleManagerController implements Initializable {
   private void onSaveButtonClicked() {
     FileChooser chooser = new FileChooser();
     chooser.setInitialFileName(army1.getName().strip()+"-vs-"+ army2.getName().strip());
-    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
+    chooser.getExtensionFilters().addAll
+        (new FileChooser.ExtensionFilter("*.csv","Comma Separated File"));
     File selectedPath = chooser.showSaveDialog(terrainSelection.getScene().getWindow());
     chooser.setInitialDirectory(selectedPath.getParentFile()); //Save chosen directory.
 
@@ -262,26 +287,16 @@ public class BattleManagerController implements Initializable {
     Facade facade = Facade.getInstance();
 
     try {
-      facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
-      init();
+      if (selectedFile != null && selectedFile.getName().contains(".csv")) {
+        facade.setBattle(BattleFileHandler.readFile(selectedFile.getPath()));
+        init();
+      }
     } catch (Exception e) {
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");
       noFileExists.setHeaderText("The file selected not supported or nothing selected!");
       noFileExists.setContentText("Remember only .csv files are supported.");
       noFileExists.showAndWait();
-    }
-  }
-
-  /**
-   * Method to open army formatted .csv save file into army1.
-   */
-  @FXML
-  private void onOpenToArmy1ButtonClicked() {
-    army1 = addArmyFromFile();
-    if (army1 != null) {
-      armyOneName.setText(army1.getName());
-      observableListOfUnitsArmyOne.addAll(army1.getUnits());
     }
   }
 
@@ -299,49 +314,6 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void onAddUnitArmyTwoClicked() {
     addUnitsFromDialog(2);
-  }
-
-  /**
-   * Method to open army formatted .csv save file into army2.
-   */
-  @FXML
-  private void onOpenToArmy2ButtonClicked() {
-    army2 = addArmyFromFile();
-    if (army2 != null) {
-      armyTwoName.setText(army2.getName());
-      observableListOfUnitsArmyTwo.addAll(army2.getUnits());
-    }
-  }
-
-  /**
-   * Method to remove unit from army1 by selecting from list.
-   * Sends integer 1 representing army1.
-   */
-  @FXML
-  private void onRemoveUnitArmy1Clicked() {
-    removeUnit(1);
-  }
-
-  /**
-   * Method to remove unit from army2 by selecting from list.
-   * Sends integer 2 representing army2.
-   */
-  @FXML
-  private void onRemoveUnitArmy2Clicked() {
-    removeUnit(2);
-  }
-
-  /**
-   * Method which restricts textField input to only being ints.
-   * @param textField TextField in GUI.
-   */
-  private void textFieldListener(TextField textField) {
-    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
-      if (!newValue.matches("\\d*")) {
-        textField.setText(newValue.replaceAll("[^\\d]", ""));
-      }
-    };
-    textField.textProperty().addListener(cl);
   }
 
   /**
@@ -385,13 +357,12 @@ public class BattleManagerController implements Initializable {
     if (result.isPresent() && result.get() == ButtonType.OK) {
       try {
         if (armyNumber == 1)
-          observableListOfUnitsArmyOne.addAll(
-              UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
+          army1.addAll(UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
                   Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
         else if (armyNumber == 2)
-          observableListOfUnitsArmyTwo.addAll(
-              UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
+          army2.addAll(UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
                   Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
+        init();
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText("Some values were invalid.");
@@ -399,6 +370,24 @@ public class BattleManagerController implements Initializable {
         alert.showAndWait();
       }
     }
+  }
+
+  /**
+   * Method to remove unit from army1 by selecting from list.
+   * Sends integer 1 representing army1.
+   */
+  @FXML
+  private void onRemoveUnitArmy1Clicked() {
+    removeUnit(1);
+  }
+
+  /**
+   * Method to remove unit from army2 by selecting from list.
+   * Sends integer 2 representing army2.
+   */
+  @FXML
+  private void onRemoveUnitArmy2Clicked() {
+    removeUnit(2);
   }
 
   /**
@@ -429,6 +418,30 @@ public class BattleManagerController implements Initializable {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
       alert.setHeaderText("Unit does not exist.");
       alert.showAndWait();
+    }
+  }
+
+  /**
+   * Method to open army formatted .csv save file into army1.
+   */
+  @FXML
+  private void onOpenToArmy1ButtonClicked() {
+    army1 = addArmyFromFile();
+    if (army1 != null) {
+      armyOneName.setText(army1.getName());
+      init();
+    }
+  }
+
+  /**
+   * Method to open army formatted .csv save file into army2.
+   */
+  @FXML
+  private void onOpenToArmy2ButtonClicked() {
+    army2 = addArmyFromFile();
+    if (army2 != null) {
+      armyTwoName.setText(army1.getName());
+      init();
     }
   }
 
@@ -487,5 +500,18 @@ public class BattleManagerController implements Initializable {
       armyTwoName.setText(result.get());
     } else
       newArmy2Name.close();
+  }
+
+  /**
+   * Method which restricts textField input to only being ints.
+   * @param textField TextField in GUI.
+   */
+  private void textFieldListener(TextField textField) {
+    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
+      if (!newValue.matches("\\d*")) {
+        textField.setText(newValue.replaceAll("[^\\d]", ""));
+      }
+    };
+    textField.textProperty().addListener(cl);
   }
 }
