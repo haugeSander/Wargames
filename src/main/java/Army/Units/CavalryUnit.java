@@ -33,7 +33,9 @@ public class CavalryUnit extends Unit {
      */
     @Override
     public int getResistBonus() {
-        if (getHitsTaken() > 2) //Gets a 2 resist bonus if enemies attack close range.
+        if (getTerrain() == Bonuses.terrain.FOREST) //No bonus if the fight is in a forest.
+            return 0;
+        else if (getHitsTaken() > 2) //Gets a 2 resist bonus if enemies attack close range.
             return 2;
         else
             return 0;
@@ -46,8 +48,12 @@ public class CavalryUnit extends Unit {
      */
     @Override
     public int getAttackBonus() {
-        if (getHitsDealt() < 1)
+        if (getHitsDealt() < 1 && getTerrain() == Bonuses.terrain.PLAINS) //Plains and first hit makes these strongest.
+            return 8;
+        else if (getHitsDealt() < 1) //First hit deals a lot of damage.
             return 6;
+        else if (getTerrain() == Bonuses.terrain.PLAINS) //Plains are the preferred battlefield.
+            return 4;
         else
             return 1;
     }

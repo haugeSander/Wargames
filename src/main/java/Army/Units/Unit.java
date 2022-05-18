@@ -12,21 +12,19 @@ public abstract class Unit implements Bonuses {
     private int armor; //Defence value to decide resistance to attacks.
 
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
-    private int hitsDealt;
-    private int hitsTaken;
-
-    private String listViewGUI;
+    private int hitsDealt; //Count hits dealt.
+    private int hitsTaken; //Count hits received.
+    private String className; //The type of unit, infantry/ranged etc.
+    private terrain terrain; //Enum terrain from bonus interface.
 
     public Unit(String name, int health, int attack, int armor) {
         setName(name);
         setHealth(health);
         this.attack = attack;
         this.armor = armor;
-
+        className = getClass().getSimpleName();
         hitsDealt = 0;
         hitsTaken = 0;
-
-        listViewGUI = name + ": " + health + " hp";
     }
 
     /**
@@ -49,6 +47,47 @@ public abstract class Unit implements Bonuses {
     public String toString() {
         return name + ", " + health + " hp" + ". Hits taken: "
                 + hitsTaken + ". Hits dealt: " + hitsDealt + ".";
+    }
+
+    /**
+     * Sets health and changes states of being dead or alive based on hp.
+     * Throws exception if unit goes below 0 hp.
+     * @param health Integer of the health points the unit should have.
+     */
+    public void setHealth(int health) {
+        if (health <= 0) {
+            this.health = 0;
+            isAlive = false;
+        }else {
+            this.health = health;
+            isAlive = true;
+        }
+    }
+
+    /**
+     * Sets name if it is valid.
+     * @param name String representation of name.
+     * @throws NullPointerException If name is blank or null.
+     */
+    public void setName(String name) throws NullPointerException {
+        if (name.isEmpty()) {
+            throw new NullPointerException("Name cannot be null.");
+        } else {
+            this.name = name;
+        }
+    }
+
+    /**
+     * Set terrain type.
+     * @param terrain String representation of a terrain type.
+     * @throws IllegalArgumentException
+     */
+    public void setTerrain(String terrain) throws IllegalArgumentException {
+        for (Bonuses.terrain b : Bonuses.terrain.values()) {
+            if (b.name().equalsIgnoreCase(terrain)) {
+                this.terrain = b;
+            }
+        }
     }
 
     public String getName() {
@@ -79,34 +118,11 @@ public abstract class Unit implements Bonuses {
         return hitsTaken;
     }
 
-    /**
-     * Only getter for list view in GUI observable list.
-     * @return String of important values.
-     */
-    public String getListViewGUI() {
-        return listViewGUI;
+    public terrain getTerrain() {
+        return terrain;
     }
 
-    /**
-     * Sets health and changes states of being dead or alive based on hp.
-     * Throws exception if unit goes below 0 hp.
-     * @param health Integer of the health points the unit should have.
-     */
-    public void setHealth(int health) {
-        if (health <= 0) {
-            this.health = 0;
-            isAlive = false;
-        }else {
-            this.health = health;
-            isAlive = true;
-        }
-    }
-
-    public void setName(String name) throws NullPointerException {
-        if (name.isEmpty()) {
-            throw new NullPointerException("Name cannot be null.");
-        } else {
-            this.name = name;
-        }
+    public String getClassName() {
+        return className;
     }
 }

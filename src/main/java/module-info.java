@@ -2,6 +2,7 @@ module Wargames.Sandeth {
   requires javafx.controls;
   requires javafx.fxml;
   requires javafx.graphics;
+  requires java.desktop;
 
   opens Army to javafx.fxml, javafx.base;
   opens Army.Units to javafx.base;

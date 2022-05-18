@@ -17,7 +17,10 @@ public class InfantryUnit extends Unit {
 
     @Override
     public int getResistBonus() {
-        return 1;
+        if (getTerrain() == Bonuses.terrain.FOREST) //Best units in forests.
+            return 4;
+        else
+            return 1;
     }
 
     /**
@@ -27,10 +30,13 @@ public class InfantryUnit extends Unit {
      */
     @Override
     public int getAttackBonus() {
-        if (getHitsTaken() > 2) //To give the unit a close range bonus.
+        if (getHitsTaken() > 2 && getTerrain() == Bonuses.terrain.FOREST) //To give the unit a close range bonus and when in forests.
+            return 4;
+        if (getTerrain() == Bonuses.terrain.FOREST) //Infantry is strongest in forests.
             return 3;
+        else if (getHitsTaken() > 2) //When close range they do most damage.
+            return 2;
         else
-            return 1;
+            return 0;
     }
-
 }

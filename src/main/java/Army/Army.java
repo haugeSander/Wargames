@@ -1,9 +1,6 @@
 package Army;
 import Army.Units.*;
 
-import java.io.BufferedWriter;
-import java.io.FileWriter;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -90,6 +87,13 @@ public class Army {
             throw new IllegalArgumentException("Name cannot be null or empty.");
         else
             this.name = name;
+    }
+
+    public void setUnits(List<Unit> units) throws IllegalArgumentException {
+        if (units == null) {
+            throw new IllegalArgumentException("List may not be null or empty!");
+        } else
+            this.units = units;
     }
 
     /**

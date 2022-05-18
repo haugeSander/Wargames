@@ -1,8 +1,10 @@
 package Simulation;
 
 import Army.Army;
+import Army.Units.Bonuses;
 import Army.Units.Unit;
 
+import java.util.Arrays;
 import java.util.Random;
 
 public class Battle {
@@ -14,43 +16,28 @@ public class Battle {
         this.army2 = army2;
     }
 
+    public Battle() {
+    }
+
     /**
-     * Simulator of a battle.
-     * @return String of who won.
-     * Returns specific Strings depending on who won.
-     * If both forces are wiped out, a draw String is returned. (Should not happen)
+     * Simulator of a battle, running simulate
+     * step until there is no more units in one
+     * of the armies.
+     * @return The winner army.
      */
     public Army simulate() {
-        Unit tempUnit1 = null;
-        Unit tempUnit2 = null;
         boolean battleFinished = false;
-        Random random = new Random();
+        Unit tempUnit1;
+        Unit tempUnit2;
 
         while (!battleFinished) {
-
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;
             else {
                 tempUnit1 = army1.getRandom();
                 tempUnit2 = army2.getRandom();
-            }
 
-            int randint = random.nextInt(2); //0<= Random int < 2
-
-            if ((randint == 0 && !battleFinished) && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
-                tempUnit1.attack(tempUnit2);
-
-                if (!tempUnit2.getIsAlive()) {
-                    army2.remove(tempUnit2);
-                }
-            }
-
-            if ((randint == 1 && !battleFinished) && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
-                tempUnit2.attack(tempUnit1);
-
-                if (!tempUnit1.getIsAlive()) {
-                    army1.remove(tempUnit1);
-                }
+                simulateStep(tempUnit1, tempUnit2);
             }
         }
 
@@ -60,6 +47,38 @@ public class Battle {
             return army2;
         } else
             return null;
+    }
+
+    /**
+     * Simulates one step at a time.
+     * @param tempUnit1 Random unit from army1.
+     * @param tempUnit2 Random unit from army2.
+     * @return String of events which happened.
+     */
+    public String simulateStep(Unit tempUnit1, Unit tempUnit2) {
+        Random random = new Random();
+        int randint = random.nextInt(2); //0<= Random int < 2
+
+        if (randint == 0 && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
+            tempUnit1.attack(tempUnit2);
+
+            if (!tempUnit2.getIsAlive()) {
+                army2.remove(tempUnit2);
+                return tempUnit1.getName() + " died whilst fighting " + tempUnit2.getName();
+            }
+        }
+            if (randint == 1 && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
+                tempUnit2.attack(tempUnit1);
+            }
+
+        if (!tempUnit1.getIsAlive()) {
+            army1.remove(tempUnit1);
+            return tempUnit2.getName() + " died whilst fighting " + tempUnit1.getName();
+        } else if (!army1.hasUnits())
+            return army2.getName() + " has won!";
+        else if (!army2.hasUnits())
+            return army1.getName() + " has won!";
+        return "";
     }
 
     /**
@@ -73,6 +92,21 @@ public class Battle {
             this.army1 = newArmyOne;
         if (newArmyTwo != null)
             this.army2 = newArmyTwo;
+    }
+
+    /**
+     * Sets terrain on for all units, units may still be different terrain.
+     * @param terrain String representation of terrain enum.
+     * @throws IllegalArgumentException When terrain param is not valid.
+     */
+    public void setTerrain(String terrain) throws IllegalArgumentException {
+        if (terrain.contains(Arrays.toString(Bonuses.terrain.values())))
+            throw new IllegalArgumentException("No such terrain exist");
+
+        for (Unit unit : army1.getUnits())
+            unit.setTerrain(terrain);
+        for (Unit unit : army2.getUnits())
+            unit.setTerrain(terrain);
     }
 
     /**

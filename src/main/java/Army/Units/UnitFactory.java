@@ -1,5 +1,8 @@
 package Army.Units;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class UnitFactory {
   private static volatile UnitFactory instance;
 
@@ -24,16 +27,34 @@ public class UnitFactory {
    * @param unit String unitType.
    * @return new Unit.
    */
-  public static Unit createUnit(String unit) {
-    if (unit.equalsIgnoreCase("InfantryUnit")) {
-      return new InfantryUnit("Infantry", 100);
-    } else if (unit.equalsIgnoreCase("RangedUnit")) {
-      return new RangedUnit("Ranged", 75);
-    } else if (unit.equalsIgnoreCase("CavalryUnit")) {
-      return new CavalryUnit("CavalryUnit", 100);
-    } else if (unit.equalsIgnoreCase("CommanderUnit")) {
-      return new CommanderUnit("CommanderUnit", 125);
+  public static Unit createUnit(String unit, String name, int health) {
+    if (unit.equalsIgnoreCase("InfantryUnit") || unit.equalsIgnoreCase("Army.Units.InfantryUnit")) {
+      return new InfantryUnit(name, health);
+    } else if (unit.equalsIgnoreCase("RangedUnit") || unit.equalsIgnoreCase("Army.Units.RangedUnit")) {
+      return new RangedUnit(name, health);
+    } else if (unit.equalsIgnoreCase("CavalryUnit") || unit.equalsIgnoreCase("Army.Units.CavalryUnit")) {
+      return new CavalryUnit(name, health);
+    } else if (unit.equalsIgnoreCase("CommanderUnit") || unit.equalsIgnoreCase("Army.Units.CommanderUnit")) {
+      return new CommanderUnit(name, health);
     } else
       return null;
+  }
+
+  /**
+   * Returns a list of units, size based on input.
+   * @param unitType String representation of unitType.
+   * @param names String name.
+   * @param health integer of health.
+   * @param amount integer of amount of units wanted.
+   * @return List of units created.
+   */
+  public static List<Unit> createListOfUnits(String unitType, String names, int health, int amount) {
+    List<Unit> listOfUnits = new ArrayList<>();
+    int i = 0;
+    while (i < amount) {
+      listOfUnits.add(createUnit(unitType, names, health));
+      i++;
+    }
+    return listOfUnits;
   }
 }
