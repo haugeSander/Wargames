@@ -114,7 +114,6 @@ public class Army {
         return units;
     }
 
-
     /**
      * Method to collect same units into map.
      * Used to display amount of units in GUI.

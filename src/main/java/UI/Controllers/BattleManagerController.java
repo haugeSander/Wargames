@@ -13,14 +13,13 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import java.util.stream.Collectors;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -88,7 +87,17 @@ public class BattleManagerController implements Initializable {
     terrainSelection.getItems().add("Hill");
     terrainSelection.getItems().add("Forest");
     terrainSelection.getItems().add("Plains");
+
     init();
+
+    armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    amountArmy1.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
+    armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
+    amountArmy2.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
   }
 
   /**
@@ -109,31 +118,21 @@ public class BattleManagerController implements Initializable {
       army2 = battleSimulation.getArmy2();
     }
 
-    observableListOfUnitsArmyOne = FXCollections.observableList(collectUnits(army1));
-    observableListOfUnitsArmyTwo = FXCollections.observableList(collectUnits(army2));
-
-    armyOneTableView.setItems(
-        observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
-    armyTwoTableView.setItems(
-        observableListOfUnitsArmyTwo); //By doing this the list does not need to be updated.
-
-    armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-    armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    amountArmy1.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
-
-    armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
-    armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-    amountArmy2.setCellValueFactory(new PropertyValueFactory<>("unitsAmount"));
-
-    battleSimulation.getArmy1().setUnits(observableListOfUnitsArmyOne);
-    battleSimulation.getArmy2().setUnits(observableListOfUnitsArmyTwo);
+    refreshTables();
 
     armyOneName.setText(army1.getName());
     armyTwoName.setText(army2.getName());
 
     setLogos();
+  }
+
+  private void refreshTables() {
+    observableListOfUnitsArmyOne = FXCollections.observableList(collectUnits(battleSimulation.getArmy1()));
+    observableListOfUnitsArmyTwo = FXCollections.observableList(collectUnits(battleSimulation.getArmy2()));
+    battleSimulation.getArmy1().setUnits(formatCollectedUnits(observableListOfUnitsArmyOne));
+    battleSimulation.getArmy2().setUnits(formatCollectedUnits(observableListOfUnitsArmyTwo));
+    armyOneTableView.setItems(observableListOfUnitsArmyOne); //Sets the list in armies
+    armyTwoTableView.setItems(observableListOfUnitsArmyTwo); // as the observable list.
   }
 
   /**
@@ -150,6 +149,27 @@ public class BattleManagerController implements Initializable {
       u.get(0).setUnitsAmount(u.size());
     }
     return displayableList;
+  }
+
+  /**
+   * Method to remove the format of the collected list.
+   * It creates x amount of units based on the amountUnit parameter.
+   * Lastly the new list is going to be set as the new army list.
+   * @param list Observable list to reformat.
+   * @return Reformatted list.
+   */
+  private List<Unit> formatCollectedUnits(ObservableList<Unit> list) {
+    List<Unit> deCollectedList = new ArrayList<>();
+
+    for (Unit u : list) {
+      if (u.getUnitsAmount() > 1) {
+        deCollectedList.addAll(UnitFactory.createListOfUnits
+            (u.getClassName(), u.getName(), u.getHealth(), u.getUnitsAmount()));
+      } else
+        deCollectedList.add(u);
+    } deCollectedList.retainAll(list);
+
+    return deCollectedList;
   }
 
   /**
@@ -357,12 +377,12 @@ public class BattleManagerController implements Initializable {
     if (result.isPresent() && result.get() == ButtonType.OK) {
       try {
         if (armyNumber == 1)
-          army1.addAll(UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
-                  Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
+          battleSimulation.getArmy2().addAll(UnitFactory.createListOfUnits(typeUnit.getValue(),
+              name.getText(), Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
         else if (armyNumber == 2)
-          army2.addAll(UnitFactory.createListOfUnits(typeUnit.getValue(), name.getText(),
-                  Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
-        init();
+          battleSimulation.getArmy1().addAll(UnitFactory.createListOfUnits(typeUnit.getValue(),
+              name.getText(), Integer.parseInt(hp.getText()), Integer.parseInt(amount.getText())));
+        refreshTables();
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
         alert.setHeaderText("Some values were invalid.");
@@ -414,6 +434,7 @@ public class BattleManagerController implements Initializable {
           battleSimulation.getArmy2().getUnits().remove(unitToRemove);
         }
       }
+      refreshTables();
     } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
       alert.setHeaderText("Unit does not exist.");
@@ -429,7 +450,7 @@ public class BattleManagerController implements Initializable {
     army1 = addArmyFromFile();
     if (army1 != null) {
       armyOneName.setText(army1.getName());
-      init();
+      refreshTables();
     }
   }
 
@@ -441,7 +462,7 @@ public class BattleManagerController implements Initializable {
     army2 = addArmyFromFile();
     if (army2 != null) {
       armyTwoName.setText(army1.getName());
-      init();
+      refreshTables();
     }
   }
 
@@ -458,8 +479,7 @@ public class BattleManagerController implements Initializable {
     selectedFile = chooser.showOpenDialog(terrainSelection.getScene().getWindow());
 
     try {
-      if (selectedFile != null && selectedFile.getName().contains(".csv"))
-        tempArmy = ArmyFileHandler.readFile(selectedFile.getPath());
+      tempArmy = ArmyFileHandler.readFile(selectedFile.getPath());
     }catch(Exception e){
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");
