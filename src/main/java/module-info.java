@@ -12,4 +12,5 @@ module Wargames.Sandeth {
 
   exports UI.Controllers;
   exports UI to javafx.graphics;
+  exports Simulation to javafx.graphics;
 }

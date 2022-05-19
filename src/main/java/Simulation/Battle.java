@@ -3,19 +3,29 @@ package Simulation;
 import Army.Army;
 import Army.Units.Bonuses;
 import Army.Units.Unit;
-
 import java.util.Arrays;
 import java.util.Random;
 
-public class Battle {
+/**
+ * Class which represent the simulation part of the application.
+ */
+public class Battle extends BattleUpdater {
     private Army army1;
     private Army army2;
 
+    /**
+     * Main constructor to take two armies.
+     * @param army1 Army 1.
+     * @param army2 Army 2.
+     */
     public Battle(Army army1, Army army2) {
         this.army1 = army1;
         this.army2 = army2;
     }
 
+    /**
+     * Overloading constructor with no parameters.
+     */
     public Battle() {
     }
 
@@ -25,62 +35,56 @@ public class Battle {
      * of the armies.
      * @return The winner army.
      */
-    public Army simulate() {
+    public String simulate() {
         boolean battleFinished = false;
-        Unit tempUnit1;
-        Unit tempUnit2;
 
         while (!battleFinished) {
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;
             else {
-                tempUnit1 = army1.getRandom();
-                tempUnit2 = army2.getRandom();
-
-                simulateStep(tempUnit1, tempUnit2);
+                simulateStep(army1, army2);
             }
         }
 
-        if (!army2.hasUnits() && army1.hasUnits()) {
-            return army1;
-        } else if (!army1.hasUnits() && army2.hasUnits()) {
-            return army2;
-        } else
-            return null;
+        if (!army2.hasUnits() && army1.hasUnits())
+            return army1.getName();
+         else
+             return army2.getName();
     }
 
     /**
      * Simulates one step at a time.
-     * @param tempUnit1 Random unit from army1.
-     * @param tempUnit2 Random unit from army2.
-     * @return String of events which happened.
+     * @param army1 Army1 to battle.
+     * @param army2 Army2 to battle.
      */
-    public String simulateStep(Unit tempUnit1, Unit tempUnit2) {
-        int randint = new Random().nextInt(2); //0<= Random int < 2
+    public void simulateStep(Army army1, Army army2) {
+        Unit randomArmy1Unit = army1.getRandom();
+        Unit randomArmy2Unit = army2.getRandom();
+        String stepEvent; //Main event this step.
+        int randomInt = new Random().nextInt(2);
 
-        if (randint == 0 && tempUnit1.getIsAlive()) { //Army 1 gets to attack.
-            tempUnit1.attack(tempUnit2);
+        if (randomInt == 0 && randomArmy1Unit.getIsAlive()) //Army 1 gets to attack.
+            randomArmy1Unit.attack(randomArmy2Unit);
+        if (randomInt == 1 && randomArmy2Unit.getIsAlive()) //Army 2 gets to attack.
+            randomArmy2Unit.attack(randomArmy1Unit);
 
-            if (!tempUnit2.getIsAlive()) {
-                army2.remove(tempUnit2);
-                return army1.getName() + ": " + tempUnit1.getName() + " died whilst fighting " +
-                    tempUnit2.getName();
-            }
-        }
-            if (randint == 1 && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
-                tempUnit2.attack(tempUnit1);
-            }
-
-        if (!tempUnit1.getIsAlive()) {
-            army1.remove(tempUnit1);
-            return army2.getName() + ": " + tempUnit2.getName() + " died whilst fighting " +
-                tempUnit1.getName();
+        if (!randomArmy1Unit.getIsAlive()) {
+            army1.remove(randomArmy1Unit);
+            stepEvent = army2.getName() + ": " + randomArmy2Unit.getName() +
+                " died whilst fighting " + randomArmy1Unit.getName();
+        } else if (!randomArmy2Unit.getIsAlive()) {
+            army2.remove(randomArmy2Unit);
+            stepEvent = army1.getName() + ": " + randomArmy1Unit.getName() +
+                " died whilst fighting " + randomArmy2Unit.getName();
         } else if (!army1.hasUnits())
-            return army2.getName() + " has won!";
+            stepEvent = army2.getName() + " has won!";
         else if (!army2.hasUnits())
-            return army1.getName() + " has won!";
+            stepEvent = army1.getName() + " has won!";
         else
-            return "";
+            stepEvent = "";
+
+        battleActions(stepEvent);
+        battleStatus(army1.getUnits().size(), army2.getUnits().size());
     }
 
     /**
@@ -102,7 +106,7 @@ public class Battle {
      * @throws IllegalArgumentException When terrain param is not valid.
      */
     public void setTerrain(String terrain) throws IllegalArgumentException {
-        if (terrain.contains(Arrays.toString(Bonuses.terrain.values())))
+        if (!terrain.contains(Arrays.toString(Bonuses.terrain.values())))
             throw new IllegalArgumentException("No such terrain exist");
 
         for (Unit unit : army1.getUnits())

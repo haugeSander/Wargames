@@ -4,6 +4,7 @@ import Army.Army;
 import Army.Units.Unit;
 import Army.Units.UnitFactory;
 import Simulation.Battle;
+import Simulation.BattleObserver;
 import UI.Facade;
 import UI.GUI;
 import java.io.File;
@@ -54,7 +55,7 @@ import javafx.util.Duration;
  * Simulation controller class to control
  * simulation-view.fxml file.
  */
-public class SimulationController implements Initializable {
+public class SimulationController implements Initializable, BattleObserver {
   @FXML private Spinner<Integer> speedSelection;
   @FXML private ImageView podium;
   @FXML private PieChart pieChart;
@@ -72,18 +73,20 @@ public class SimulationController implements Initializable {
   private Dialog<BorderPane> logDialog;
   private ListView<String> logNo1;
   private ListView<String> logNo2;
-  private int treadSpeed;
+  private int threadSpeed;
 
   private ObservableList<Unit> observableListArmy1;
   private ObservableList<Unit> observableListArmy2;
-  private XYChart.Series<String,Number> unitsArmy1;
-  private XYChart.Series<String,Number> unitsArmy2;
+  private XYChart.Series<String,Number> unitsArmy1Chart;
+  private XYChart.Series<String,Number> unitsArmy2Chart;
 
-  private int counter;
+  private int counter = 0;
   private Timeline timeline;
   private Battle battle;
   private Army army1;
   private Army army2;
+  private int army1Size;
+  private int army2Size;
 
   private Army duplicateArmy1;
   private Army duplicateArmy2;
@@ -100,7 +103,7 @@ public class SimulationController implements Initializable {
     speedSelection.setEditable(true);
 
     speedSelection.valueProperty().addListener(
-        (observableValue, oldValue, newValue) -> treadSpeed =  (newValue)); //Spinner listener.
+        (observableValue, oldValue, newValue) -> threadSpeed =  (newValue)); //Spinner listener.
 
     army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
@@ -108,18 +111,22 @@ public class SimulationController implements Initializable {
     army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
     init();
+
+    File podiumImage = new File("src/main/resources/UI/Controllers/Images/podium.png");
+    podium.setImage(new Image(podiumImage.toURI().toString()));
   }
 
   /**
    * Initialize method available to classes in simulationController.
    */
   private void init() {
-    unitsArmy1 = new XYChart.Series<>();
-    unitsArmy2 = new XYChart.Series<>();
-    chart.getData().addAll(unitsArmy1, unitsArmy2);
-    counter = 0;
+    unitsArmy1Chart = new XYChart.Series<>();
+    unitsArmy2Chart = new XYChart.Series<>();
+    chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart);
 
-    battle = Facade.getInstance().getBattle();
+    Facade facade = Facade.getInstance();
+
+    battle = facade.getBattle();
     army1 = battle.getArmy1();
     army2 = battle.getArmy2();
 
@@ -132,6 +139,8 @@ public class SimulationController implements Initializable {
 
     army1Name.setText(army1.getName());
     army2Name.setText(army2.getName());
+
+    facade.subscribeController(this);
 
     duplicateArmy(army1, army2); //Makes deep copy of armies.
   }
@@ -163,20 +172,23 @@ public class SimulationController implements Initializable {
     logNo1 = new ListView<>();
     logNo2 = new ListView<>();
 
-    if (treadSpeed == 0)
-      treadSpeed = 10;
+    if (threadSpeed == 0)
+      threadSpeed = 10;
 
     if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
       onRefreshPressed();
     }
 
-    timeline = new Timeline(new KeyFrame(Duration.millis(treadSpeed),this::step));
+    timeline = new Timeline(new KeyFrame(Duration.millis(threadSpeed),this::step));
     timeline.setCycleCount(Animation.INDEFINITE); //No time limit to timeline.
     chart.getXAxis().setTickLabelsVisible(false);
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
     chart.getXAxis().setLabel("Time");
+    unitsArmy1Chart.setName(army1.getName());
+    unitsArmy2Chart.setName(army2.getName());
     timeline.play();
+    counter = 0;
   }
 
   /**
@@ -188,31 +200,19 @@ public class SimulationController implements Initializable {
    */
   private void step(ActionEvent actionEvent) {
     counter += 1;
-    unitsArmy1.setName(army1.getName());
-    unitsArmy2.setName(army2.getName());
 
     if(army1.hasUnits() && army2.hasUnits()) {
-      String simStep = battle.simulateStep(army1.getRandom(), army2.getRandom());
-      unitsArmy1.getData().add(new XYChart.Data<>(String.valueOf(counter),army1.getUnits().size()));
-      unitsArmy2.getData().add(new XYChart.Data<>(String.valueOf(counter),army2.getUnits().size()));
-
-      if (!simStep.isEmpty()) {
-        if (simStep.contains(army1.getName())) {
-          logNo1.getItems().add(simStep);
-          logNo1.refresh();
-        } else {
-          logNo2.getItems().add(simStep);
-          logNo2.refresh();
-        }
-      }} else{
+      battle.simulateStep(army1, army2);
+      unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
+      unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
+    }
+    else{
       if (!army1.hasUnits()){
         winnerLabel.setText(army2.getName());
       }else {
         winnerLabel.setText(army1.getName());
       }
       timeline.stop();
-      File podiumImage = new File("src/main/resources/UI/Controllers/Images/podium.png");
-      podium.setImage(new Image(podiumImage.toURI().toString()));
     }
   }
 
@@ -224,23 +224,22 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onMultipleSimulationsPressed() {
-    TextInputDialog inputDialog = new TextInputDialog();
-    inputDialog.getDialogPane().setHeaderText("Enter amount of simulations to run.");
-    textFieldListener(inputDialog.getEditor());
-    Optional<String> result = inputDialog.showAndWait();
+    TextInputDialog inputAmount = new TextInputDialog();
+    inputAmount.getDialogPane().setHeaderText("Enter amount of simulations to run.");
+    textFieldListener(inputAmount.getEditor());
+    Optional<String> result = inputAmount.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
     logNo1 = new ListView<>();
-    int amount;
+    int amount = 0;
 
     if (result.isPresent() && !result.get().isEmpty()) {
       try {
         amount = Integer.parseInt(result.get());
 
         for (int i = 0; i < amount; i++) {
-          winnerEachRound.add(battle.simulate().getName());
-          onRefreshPressed(); //Simple way of allowing multiple simulations.
+          winnerEachRound.add(battle.simulate());
+          onRefreshPressed();
         }
-
         Map<Object, Long> winnerMap =
             winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
         //Stores army name as string and, long amount of wins in a map. Example: "Blue",12.0.
@@ -259,12 +258,14 @@ public class SimulationController implements Initializable {
         pie.forEach(data ->
             data.nameProperty().bind(
                 Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
-                ))); //Shows amount of times each army won on pie chart. Cast to int for whole number.
+                ))); //Shows amount of times each army won on pie chart.
         logNo1.getItems().setAll(winnerEachRound);
         logNo2 = null; //Log of multiple simulations will now contain only one listView.
+
       } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-        alert.setHeaderText("Please enter a number.");
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setHeaderText(e.getMessage());
+        alert.setContentText(e.getMessage());
         alert.showAndWait();
       }
     }
@@ -289,7 +290,6 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onGoBackPressed() throws IOException {
-    timeline.stop();
     Alert goBackConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
     goBackConfirmation.setTitle("Are you sure?");
     goBackConfirmation.setHeaderText("Do you want to go back?");
@@ -310,7 +310,8 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onRefreshPressed() {
-    timeline.stop();
+    if (timeline != null)
+      timeline.stop();
     army1 = duplicateArmy1;
     army2 = duplicateArmy2;
     observableListArmy1.setAll(duplicateArmy1.getUnits());
@@ -353,5 +354,24 @@ public class SimulationController implements Initializable {
     }
     logDialog.getDialogPane().setContent(borderPane);
     logDialog.showAndWait();
+  }
+
+  @Override
+  public void update(String status) {
+    if (!status.isEmpty()) {
+      if (status.contains(army1.getName())) {
+        logNo1.getItems().add(status);
+        logNo1.refresh();
+      } else if (status.contains(army2.getName()) && logNo2 != null){
+        logNo2.getItems().add(status);
+        logNo2.refresh();
+      }
+    }
+  }
+
+  @Override
+  public void updateSize(int army1Amount, int army2Amount) {
+    army1Size = army1Amount;
+    army2Size = army2Amount;
   }
 }

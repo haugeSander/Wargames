@@ -1,6 +1,7 @@
 package UI;
 
 import Simulation.Battle;
+import Simulation.BattleObserver;
 
 public class Facade {
   private static volatile Facade instance; //Stops other threads to access at the same time.
@@ -27,6 +28,10 @@ public class Facade {
       }
     }
     return instance;
+  }
+
+  public void subscribeController(BattleObserver battleObserver) {
+    battle.subscribe(battleObserver);
   }
 
   /**
