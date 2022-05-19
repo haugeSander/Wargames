@@ -6,17 +6,15 @@ package Army.Units;
  */
 public abstract class Unit implements Bonuses {
     private String name;
-
     private int health; //Total health, means the unit can take more damage before dying.
-    private int attack; //Attack value to decide how much health each attack does.
-    private int armor; //Defence value to decide resistance to attacks.
 
-    private int unitsAmount; //Amount of units. Used to show amount of units in observableList.
+    private final String className; //The type of unit, infantry/ranged etc.
+    private final int attack; //Attack value to decide how much health each attack does.
+    private final int armor; //Defence value to decide resistance to attacks.
 
     private boolean isAlive; //Boolean which tells if a unit is dead or alive.
     private int hitsDealt; //Count hits dealt.
     private int hitsTaken; //Count hits received.
-    private String className; //The type of unit, infantry/ranged etc.
     private terrain terrain; //Enum terrain from bonus interface.
 
     public Unit(String name, int health, int attack, int armor) {
@@ -27,7 +25,6 @@ public abstract class Unit implements Bonuses {
         className = getClass().getSimpleName();
         hitsDealt = 0;
         hitsTaken = 0;
-        unitsAmount = 1;
     }
 
     /**
@@ -82,68 +79,89 @@ public abstract class Unit implements Bonuses {
     /**
      * Set terrain type.
      * @param terrain String representation of a terrain type.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException If invalid terrain is entered.
      */
     public void setTerrain(String terrain) throws IllegalArgumentException {
+        boolean validTerrain = false;
+
         for (Bonuses.terrain b : Bonuses.terrain.values()) {
             if (b.name().equalsIgnoreCase(terrain)) {
                 this.terrain = b;
+                validTerrain = true;
             }
         }
+        if (!validTerrain)
+            throw new IllegalArgumentException(terrain + " is an invalid terrain!");
     }
 
     /**
-     * Get the unitsAmount.
-     * @return Integer amount of units.
+     * Getter for the name of unit.
+     * @return String name.
      */
-    public int getUnitsAmount() {
-        return unitsAmount;
-    }
-
-    /**
-     * Setter for unit amount, only used to group units to be displayed in observableList.
-     * @param unitsAmount Integer of amount units.
-     * @throws IllegalArgumentException Whenever an invalid value is attempted to be set.
-     */
-    public void setUnitsAmount(int unitsAmount) throws IllegalArgumentException {
-        if (unitsAmount <= 0)
-            throw new IllegalArgumentException("Amount of units cannot be 0 or negative!");
-        else
-            this.unitsAmount = unitsAmount;
-    }
-
     public String getName() {
         return name;
     }
 
+    /**
+     * Getter for health of unit.
+     * @return Integer value of health.
+     */
     public int getHealth() {
         return health;
     }
 
+    /**
+     * Getter for attack stat of unit.
+     * @return Integer of attack value stat.
+     */
     public int getAttack() {
         return attack;
     }
 
+    /**
+     * Getter for armor stat of unit.
+     * @return Integer of resist value stat.
+     */
     public int getArmor() {
         return armor;
     }
 
+    /**
+     * Getter for isAlive, true if it is alive, false if not.
+     * @return Boolean of isAlive.
+     */
     public boolean getIsAlive() {
         return isAlive;
     }
 
+    /**
+     * Getter for amount of hits unit has dealt.
+     * @return Integer of hits dealt.
+     */
     public int getHitsDealt() {
         return hitsDealt;
     }
 
+    /**
+     * Getter for amount of hits unit has taken.
+     * @return Integer of hits taken.
+     */
     public int getHitsTaken() {
         return hitsTaken;
     }
 
+    /**
+     * Getter for terrain set on this unit.
+     * @return Enum of terrain.
+     */
     public terrain getTerrain() {
         return terrain;
     }
 
+    /**
+     * Getter for className.
+     * @return String for classname of subclasses.
+     */
     public String getClassName() {
         return className;
     }

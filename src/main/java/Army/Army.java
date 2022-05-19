@@ -2,9 +2,7 @@ package Army;
 import Army.Units.*;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Random;
 import java.util.stream.Collectors;
 
@@ -15,11 +13,10 @@ import java.util.stream.Collectors;
 public class Army {
     private String name;
     private List<Unit> units;
-    private Random randomUnit;
+    private final Random randomUnit;
 
     /**
      * Constructor of the army class.
-     *
      * @param name Name of army.
      */
     public Army(String name) {
@@ -30,7 +27,6 @@ public class Army {
 
     /**
      * Method to add single units to army list.
-     *
      * @param unit Single unit object.
      */
     public void add(Unit unit) {
@@ -39,7 +35,6 @@ public class Army {
 
     /**
      * Method to add a list of units to army list.
-     *
      * @param listOfUnits Input list of type Unit.
      */
     public void addAll(List<Unit> listOfUnits) {
@@ -48,18 +43,17 @@ public class Army {
 
     /**
      * Method to remove Unit object from army list.
-     *
      * @param unit Inputted unit object.
      */
     public void remove(Unit unit) throws NullPointerException {
         if (units.contains(unit)) {
             units.remove(unit);
-        } else throw new NullPointerException("Unit does not exist.");
+        } else
+            throw new NullPointerException("Unit does not exist.");
     }
 
     /**
      * Method to return boolean value if army list is empty or has units.
-     *
      * @return hasUnits, returns false if army list is empty.
      */
     public boolean hasUnits() {
@@ -69,7 +63,6 @@ public class Army {
     /**
      * Method to get random unit from list.
      * Using random number generator, between 0 and size of arrayList.
-     *
      * @return Random unit.
      */
     public Unit getRandom() {
@@ -114,26 +107,6 @@ public class Army {
         return units;
     }
 
-    /**
-     * Method to collect same units into map.
-     * Used to display amount of units in GUI.
-     * @return Map of string and a list of units connected to said string.
-     */
-    public Map<String, List<Unit>> getSortedList() {
-        HashMap<String, List<Unit>> sortedUnits = new HashMap<>();
-
-        for (Unit u : units) {
-            if (sortedUnits.containsKey(u.toString())) {
-                sortedUnits.get(u.toString()).add(u);
-            } else {
-                List<Unit> list = new ArrayList<>();
-                list.add(u);
-                sortedUnits.put(u.toString(), list);
-            }
-        }
-
-        return sortedUnits;
-    }
 
     /**
      * Method which adds infantry units in its own list of units.
@@ -172,20 +145,18 @@ public class Army {
     }
 
     /**
-     * Override methods made by IntelliJ.
-     *
-     * @return Hashcode of object.
+     * Override equals methods.
+     * @return Boolean if object is the same.
      */
-    @Override
-    public int hashCode() {
-        return super.hashCode();
-    }
-
     @Override
     public boolean equals(Object obj) {
         return super.equals(obj);
     }
 
+    /**
+     * toString override for armies.
+     * @return String information about army.
+     */
     @Override
     public String toString() {
         return name + ", forces left: " + units.size();

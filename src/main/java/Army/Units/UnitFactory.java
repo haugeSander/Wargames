@@ -3,23 +3,10 @@ package Army.Units;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Factory for units.
+ */
 public class UnitFactory {
-  private static volatile UnitFactory instance;
-
-  /**
-   * Singleton of unitFactory.
-   */
-  private UnitFactory() {
-  }
-
-  public static UnitFactory getInstance() {
-    if (instance == null) {
-      synchronized (UnitFactory.class) {
-        instance = new UnitFactory();
-      }
-    }
-    return instance;
-  }
 
   /**
    * Method which creates different types of units

@@ -63,7 +63,8 @@ public class Battle {
 
             if (!tempUnit2.getIsAlive()) {
                 army2.remove(tempUnit2);
-                return tempUnit1.getName() + " died whilst fighting " + tempUnit2.getName();
+                return army1.getName() + ": " + tempUnit1.getName() + " died whilst fighting " +
+                    tempUnit2.getName();
             }
         }
             if (randint == 1 && tempUnit2.getIsAlive()) { //Army 2 gets to attack.
@@ -72,12 +73,14 @@ public class Battle {
 
         if (!tempUnit1.getIsAlive()) {
             army1.remove(tempUnit1);
-            return tempUnit2.getName() + " died whilst fighting " + tempUnit1.getName();
+            return army2.getName() + ": " + tempUnit2.getName() + " died whilst fighting " +
+                tempUnit1.getName();
         } else if (!army1.hasUnits())
             return army2.getName() + " has won!";
         else if (!army2.hasUnits())
             return army1.getName() + " has won!";
-        return "";
+        else
+            return "";
     }
 
     /**

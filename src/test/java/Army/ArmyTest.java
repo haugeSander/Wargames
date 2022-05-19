@@ -164,17 +164,4 @@ public class ArmyTest {
         armyOne.remove(commander1);
         assertNotEquals(armyOne.getCommanderUnits(), list);
     }
-
-    @Test
-    void getSortedList() {
-        armyOne.addAll(UnitFactory.createListOfUnits("InfantryUnit", "Test", 10, 10));
-        armyOne.addAll(UnitFactory.createListOfUnits("RangedUnit", "Test", 10, 10));
-
-        Map<String, List<Unit>> test = armyOne.getSortedList();
-
-        System.out.println(test.get(armyOne.getUnits().get(1).toString()));
-
-        assertEquals(test.get(armyOne.getUnits().get(0).toString()).size(), 10);
-        assertEquals(test.get(armyOne.getUnits().get(1).toString()).size(), 10);
-    }
 }

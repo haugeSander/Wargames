@@ -78,6 +78,7 @@ public class BattleManagerController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    Facade facade = Facade.getInstance();
     armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
@@ -87,13 +88,15 @@ public class BattleManagerController implements Initializable {
     armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
-
-    if (Facade.getInstance().getBattle() == null) {
+    if (facade.getBattle() == null) {
       army1 = new Army("Army 1");
       army2 = new Army("Army 2");
       battleSimulation = new Battle(army1, army2);
       Facade.getInstance().setBattle(battleSimulation);
     }
+
+    if (facade.getTerrain() != null)
+      terrainLabel.setText(facade.getTerrain());
 
     init();
   }
@@ -193,9 +196,12 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void onSimulateButtonClicked() {
     Alert alert = new Alert(Alert.AlertType.WARNING);
-
+    Facade facade = Facade.getInstance();
     try {
-      Facade.getInstance().setBattle(battleSimulation);
+      facade.setBattle(battleSimulation);
+
+      if (facade.getTerrain() == null)
+        throw new Exception("Terrain not selected!");
 
       if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
         alert.setHeaderText("No units to fight each other..");

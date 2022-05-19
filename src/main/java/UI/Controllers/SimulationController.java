@@ -26,6 +26,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.chart.LineChart;
 import javafx.scene.chart.PieChart;
@@ -45,6 +46,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 
@@ -67,7 +69,9 @@ public class SimulationController implements Initializable {
   @FXML private LineChart chart;
   @FXML private Label army1Name;
   @FXML private Label army2Name;
-  private ListView<String> log;
+  private Dialog<BorderPane> logDialog;
+  private ListView<String> logNo1;
+  private ListView<String> logNo2;
   private int treadSpeed;
 
   private ObservableList<Unit> observableListArmy1;
@@ -156,7 +160,8 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onRunSimulationPressed() {
-    log = new ListView<>();
+    logNo1 = new ListView<>();
+    logNo2 = new ListView<>();
 
     if (treadSpeed == 0)
       treadSpeed = 10;
@@ -192,17 +197,20 @@ public class SimulationController implements Initializable {
       unitsArmy2.getData().add(new XYChart.Data<>(String.valueOf(counter),army2.getUnits().size()));
 
       if (!simStep.isEmpty()) {
-        log.getItems().add(simStep);
-        log.refresh();
-      }
-    }else{
+        if (simStep.contains(army1.getName())) {
+          logNo1.getItems().add(simStep);
+          logNo1.refresh();
+        } else {
+          logNo2.getItems().add(simStep);
+          logNo2.refresh();
+        }
+      }} else{
       if (!army1.hasUnits()){
         winnerLabel.setText(army2.getName());
-        timeline.stop();
       }else {
         winnerLabel.setText(army1.getName());
-        timeline.stop();
       }
+      timeline.stop();
       File podiumImage = new File("src/main/resources/UI/Controllers/Images/podium.png");
       podium.setImage(new Image(podiumImage.toURI().toString()));
     }
@@ -221,7 +229,7 @@ public class SimulationController implements Initializable {
     textFieldListener(inputDialog.getEditor());
     Optional<String> result = inputDialog.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
-    log = new ListView<>();
+    logNo1 = new ListView<>();
     int amount;
 
     if (result.isPresent() && !result.get().isEmpty()) {
@@ -233,23 +241,27 @@ public class SimulationController implements Initializable {
           onRefreshPressed(); //Simple way of allowing multiple simulations.
         }
 
-        Map<Object, Long> winner =
+        Map<Object, Long> winnerMap =
             winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
-        //Stores army object and amount of wins in map.
+        //Stores army name as string and, long amount of wins in a map. Example: "Blue",12.0.
+
+        if (!winnerMap.containsKey(army1.getName())) //If one army always lose, the other is
+          winnerMap.put(army1.getName(), 0L);        //added here with 0 wins.
+        if (!winnerMap.containsKey(army2.getName())) //Else exception would be thrown.
+          winnerMap.put(army2.getName(), 0L);
 
         ObservableList<PieChart.Data> pie =
             FXCollections.observableArrayList(
-                new PieChart.Data(army1.getName(), winner.get(army1.getName())),
-                new PieChart.Data(army2.getName(), winner.get(army2.getName())));
+                new PieChart.Data(army1.getName(), winnerMap.get(army1.getName())),
+                new PieChart.Data(army2.getName(), winnerMap.get(army2.getName())));
         pieChart.setData(pie); //Sets data to pieChart.
 
         pie.forEach(data ->
             data.nameProperty().bind(
                 Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
-                ))); //Shows amount of times each army won on pie chart.
-
-        log.getItems().setAll(winnerEachRound);
-
+                ))); //Shows amount of times each army won on pie chart. Cast to int for whole number.
+        logNo1.getItems().setAll(winnerEachRound);
+        logNo2 = null; //Log of multiple simulations will now contain only one listView.
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
         alert.setHeaderText("Please enter a number.");
@@ -277,6 +289,7 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onGoBackPressed() throws IOException {
+    timeline.stop();
     Alert goBackConfirmation = new Alert(Alert.AlertType.CONFIRMATION);
     goBackConfirmation.setTitle("Are you sure?");
     goBackConfirmation.setHeaderText("Do you want to go back?");
@@ -297,6 +310,7 @@ public class SimulationController implements Initializable {
    */
   @FXML
   private void onRefreshPressed() {
+    timeline.stop();
     army1 = duplicateArmy1;
     army2 = duplicateArmy2;
     observableListArmy1.setAll(duplicateArmy1.getUnits());
@@ -313,11 +327,31 @@ public class SimulationController implements Initializable {
     GUI.exit((Stage)winnerLabel.getScene().getWindow());
   }
 
+  /**
+   * When show log button is pressed a log dialog will appear.
+   * This shows information if the simulation has been run.
+   */
   @FXML
   private void onShowLogPressed() {
-    Dialog<BorderPane> logDialog = new Dialog<>();
+    logDialog = new Dialog<>();
+    logDialog.setTitle("Log of battle.");
+    logDialog.setHeaderText("To get updates run simulation.");
     logDialog.getDialogPane().getButtonTypes().setAll(ButtonType.CLOSE);
-    logDialog.getDialogPane().setContent(new BorderPane(log));
+    BorderPane borderPane = new BorderPane();
+    Label leftDialogTitle = new Label("Winners each round");
+
+    if (logNo1 != null) { //If simulations have not been run, logs are not created.
+      VBox armyLeftDialog = new VBox(leftDialogTitle, logNo1);
+      armyLeftDialog.setAlignment(Pos.CENTER);
+      borderPane.setLeft(armyLeftDialog);
+    }
+    if (logNo2 != null){ //When multiple simulations is run, logNo2 is left out. logNo2 = null in multipleSims.
+      leftDialogTitle.setText(army1.getName()); //If normal simulation is run, army name is displayed.
+      VBox armyRightDialog = new VBox(new Label(army2.getName()), logNo2);
+      armyRightDialog.setAlignment(Pos.CENTER);
+      borderPane.setRight(armyRightDialog);
+    }
+    logDialog.getDialogPane().setContent(borderPane);
     logDialog.showAndWait();
   }
 }

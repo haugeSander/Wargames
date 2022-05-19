@@ -2,7 +2,6 @@ package Army;
 
 import Army.Units.Unit;
 import Army.Units.UnitFactory;
-import Simulation.Battle;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

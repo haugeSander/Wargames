@@ -90,6 +90,8 @@ class UnitTest {
         infantry.setTerrain("Hill");
         assertEquals(infantry.getTerrain(), Bonuses.terrain.HILL);
         assertNotEquals(commander.getTerrain(), Bonuses.terrain.HILL);
+        IllegalArgumentException invalidTerrain = Assertions.assertThrows(IllegalArgumentException.class, () ->
+            infantry.setTerrain("Mountain"), "Mountain is an invalid terrain!");
     }
 
     /**
