@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idatg2001.sandeth.Army.Army;
+import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 import no.ntnu.idatg2001.sandeth.Army.Units.UnitFactory;
 import no.ntnu.idatg2001.sandeth.Simulation.Battle;
 import no.ntnu.idatg2001.sandeth.Simulation.BattleObserver;
@@ -15,6 +16,9 @@ public class BattleModel {
   private Army army1;
   private Army army2;
   private String terrain;
+
+  private Army duplicateArmy1;
+  private Army duplicateArmy2;
 
   /**
    * Private constructor due to this being a
@@ -41,6 +45,18 @@ public class BattleModel {
     return instance;
   }
 
+  private void makeDuplicateArmies() {
+    duplicateArmy1 = new Army(army1.getName());
+    duplicateArmy2 = new Army(army2.getName());
+
+    for (Unit u : army1.getUnits()) {
+      duplicateArmy1.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
+    }
+    for (Unit u : army2.getUnits()) {
+      duplicateArmy2.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
+    }
+  }
+
   /**
    * Subscribe method for observing the battleSimulation.
    * @param battleObserver Observer for battle class.
@@ -57,6 +73,12 @@ public class BattleModel {
     battle.getArmy2().setName("Army 2");
     battle.getArmy1().getUnits().clear();
     battle.getArmy2().getUnits().clear();
+  }
+
+  public void update() {
+    army1.setUnits(duplicateArmy1.getUnits());
+    army2.setUnits(duplicateArmy2.getUnits());
+    makeDuplicateArmies();
   }
 
   /**
@@ -119,6 +141,31 @@ public class BattleModel {
    */
   public void createNewUnits(Army army, String type, String name, int hp, int amount) {
     army.addAll(UnitFactory.createListOfUnits(type, name, hp, amount));
+  }
+
+  /**
+   * Checks both armies to see if any are empty.
+   * @return False if one is empty.
+   */
+  public boolean isEmpty() {
+    return !(army1.hasUnits() && army2.hasUnits());
+  }
+
+  public void simulationStep() {
+    battle.simulateStep(army1, army2);
+
+    if (isEmpty()) {
+      update();
+    }
+  }
+
+  public String runSimulation() {
+    String winner = battle.simulate();
+
+    if (isEmpty())
+      update();
+
+    return winner;
   }
 
   /**

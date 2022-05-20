@@ -1,9 +1,6 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
-import no.ntnu.idatg2001.sandeth.Army.Army;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
-import no.ntnu.idatg2001.sandeth.Army.Units.UnitFactory;
-import no.ntnu.idatg2001.sandeth.Simulation.Battle;
 import no.ntnu.idatg2001.sandeth.Simulation.BattleObserver;
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
 import no.ntnu.idatg2001.sandeth.UI.GUI;
@@ -70,7 +67,6 @@ public class SimulationController implements Initializable, BattleObserver {
   @FXML private LineChart chart;
   @FXML private Label army1Name;
   @FXML private Label army2Name;
-  private Dialog<BorderPane> logDialog;
   private ListView<String> logNo1;
   private ListView<String> logNo2;
   private int threadSpeed;
@@ -82,17 +78,15 @@ public class SimulationController implements Initializable, BattleObserver {
 
   private int counter = 0;
   private Timeline timeline;
-  private Battle battle;
-  private Army army1;
-  private Army army2;
   private int army1Size;
   private int army2Size;
 
-  private Army duplicateArmy1;
-  private Army duplicateArmy2;
+  private BattleModel battleModel;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
+    battleModel = BattleModel.getInstance();
+
     terrain.setText(BattleModel.getInstance().getTerrain());
     chart.setCreateSymbols(false);
 
@@ -120,47 +114,26 @@ public class SimulationController implements Initializable, BattleObserver {
    * Initialize method available to classes in simulationController.
    */
   private void init() {
+    afterSimulationRefresh();
+
+    army1Name.setText(battleModel.getArmy1().getName());
+    army2Name.setText(battleModel.getArmy2().getName());
+
+    battleModel.subscribeController(this);
+  }
+
+  private void afterSimulationRefresh() {
     unitsArmy1Chart = new XYChart.Series<>();
     unitsArmy2Chart = new XYChart.Series<>();
     chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart);
 
-    BattleModel battleModel = BattleModel.getInstance();
+    observableListArmy1 = FXCollections.observableList(battleModel.getArmy1().getUnits());
+    observableListArmy2 = FXCollections.observableList(battleModel.getArmy2().getUnits());
+    battleModel.getArmy1().setUnits(observableListArmy1); //Makes the lists loop. By doing this the list does
+    battleModel.getArmy2().setUnits(observableListArmy2); //not need to be updated everytime something happens.
 
-    battle = battleModel.getBattle();
-    army1 = battle.getArmy1();
-    army2 = battle.getArmy2();
-
-    observableListArmy1 = FXCollections.observableList(army1.getUnits());
-    observableListArmy2 = FXCollections.observableList(army2.getUnits());
     army1View.setItems(observableListArmy1); //Sets the list in armies as the observable list
-    army2View.setItems(observableListArmy2); //By doing this the list does not need to be updated.
-    army1.setUnits(observableListArmy1);
-    army2.setUnits(observableListArmy2);
-
-    army1Name.setText(army1.getName());
-    army2Name.setText(army2.getName());
-
-    battleModel.subscribeController(this);
-
-    duplicateArmy(army1, army2); //Makes deep copy of armies.
-  }
-
-  /**
-   * Attempt to make deep copy of armies
-   * gotten from the previous page.
-   * @param army1 Army 1 made in previous page.
-   * @param army2 Army 2 made in previous page.
-   */
-  private void duplicateArmy(Army army1, Army army2) {
-    duplicateArmy1 = new Army(army1.getName());
-    duplicateArmy2 = new Army(army2.getName());
-
-    for (Unit u : army1.getUnits()) {
-      duplicateArmy1.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
-    }
-    for (Unit u : army2.getUnits()) {
-      duplicateArmy2.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
-    }
+    army2View.setItems(observableListArmy2);
   }
 
   /**
@@ -175,7 +148,7 @@ public class SimulationController implements Initializable, BattleObserver {
     if (threadSpeed == 0)
       threadSpeed = 10;
 
-    if (army1.getUnits().isEmpty() || army2.getUnits().isEmpty()) {
+    if (battleModel.isEmpty()) {
       onRefreshPressed();
     }
 
@@ -185,8 +158,8 @@ public class SimulationController implements Initializable, BattleObserver {
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
     chart.getXAxis().setLabel("Time");
-    unitsArmy1Chart.setName(army1.getName());
-    unitsArmy2Chart.setName(army2.getName());
+    unitsArmy1Chart.setName(battleModel.getArmy1().getName());
+    unitsArmy2Chart.setName(battleModel.getArmy2().getName());
     timeline.play();
     counter = 0;
   }
@@ -201,19 +174,12 @@ public class SimulationController implements Initializable, BattleObserver {
   private void step(ActionEvent actionEvent) {
     counter += 1;
 
-    if(army1.hasUnits() && army2.hasUnits()) {
-      battle.simulateStep(army1, army2);
-      unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
-      unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
-    }
-    else{
-      if (!army1.hasUnits()){
-        winnerLabel.setText(army2.getName());
-      }else {
-        winnerLabel.setText(army1.getName());
-      }
+    BattleModel.getInstance().simulationStep();
+    unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
+    unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
+
+    if (battleModel.isEmpty())
       timeline.stop();
-    }
   }
 
   /**
@@ -230,35 +196,19 @@ public class SimulationController implements Initializable, BattleObserver {
     Optional<String> result = inputAmount.showAndWait();
     List<String> winnerEachRound = new ArrayList<>();
     logNo1 = new ListView<>();
-    int amount = 0;
+    int amount;
 
     if (result.isPresent() && !result.get().isEmpty()) {
       try {
         amount = Integer.parseInt(result.get());
 
         for (int i = 0; i < amount; i++) {
-          winnerEachRound.add(battle.simulate());
-          onRefreshPressed();
+          winnerEachRound.add(battleModel.runSimulation());
         }
-        Map<Object, Long> winnerMap =
-            winnerEachRound.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
-        //Stores army name as string and, long amount of wins in a map. Example: "Blue",12.0.
 
-        if (!winnerMap.containsKey(army1.getName())) //If one army always lose, the other is
-          winnerMap.put(army1.getName(), 0L);        //added here with 0 wins.
-        if (!winnerMap.containsKey(army2.getName())) //Else exception would be thrown.
-          winnerMap.put(army2.getName(), 0L);
+        afterSimulationRefresh();
+        createPieChart(winnerEachRound);
 
-        ObservableList<PieChart.Data> pie =
-            FXCollections.observableArrayList(
-                new PieChart.Data(army1.getName(), winnerMap.get(army1.getName())),
-                new PieChart.Data(army2.getName(), winnerMap.get(army2.getName())));
-        pieChart.setData(pie); //Sets data to pieChart.
-
-        pie.forEach(data ->
-            data.nameProperty().bind(
-                Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
-                ))); //Shows amount of times each army won on pie chart.
         logNo1.getItems().setAll(winnerEachRound);
         logNo2 = null; //Log of multiple simulations will now contain only one listView.
 
@@ -269,6 +219,28 @@ public class SimulationController implements Initializable, BattleObserver {
         alert.showAndWait();
       }
     }
+  }
+
+  private void createPieChart(List<String> winners) {
+    Map<Object, Long> winnerMap =
+        winners.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
+    //Stores army name as string and, long amount of wins in a map. Example: "Blue",12.0.
+
+    if (!winnerMap.containsKey(battleModel.getArmy1().getName())) //If one army always lose, the other is
+      winnerMap.put(battleModel.getArmy1().getName(), 0L);        //added here with 0 wins.
+    if (!winnerMap.containsKey(battleModel.getArmy2().getName())) //Else exception would be thrown.
+      winnerMap.put(battleModel.getArmy2().getName(), 0L);
+
+    ObservableList<PieChart.Data> pie =
+        FXCollections.observableArrayList(
+            new PieChart.Data(battleModel.getArmy1().getName(), winnerMap.get(battleModel.getArmy1().getName())),
+            new PieChart.Data(battleModel.getArmy2().getName(), winnerMap.get(battleModel.getArmy2().getName())));
+    pieChart.setData(pie); //Sets data to pieChart.
+
+    pie.forEach(data ->
+        data.nameProperty().bind(
+            Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
+            ))); //Shows amount of times each army won on pie chart.
   }
 
   /**
@@ -312,11 +284,8 @@ public class SimulationController implements Initializable, BattleObserver {
   private void onRefreshPressed() {
     if (timeline != null)
       timeline.stop();
-    army1 = duplicateArmy1;
-    army2 = duplicateArmy2;
-    observableListArmy1.setAll(duplicateArmy1.getUnits());
-    observableListArmy2.setAll(duplicateArmy2.getUnits());
-    winnerLabel.setText("");
+
+    battleModel.update();
     init();
   }
 
@@ -334,7 +303,7 @@ public class SimulationController implements Initializable, BattleObserver {
    */
   @FXML
   private void onShowLogPressed() {
-    logDialog = new Dialog<>();
+    Dialog<BorderPane> logDialog = new Dialog<>();
     logDialog.setTitle("Log of battle.");
     logDialog.setHeaderText("To get updates run simulation.");
     logDialog.getDialogPane().getButtonTypes().setAll(ButtonType.CLOSE);
@@ -347,8 +316,8 @@ public class SimulationController implements Initializable, BattleObserver {
       borderPane.setLeft(armyLeftDialog);
     }
     if (logNo2 != null){ //When multiple simulations is run, logNo2 is left out. logNo2 = null in multipleSims.
-      leftDialogTitle.setText(army1.getName()); //If normal simulation is run, army name is displayed.
-      VBox armyRightDialog = new VBox(new Label(army2.getName()), logNo2);
+      leftDialogTitle.setText(battleModel.getArmy1().getName()); //If normal simulation is run, army name is displayed.
+      VBox armyRightDialog = new VBox(new Label(battleModel.getArmy2().getName()), logNo2);
       armyRightDialog.setAlignment(Pos.CENTER);
       borderPane.setRight(armyRightDialog);
     }
@@ -359,10 +328,10 @@ public class SimulationController implements Initializable, BattleObserver {
   @Override
   public void update(String status) {
     if (!status.isEmpty()) {
-      if (status.contains(army1.getName())) {
+      if (status.contains(battleModel.getArmy1().getName())) {
         logNo1.getItems().add(status);
         logNo1.refresh();
-      } else if (status.contains(army2.getName()) && logNo2 != null){
+      } else if (status.contains(battleModel.getArmy2().getName()) && logNo2 != null){
         logNo2.getItems().add(status);
         logNo2.refresh();
       }
