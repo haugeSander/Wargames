@@ -4,13 +4,17 @@ module Wargames.Sandeth {
   requires javafx.graphics;
   requires java.desktop;
 
-  opens Army to javafx.fxml, javafx.base;
-  opens Army.Units to javafx.base;
-  opens Simulation to javafx.fxml, javafx.base;
-  opens UI to javafx.fxml;
-  opens UI.Controllers to javafx.fxml;
+  opens no.ntnu.idatg2001.sandeth.Army to javafx.fxml, javafx.base;
+  opens no.ntnu.idatg2001.sandeth.Army.Units to javafx.base;
+  opens no.ntnu.idatg2001.sandeth.Simulation to javafx.fxml, javafx.base;
+  opens no.ntnu.idatg2001.sandeth.UI to javafx.fxml;
+  opens no.ntnu.idatg2001.sandeth.UI.Controllers to javafx.fxml;
 
-  exports UI.Controllers;
-  exports UI to javafx.graphics;
-  exports Simulation to javafx.graphics;
+  exports no.ntnu.idatg2001.sandeth.UI.Controllers;
+  exports no.ntnu.idatg2001.sandeth.UI to javafx.graphics;
+  exports no.ntnu.idatg2001.sandeth.Simulation to javafx.graphics;
+  opens no.ntnu.idatg2001.sandeth.Utility to javafx.base, javafx.fxml;
+  exports no.ntnu.idatg2001.sandeth.Utility to javafx.graphics;
+  exports no.ntnu.idatg2001.sandeth.Model to javafx.graphics;
+  opens no.ntnu.idatg2001.sandeth.Model to javafx.base, javafx.fxml;
 }

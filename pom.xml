@@ -52,7 +52,7 @@
                 <artifactId>javafx-maven-plugin</artifactId>
                 <version>0.0.8</version>
                 <configuration>
-                    <mainClass>UI.GUI</mainClass>
+                    <mainClass>no.ntnu.idatg2001.sandeth.UI.GUI</mainClass>
                 </configuration>
             </plugin>
         </plugins>
