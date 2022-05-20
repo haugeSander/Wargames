@@ -1,5 +1,7 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
+import java.util.ArrayList;
+import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
@@ -34,7 +36,6 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import no.ntnu.idatg2001.sandeth.Model.Model;
 
 public class BattleManagerController implements Initializable {
   @FXML private Label terrainLabel;
@@ -73,6 +74,10 @@ public class BattleManagerController implements Initializable {
   public void initialize(URL url, ResourceBundle resourceBundle) {
     battleModel = BattleModel.getInstance();
 
+    armyOneTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    armyTwoTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
+    //Allows user to select more items in table, for example to delete multiple units.
+
     armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
@@ -108,8 +113,6 @@ public class BattleManagerController implements Initializable {
     setLogos();
     gifSetup();
   }
-
-
 
   /**
    * Set images on each of the logos.
@@ -152,10 +155,6 @@ public class BattleManagerController implements Initializable {
     hillView.setImage(new Image(hillsGIF.toURI().toString()));
     plainsView.setImage(new Image(plainsGIF.toURI().toString()));
   }
-
-
-
-
 
   /**
    * Close button in menu, exits application after a confirmation.
@@ -251,7 +250,7 @@ public class BattleManagerController implements Initializable {
           chooser.setInitialFileName(army1Name.strip() + "-vs-" + army2Name.strip());
           toSave = battleModel.getBattle();
         }
-        Model.getInstance().saveToFile(selectedPath, toSave);
+        BattleModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Something went wrong.");
@@ -293,7 +292,7 @@ public class BattleManagerController implements Initializable {
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        Model.getInstance().readFromFile(selectedFile.getPath(), battleModel.getBattle());
+        BattleModel.getInstance().readFromFile(selectedFile.getPath(), battleModel.getBattle());
         init();
       }
     } catch (Exception e) {
@@ -365,10 +364,10 @@ public class BattleManagerController implements Initializable {
         int amountInt = Integer.parseInt(amount.getText());
 
         if (armyNumber == 1)
-          Model.getInstance().createNewUnits(battleModel.getArmy1(), typeUnit.getValue(),
+          BattleModel.getInstance().createNewUnits(battleModel.getArmy1(), typeUnit.getValue(),
               name.getText(), hpInt, amountInt);
         else if (armyNumber == 2)
-          Model.getInstance().createNewUnits(battleModel.getArmy2(), typeUnit.getValue(),
+          BattleModel.getInstance().createNewUnits(battleModel.getArmy2(), typeUnit.getValue(),
               name.getText(), hpInt, amountInt);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -399,26 +398,29 @@ public class BattleManagerController implements Initializable {
 
   /**
    * Remove units from either army1 or 2 list.
-   * @param armyNumber integer representing the army number.
+   * @param armyNumber Integer representing the army to delete from.
    */
   private void removeUnit(int armyNumber) {
     try {
-      Unit unitToRemove = null;
+      ObservableList<Unit> selectedRows1 = armyOneTableView.getSelectionModel().getSelectedItems();
+      ObservableList<Unit> selectedRows2 = armyTwoTableView.getSelectionModel().getSelectedItems();
+      ArrayList<Unit> rows = null;
 
       if (armyNumber == 1) {
-        unitToRemove = armyOneTableView.getSelectionModel().getSelectedItem();
-      } else if (armyNumber == 2)
-        unitToRemove = armyTwoTableView.getSelectionModel().getSelectedItem();
+        rows = new ArrayList<>(selectedRows1);
+      } else if (armyNumber == 2) {
+        rows = new ArrayList<>(selectedRows2);
+      }
 
-      if (unitToRemove != null) {
+      if (rows != null && (!selectedRows1.isEmpty() || !selectedRows2.isEmpty())) {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-            "Are you sure you want to delete " + unitToRemove.getName() + "?");
+            "Are you sure you want to delete selected item(s)?");
         Optional<ButtonType> result = alert.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK && armyNumber == 1) {
-          battleModel.getBattle().getArmy1().getUnits().remove(unitToRemove);
+          rows.forEach(row -> armyOneTableView.getItems().remove(row));
         } else if (result.isPresent() && result.get() == ButtonType.OK) {
-          battleModel.getBattle().getArmy2().getUnits().remove(unitToRemove);
+          rows.forEach(row -> armyTwoTableView.getItems().remove(row));
         }
       }
     } catch (Exception e) {
@@ -457,7 +459,7 @@ public class BattleManagerController implements Initializable {
 
     try {
       if (selectedFile != null)
-        Model.getInstance().readFromFile(selectedFile.getPath(), obj);
+        BattleModel.getInstance().readFromFile(selectedFile.getPath(), obj);
     }catch(Exception e){
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");

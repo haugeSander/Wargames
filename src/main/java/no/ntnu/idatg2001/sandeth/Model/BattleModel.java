@@ -1,15 +1,19 @@
 package no.ntnu.idatg2001.sandeth.Model;
 
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 import no.ntnu.idatg2001.sandeth.Army.Army;
+import no.ntnu.idatg2001.sandeth.Army.Units.UnitFactory;
 import no.ntnu.idatg2001.sandeth.Simulation.Battle;
 import no.ntnu.idatg2001.sandeth.Simulation.BattleObserver;
+import no.ntnu.idatg2001.sandeth.Utility.FileHandler;
 
 public class BattleModel {
   private static volatile BattleModel instance; //Stops other threads to access at the same time.
   private Battle battle;
   private Army army1;
   private Army army2;
-
   private String terrain;
 
   /**
@@ -46,17 +50,6 @@ public class BattleModel {
   }
 
   /**
-   * Set the battle so it may be accessed
-   * other places in program.
-   * @param battle Battle object to be used
-   *               between controllers.
-   */
-  public void setBattle(Battle battle) {
-    if (battle != null)
-      this.battle = battle;
-  }
-
-  /**
    * Method to clear armies and set default name.
    */
   public void reset() {
@@ -64,6 +57,68 @@ public class BattleModel {
     battle.getArmy2().setName("Army 2");
     battle.getArmy1().getUnits().clear();
     battle.getArmy2().getUnits().clear();
+  }
+
+  /**
+   * Method to read any file. Takes object army or battle, however
+   * any other object passed will be considered a battle file.
+   * Armies are returned from FileHandler and added to list of armies.
+   *
+   * Removes dependencies between backend FileHandler and controller.
+   * @param pathAsString Path of where the file is found.
+   * @param armyOrBattle Object of any type.
+   */
+  public void readFromFile(String pathAsString, Object armyOrBattle) {
+    List<Army> listFromFile = FileHandler.readFile(pathAsString);
+
+    if (armyOrBattle.equals(army1)) {
+      army1.setName(listFromFile.get(0).getName());
+      army1.setUnits(listFromFile.get(0).getUnits());
+    } else if (armyOrBattle.equals(army2)) {
+      army2.setName(listFromFile.get(0).getName());
+      army2.setUnits(listFromFile.get(0).getUnits());
+    } else {
+      army1.setName(listFromFile.get(0).getName());
+      army2.setName(listFromFile.get(1).getName());
+      army1.setUnits(listFromFile.get(0).getUnits());
+      army2.setUnits(listFromFile.get(1).getUnits());
+    }
+  }
+
+  /**
+   * Method to save both army and battle objects. If army object
+   * is entered checks if army 1 or 2 is passed. Any other object is
+   * considered as battle object to be saved.
+   *
+   * Removes dependencies between backend FileHandler and controller.
+   * @param file File location to save.
+   * @param armyOrBattle Object to save.
+   * @throws Exception If an error occurs.
+   */
+  public void saveToFile(File file, Object armyOrBattle) throws Exception {
+    List<Army> listToFile = new ArrayList<>();
+
+    if (armyOrBattle.equals(army1)) {
+      listToFile.add(army1);
+    } else if (armyOrBattle.equals(army2)) {
+      listToFile.add(army2);
+    } else {
+      listToFile.add(army1);
+      listToFile.add(army2);
+    }
+    FileHandler.writeFile(listToFile, file);
+  }
+
+  /**
+   * Removes dependencies between backend UnitFactory and controller.
+   * @param army Army to be saved into.
+   * @param type UnitType to create.
+   * @param name Name of new units.
+   * @param hp Health of new units.
+   * @param amount Amount of units.
+   */
+  public void createNewUnits(Army army, String type, String name, int hp, int amount) {
+    army.addAll(UnitFactory.createListOfUnits(type, name, hp, amount));
   }
 
   /**

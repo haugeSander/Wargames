@@ -1,5 +1,6 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
+import no.ntnu.idatg2001.sandeth.Model.BattleModel;
 import no.ntnu.idatg2001.sandeth.UI.GUI;
 import no.ntnu.idatg2001.sandeth.Model.Model;
 import java.io.File;
@@ -77,7 +78,7 @@ public class MenuController implements Initializable {
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        Model.getInstance().readFromFile(selectedFile.getPath(), "");
+        BattleModel.getInstance().readFromFile(selectedFile.getPath(), "");
         //Empty string counts as an object. Battle file is read, when anything but army objects are passed.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Stage stage = (Stage) logo.getScene().getWindow();
