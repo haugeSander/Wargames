@@ -5,35 +5,29 @@ import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
+import no.ntnu.idatg2001.sandeth.UI.AddUnitsDialog;
 import no.ntnu.idatg2001.sandeth.UI.GUI;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
-import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.control.TextInputDialog;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -66,6 +60,8 @@ public class BattleManagerController implements Initializable {
   @FXML private TableColumn<Unit, Integer> armyTwoHPColumn;
 
   private BattleModel battleModel;
+  private String army1Name;
+  private String army2Name;
 
   /**
    * Constructor for the controller.
@@ -97,8 +93,10 @@ public class BattleManagerController implements Initializable {
    * methods. Used by import battle method.
    */
   private void init() {
-    armyOneName.setText(battleModel.getBattle().getArmy1().getName());
-    armyTwoName.setText(battleModel.getBattle().getArmy2().getName());
+    army1Name = battleModel.getBattle().getArmy1().getName();
+    army2Name = battleModel.getBattle().getArmy2().getName();
+    armyOneName.setText(army1Name);
+    armyTwoName.setText(army2Name);
 
     ObservableList<Unit> observableListOfUnitsArmyOne =
         FXCollections.observableList(battleModel.getBattle().getArmy1().getUnits());
@@ -177,8 +175,8 @@ public class BattleManagerController implements Initializable {
   }
 
   /**
-   * If units are available a simulation will be run.
-   * If not an alert telling user to add units will show.
+   * If units are available and terrain selected simulation page will be opened.
+   * If not an alert telling user to add units or select terrain will show.
    */
   @FXML
   private void onSimulateButtonClicked() {
@@ -188,14 +186,13 @@ public class BattleManagerController implements Initializable {
       if (battleModel.getTerrain() == null)
         throw new Exception("Terrain not selected!");
 
-      if (battleModel.getBattle().getArmy1().getUnits().isEmpty() ||
-          battleModel.getBattle().getArmy2().getUnits().isEmpty()) {
+      if (battleModel.isEmpty()) {
         alert.setHeaderText("No units to fight each other..");
         alert.setContentText("To simulate add units.");
         alert.showAndWait();
       } else {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().
-            getResource("simulation-view.fxml"));
+        battleModel.makeDuplicateArmies();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
         Stage stage = (Stage) simulateLogo.getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load(), 815, 600);
         stage.setScene(scene);
@@ -228,12 +225,6 @@ public class BattleManagerController implements Initializable {
 
     if (selectionOfSave.isPresent() && !(selectionOfSave.get() == ButtonType.CANCEL)) {
       FileChooser chooser = new FileChooser();
-      chooser.getExtensionFilters().addAll(
-          new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
-      File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
-
-      String army1Name = battleModel.getBattle().getArmy1().getName();
-      String army2Name = battleModel.getBattle().getArmy2().getName();
 
       try {
         Object toSave = "";
@@ -250,6 +241,9 @@ public class BattleManagerController implements Initializable {
           chooser.setInitialFileName(army1Name.strip() + "-vs-" + army2Name.strip());
           toSave = battleModel.getBattle();
         }
+        chooser.getExtensionFilters().addAll(
+            new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
+        File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
         BattleModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -309,7 +303,8 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onAddUnitArmy1Clicked() {
-    addUnitsFromDialog(1);
+    AddUnitsDialog army1Add = new AddUnitsDialog();
+    army1Add.showDialog(1);
   }
 
   /**
@@ -317,65 +312,8 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onAddUnitArmyTwoClicked() {
-    addUnitsFromDialog(2);
-  }
-
-  /**
-   * Method which allows user to add units from dialog.
-   * @param armyNumber Integer representation of army to add to.
-   */
-  private void addUnitsFromDialog(int armyNumber) {
-    Dialog<ButtonType> addUnits = new Dialog<>();
-    ComboBox<String> typeUnit = new ComboBox<>();
-    typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
-    addUnits.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-    addUnits.getDialogPane().getChildren().addAll(typeUnit);
-    addUnits.getDialogPane().setPrefHeight(200);
-    addUnits.getDialogPane().setPrefWidth(250);
-
-    TextField name = new TextField();
-    TextField hp = new TextField();
-    textFieldListener(hp);
-    TextField amount = new TextField();
-    textFieldListener(amount);
-
-    Label type = new Label("Select type: ");
-    Label labelName = new Label("Name of unit: ");
-    Label labelHp = new Label("HP: ");
-    Label labelAmount = new Label("Amount: ");
-
-    HBox typeHBox = new HBox(type, typeUnit);
-    typeHBox.setAlignment(Pos.CENTER);
-    HBox nameHBox = new HBox(labelName, name);
-    nameHBox.setAlignment(Pos.CENTER);
-    HBox HPHBox = new HBox(labelHp, hp);
-    HPHBox.setAlignment(Pos.CENTER);
-    HBox amountHBox = new HBox(labelAmount, amount);
-    amountHBox.setAlignment(Pos.CENTER);
-    VBox vBox = new VBox(typeHBox, nameHBox, HPHBox, amountHBox);
-    vBox.setSpacing(10);
-    addUnits.getDialogPane().setContent(vBox);
-
-    Optional<ButtonType> result = addUnits.showAndWait();
-
-    if (result.isPresent() && result.get() == ButtonType.OK) {
-      try {
-        int hpInt = Integer.parseInt(hp.getText());
-        int amountInt = Integer.parseInt(amount.getText());
-
-        if (armyNumber == 1)
-          BattleModel.getInstance().createNewUnits(battleModel.getArmy1(), typeUnit.getValue(),
-              name.getText(), hpInt, amountInt);
-        else if (armyNumber == 2)
-          BattleModel.getInstance().createNewUnits(battleModel.getArmy2(), typeUnit.getValue(),
-              name.getText(), hpInt, amountInt);
-      } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText("Some values were invalid.");
-        alert.setContentText(e.getMessage());
-        alert.showAndWait();
-      }
-    }
+    AddUnitsDialog army2Add = new AddUnitsDialog();
+    army2Add.showDialog(2);
   }
 
   /**
@@ -499,19 +437,6 @@ public class BattleManagerController implements Initializable {
       armyTwoName.setText(result.get());
     } else
       newArmy2Name.close();
-  }
-
-  /**
-   * Method which restricts textField input to only being ints.
-   * @param textField TextField in GUI.
-   */
-  private void textFieldListener(TextField textField) {
-    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
-      if (!newValue.matches("\\d*")) {
-        textField.setText(newValue.replaceAll("[^\\d]", ""));
-      }
-    };
-    textField.textProperty().addListener(cl);
   }
 
   @FXML

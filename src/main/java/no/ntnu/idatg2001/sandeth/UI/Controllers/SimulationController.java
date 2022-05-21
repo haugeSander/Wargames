@@ -1,5 +1,9 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 import no.ntnu.idatg2001.sandeth.Simulation.BattleObserver;
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
@@ -80,12 +84,16 @@ public class SimulationController implements Initializable, BattleObserver {
   private Timeline timeline;
   private int army1Size;
   private int army2Size;
+  private String army1NameString;
+  private String army2NameString;
 
   private BattleModel battleModel;
 
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     battleModel = BattleModel.getInstance();
+    army1NameString = battleModel.getArmy1().getName();
+    army2NameString = battleModel.getArmy2().getName();
 
     terrain.setText(BattleModel.getInstance().getTerrain());
     chart.setCreateSymbols(false);
@@ -122,6 +130,9 @@ public class SimulationController implements Initializable, BattleObserver {
     battleModel.subscribeController(this);
   }
 
+  /**
+   * Method to refresh after simulation.
+   */
   private void afterSimulationRefresh() {
     unitsArmy1Chart = new XYChart.Series<>();
     unitsArmy2Chart = new XYChart.Series<>();
@@ -134,6 +145,7 @@ public class SimulationController implements Initializable, BattleObserver {
 
     army1View.setItems(observableListArmy1); //Sets the list in armies as the observable list
     army2View.setItems(observableListArmy2);
+    counter = 0;
   }
 
   /**
@@ -158,35 +170,37 @@ public class SimulationController implements Initializable, BattleObserver {
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
     chart.getXAxis().setLabel("Time");
-    unitsArmy1Chart.setName(battleModel.getArmy1().getName());
-    unitsArmy2Chart.setName(battleModel.getArmy2().getName());
+    unitsArmy1Chart.setName(army1NameString);
+    unitsArmy2Chart.setName(army2NameString);
     timeline.play();
-    counter = 0;
   }
 
   /**
-   * Uses step method from battle class to run
-   * simulation over time. When run simulation button is pressed
-   * the simulation will run with x amount of duration between
-   * steps.
+   * Uses step method from battle class to run simulation over time.
+   * When run simulation button is pressed the simulation will run
+   * with x amount of duration between steps.
    * @param actionEvent Required to use this::step in keyframe control.
    */
   private void step(ActionEvent actionEvent) {
-    counter += 1;
+    counter++; //Increments chart time.
 
-    BattleModel.getInstance().simulationStep();
+    if (battleModel.simulationStep()) { //Returns true if simulation is done.
+      timeline.stop();
+
+      if (battleModel.getArmy1().hasUnits())
+        winnerLabel.setText(army2NameString);
+      else
+        winnerLabel.setText(army1NameString);
+    }
+
     unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
     unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
-
-    if (battleModel.isEmpty())
-      timeline.stop();
+    //Adds data to chart for every iteration, armySize is updated by observers.
   }
 
   /**
    * When run multiple simulation button is pressed,
    * user is prompted to type how many times to run.
-   *
-   * Not functioning because army is not updated.
    */
   @FXML
   private void onMultipleSimulationsPressed() {
@@ -194,6 +208,7 @@ public class SimulationController implements Initializable, BattleObserver {
     inputAmount.getDialogPane().setHeaderText("Enter amount of simulations to run.");
     textFieldListener(inputAmount.getEditor());
     Optional<String> result = inputAmount.showAndWait();
+
     List<String> winnerEachRound = new ArrayList<>();
     logNo1 = new ListView<>();
     int amount;
@@ -205,10 +220,8 @@ public class SimulationController implements Initializable, BattleObserver {
         for (int i = 0; i < amount; i++) {
           winnerEachRound.add(battleModel.runSimulation());
         }
-
         afterSimulationRefresh();
         createPieChart(winnerEachRound);
-
         logNo1.getItems().setAll(winnerEachRound);
         logNo2 = null; //Log of multiple simulations will now contain only one listView.
 
@@ -221,6 +234,10 @@ public class SimulationController implements Initializable, BattleObserver {
     }
   }
 
+  /**
+   * Method to create pie chart from multiple simulations.
+   * @param winners Takes a list of winners from simulations run.
+   */
   private void createPieChart(List<String> winners) {
     Map<Object, Long> winnerMap =
         winners.stream().collect(Collectors.groupingBy(t -> t, Collectors.counting()));
@@ -233,27 +250,25 @@ public class SimulationController implements Initializable, BattleObserver {
 
     ObservableList<PieChart.Data> pie =
         FXCollections.observableArrayList(
-            new PieChart.Data(battleModel.getArmy1().getName(), winnerMap.get(battleModel.getArmy1().getName())),
-            new PieChart.Data(battleModel.getArmy2().getName(), winnerMap.get(battleModel.getArmy2().getName())));
+            new PieChart.Data(battleModel.getArmy1().getName(), winnerMap.get(army1NameString)),
+            new PieChart.Data(battleModel.getArmy2().getName(), winnerMap.get(army2NameString)));
     pieChart.setData(pie); //Sets data to pieChart.
 
     pie.forEach(data ->
         data.nameProperty().bind(
             Bindings.concat(data.getName(), ":  ", (int) data.getPieValue(), " wins"
             ))); //Shows amount of times each army won on pie chart.
-  }
 
-  /**
-   * Method which restricts textField input to only being ints.
-   * @param textField TextField in GUI.
-   */
-  private void textFieldListener(TextField textField) {
-    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
-      if (!newValue.matches("\\d*")) {
-        textField.setText(newValue.replaceAll("[^\\d]", ""));
-      }
-    };
-    textField.textProperty().addListener(cl);
+    Long maxValueInSet = Collections.max(winnerMap.values());
+
+    Set<Long> values = new HashSet<>(winnerMap.values()); //Since set could only contain one of same value
+                                                          //We could check if there is a draw.
+    for (Map.Entry<Object, Long> entry : winnerMap.entrySet()) {
+      if (values.size() == 1)
+        winnerLabel.setText("Draw!");
+      else if (Objects.equals(entry.getValue(), maxValueInSet))
+        winnerLabel.setText(entry.getKey().toString()); //Sets the winnerLabel to the one with most wins.
+    }
   }
 
   /**
@@ -286,7 +301,7 @@ public class SimulationController implements Initializable, BattleObserver {
       timeline.stop();
 
     battleModel.update();
-    init();
+    afterSimulationRefresh();
   }
 
   /**
@@ -323,6 +338,19 @@ public class SimulationController implements Initializable, BattleObserver {
     }
     logDialog.getDialogPane().setContent(borderPane);
     logDialog.showAndWait();
+  }
+
+  /**
+   * Method which restricts textField input to only being ints.
+   * @param textField TextField in GUI.
+   */
+  private void textFieldListener(TextField textField) {
+    ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
+      if (!newValue.matches("\\d*")) {
+        textField.setText(newValue.replaceAll("[^\\d]", ""));
+      }
+    };
+    textField.textProperty().addListener(cl);
   }
 
   @Override

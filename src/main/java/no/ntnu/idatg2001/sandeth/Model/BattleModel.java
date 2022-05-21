@@ -17,6 +17,7 @@ public class BattleModel {
   private Army army2;
   private String terrain;
 
+  boolean isSimulationFinished;
   private Army duplicateArmy1;
   private Army duplicateArmy2;
 
@@ -45,7 +46,10 @@ public class BattleModel {
     return instance;
   }
 
-  private void makeDuplicateArmies() {
+  /**
+   * Makes deep copies of armies.
+   */
+  public void makeDuplicateArmies() {
     duplicateArmy1 = new Army(army1.getName());
     duplicateArmy2 = new Army(army2.getName());
 
@@ -69,10 +73,14 @@ public class BattleModel {
    * Method to clear armies and set default name.
    */
   public void reset() {
-    battle.getArmy1().setName("Army 1");
-    battle.getArmy2().setName("Army 2");
-    battle.getArmy1().getUnits().clear();
-    battle.getArmy2().getUnits().clear();
+    army1 = null;
+    army2 = null;
+    battle = null;
+    terrain = null;
+
+    army1 = new Army("Army 1");
+    army2 = new Army("Army 2");
+    battle = new Battle(army1, army2);
   }
 
   public void update() {
@@ -151,14 +159,26 @@ public class BattleModel {
     return !(army1.hasUnits() && army2.hasUnits());
   }
 
-  public void simulationStep() {
+  /**
+   * Simulation step from battle class, method completes
+   * one step of the simulation whenever it is called.
+   * @return Boolean: True if simulation is finished.
+   */
+  public boolean simulationStep() {
+    isSimulationFinished = false;
     battle.simulateStep(army1, army2);
 
     if (isEmpty()) {
+      isSimulationFinished = true;
       update();
     }
+    return isSimulationFinished;
   }
 
+  /**
+   * Method to run simulation in battle.
+   * @return String value of the winner army's name.
+   */
   public String runSimulation() {
     String winner = battle.simulate();
 
