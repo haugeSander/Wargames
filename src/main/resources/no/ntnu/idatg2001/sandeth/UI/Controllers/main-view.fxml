@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.image.ImageView?>
@@ -14,7 +15,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="815.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="no.ntnu.idatg2001.sandeth.UI.Controllers.BattleManagerController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="615.0" prefWidth="875.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="no.ntnu.idatg2001.sandeth.UI.Controllers.BattleManagerController">
    <top>
       <MenuBar>
         <menus>
@@ -26,7 +27,7 @@
           </Menu>
           <Menu mnemonicParsing="false" text="Edit">
             <items>
-              <MenuItem mnemonicParsing="false" text="Refresh" />
+              <MenuItem mnemonicParsing="false" onAction="#onResetButtonPressed" text="Reset" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Help">
@@ -78,13 +79,71 @@
                   <Button fx:id="changeArmy1Name" contentDisplay="GRAPHIC_ONLY" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#changeArmy1Name" prefHeight="15.0" prefWidth="15.0" />
                </graphic>
             </Label>
-            <TableView fx:id="armyOneTableView" prefHeight="400.0" prefWidth="240.0">
+            <TableView fx:id="armyOneTableView" prefHeight="375.0" prefWidth="240.0">
               <columns>
                 <TableColumn fx:id="armyOneTypeColumn" prefWidth="150.0" text="Type" />
                   <TableColumn fx:id="armyOneNameColumn" prefWidth="100.0" text="Name" />
                   <TableColumn fx:id="armyOneHPColumn" prefWidth="65.0" text="HP" />
               </columns>
             </TableView>
+            <VBox prefHeight="75.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Label text="Infantry: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="infantryCountA1" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label layoutX="10.0" layoutY="15.0" text="Ranged:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="rangedCountA1" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label layoutX="94.0" layoutY="15.0" text="Cavalry">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="cavalryCountA1" layoutX="108.0" layoutY="10.0" text="0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Label text="Commander:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="commanderCountA1" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label text="Total:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="totalCountA1" layoutX="10.0" layoutY="10.0" text="0" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+               </children>
+            </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="250.0" spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onOpenToArmy1ButtonClicked" text="Import army">
@@ -115,13 +174,71 @@
                   <Button fx:id="changeArmy2Name" minHeight="20.0" minWidth="20.0" mnemonicParsing="false" onAction="#changeArmy2Name" prefHeight="15.0" prefWidth="15.0" />
                </graphic>
             </Label>
-            <TableView fx:id="armyTwoTableView" prefHeight="400.0" prefWidth="250.0">
+            <TableView fx:id="armyTwoTableView" prefHeight="375.0" prefWidth="250.0">
                <columns>
                   <TableColumn fx:id="armyTwoTypeColumn" prefWidth="150.0" text="Type" />
                   <TableColumn fx:id="armyTwoNameColumn" prefWidth="100.0" text="Name" />
                   <TableColumn fx:id="armyTwoHPColumn" prefWidth="65.0" text="HP" />
                </columns>
             </TableView>
+            <VBox prefHeight="75.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Label text="Infantry: ">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="infantryCountA2" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label layoutX="10.0" layoutY="15.0" text="Ranged:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="rangedCountA2" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label layoutX="94.0" layoutY="15.0" text="Cavalry">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="cavalryCountA2" layoutX="108.0" layoutY="10.0" text="0" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" layoutX="10.0" layoutY="10.0" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
+                     <children>
+                        <Label text="Commander:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <padding>
+                              <Insets left="5.0" />
+                           </padding>
+                        </Label>
+                        <Label fx:id="commanderCountA2" layoutX="10.0" layoutY="10.0" text="0" />
+                        <Label text="Total:">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                           <HBox.margin>
+                              <Insets left="15.0" />
+                           </HBox.margin>
+                        </Label>
+                        <Label fx:id="totalCountA2" layoutX="10.0" layoutY="10.0" text="0" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0" />
+               </children>
+            </VBox>
             <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="5.0">
                <children>
                   <Button mnemonicParsing="false" onAction="#onOpenToArmy2ButtonClicked" text="Import army">
@@ -142,7 +259,7 @@
       </VBox>
    </right>
    <center>
-      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="222.0" spacing="20.0">
+      <VBox alignment="CENTER" minWidth="175.0" spacing="20.0">
          <children>
             <HBox alignment="CENTER">
                <children>

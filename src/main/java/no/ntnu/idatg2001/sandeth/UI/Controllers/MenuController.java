@@ -14,7 +14,7 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.MainHelpDialog;
-import no.ntnu.idatg2001.sandeth.UI.GUI;
+import no.ntnu.idatg2001.sandeth.UI.Main;
 
 public class MenuController implements Initializable {
   @FXML private ImageView openSimLogo;
@@ -51,7 +51,7 @@ public class MenuController implements Initializable {
     try {
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
-      Scene scene = new Scene(fxmlLoader.load(), 815, 600);
+      Scene scene = new Scene(fxmlLoader.load(), 875, 615);
       stage.setScene(scene);
     } catch (Exception e) {
       Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
@@ -64,7 +64,7 @@ public class MenuController implements Initializable {
    * Exit button, exits application after a confirmation.
    */
   public void onExitButtonPressed() {
-    GUI.exit((Stage)logo.getScene().getWindow());
+    Main.exit((Stage)logo.getScene().getWindow());
   }
 
   /**
@@ -82,7 +82,7 @@ public class MenuController implements Initializable {
         //Empty string counts as an object. Battle file is read, when anything but army objects are passed.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Stage stage = (Stage) logo.getScene().getWindow();
-        Scene scene = new Scene(fxmlLoader.load(), 815, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 875, 615);
         stage.setScene(scene);
       }
     } catch (Exception e) {
@@ -90,7 +90,7 @@ public class MenuController implements Initializable {
       noFileExists.setTitle("File error");
       noFileExists.setHeaderText("The file selected not supported or nothing selected!");
       noFileExists.setContentText
-          ("Remember only .csv files are supported. Battle save file necessary.");
+          ("Remember only .csv files are supported. Battle save file necessary." + e.getMessage());
       noFileExists.showAndWait();
     }
   }

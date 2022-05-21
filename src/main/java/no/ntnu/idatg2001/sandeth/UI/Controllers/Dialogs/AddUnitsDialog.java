@@ -99,7 +99,7 @@ public class AddUnitsDialog {
   }
 
   /**
-   * Method which restricts textField input to only being ints.
+   * Method which restricts textField input to only being integers.
    * @param textField TextField in GUI.
    */
   private void textFieldListener(TextField textField) {

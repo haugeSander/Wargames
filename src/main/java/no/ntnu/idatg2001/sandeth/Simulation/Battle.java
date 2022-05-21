@@ -1,5 +1,7 @@
 package no.ntnu.idatg2001.sandeth.Simulation;
 
+import java.util.ArrayList;
+import java.util.List;
 import no.ntnu.idatg2001.sandeth.Army.Army;
 import no.ntnu.idatg2001.sandeth.Army.Units.Bonuses;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
@@ -106,13 +108,15 @@ public class Battle extends BattleUpdater {
      * @throws IllegalArgumentException When terrain param is not valid.
      */
     public void setTerrain(String terrain) throws IllegalArgumentException {
-        if (!terrain.contains(Arrays.toString(Bonuses.terrain.values())))
-            throw new IllegalArgumentException("No such terrain exist");
+        try {
+            for (Unit unit : army1.getUnits())
+                unit.setTerrain(terrain);
 
-        for (Unit unit : army1.getUnits())
-            unit.setTerrain(terrain);
-        for (Unit unit : army2.getUnits())
-            unit.setTerrain(terrain);
+            for (Unit unit : army2.getUnits())
+                unit.setTerrain(terrain);
+        } catch (Exception e) {
+            throw new IllegalArgumentException(e.getMessage());
+        }
     }
 
     /**

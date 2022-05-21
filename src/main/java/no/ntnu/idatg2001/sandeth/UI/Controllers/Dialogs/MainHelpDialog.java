@@ -10,13 +10,24 @@ import javafx.scene.layout.VBox;
 
 public class MainHelpDialog {
 
+  /**
+   * Class to open help dialog on main menu page.
+   * It is used to display useful information about
+   * features on the main menu page.
+   */
   public MainHelpDialog() {
   }
 
+  /**
+   * Method to show the help dialog.
+   */
   public void showDialog() {
     createDialog();
   }
 
+  /**
+   * Creates the dialog.
+   */
   private void createDialog() {
     Dialog<ButtonType> helpFrontPage = new Dialog<>();
     helpFrontPage.setTitle("Wargames - Info");
@@ -31,8 +42,14 @@ public class MainHelpDialog {
     helpFrontPage.showAndWait();
   }
 
+  /**
+   * Fills an HBox with necessary information about
+   * the button newSimulation.
+   * @return HBox filled with information.
+   */
   private HBox newSimulationDetails() {
     Label labelNewSim = new Label("New simulation: ");
+    labelNewSim.setStyle("-fx-font-weight: bold");
     Label infoNewSim = new Label();
     infoNewSim.setText(
         "New simulation will open an empty simulation, with only default names. \n" +
@@ -44,8 +61,14 @@ public class MainHelpDialog {
     return newSimulation;
   }
 
+  /**
+   * Fills and HBox with necessary information about
+   * the button openSimulation.
+   * @return HBox filled with information.
+   */
   private HBox openSimulationDetails() {
     Label labelOpenSim = new Label("Open simulation: ");
+    labelOpenSim.setStyle("-fx-font-weight: bold");
     Label infoOpenSim = new Label();
     infoOpenSim.setText("Open simulation will open an existing battle save file and import data\n" +
         "into a simulation. This requires a .csv file to be opened, but also needs two\n" +

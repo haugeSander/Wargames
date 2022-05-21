@@ -1,10 +1,8 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
 import java.util.ArrayList;
-import javafx.event.ActionEvent;
 import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
-
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
 import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.AddUnitsDialog;
 import java.io.File;
@@ -31,9 +29,19 @@ import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.BMHelpDialog;
-import no.ntnu.idatg2001.sandeth.UI.GUI;
+import no.ntnu.idatg2001.sandeth.UI.Main;
 
 public class BattleManagerController implements Initializable {
+  @FXML private Label infantryCountA1;
+  @FXML private Label rangedCountA1;
+  @FXML private Label cavalryCountA1;
+  @FXML private Label commanderCountA1;
+  @FXML private Label totalCountA1;
+  @FXML private Label infantryCountA2;
+  @FXML private Label rangedCountA2;
+  @FXML private Label cavalryCountA2;
+  @FXML private Label commanderCountA2;
+  @FXML private Label totalCountA2;
   @FXML private Label terrainLabel;
   @FXML private Button changeArmy1Name;
   @FXML private Button changeArmy2Name;
@@ -79,7 +87,7 @@ public class BattleManagerController implements Initializable {
     armyOneTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyOneNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyOneHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
-
+    //Retrieves parameter information from unit class.
     armyTwoTypeColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
@@ -87,37 +95,14 @@ public class BattleManagerController implements Initializable {
     if (battleModel.getTerrain() != null)
       terrainLabel.setText(battleModel.getTerrain());
 
-    init();
+    setLogosAndImages();
+    refreshLists();
   }
 
   /**
-   * Initializer accessible to BattleManagerController
-   * methods. Used by import battle method.
+   * Set images on each of the logos and gif/images.
    */
-  private void init() {
-    army1Name = battleModel.getBattle().getArmy1().getName();
-    army2Name = battleModel.getBattle().getArmy2().getName();
-    armyOneName.setText(army1Name);
-    armyTwoName.setText(army2Name);
-
-    ObservableList<Unit> observableListOfUnitsArmyOne =
-        FXCollections.observableList(battleModel.getBattle().getArmy1().getUnits());
-    ObservableList<Unit> observableListOfUnitsArmyTwo =
-        FXCollections.observableList(battleModel.getBattle().getArmy2().getUnits());
-
-    battleModel.getBattle().getArmy1().setUnits(observableListOfUnitsArmyOne);
-    battleModel.getBattle().getArmy2().setUnits(observableListOfUnitsArmyTwo);
-    armyOneTableView.setItems(observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
-    armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
-
-    setLogos();
-    gifSetup();
-  }
-
-  /**
-   * Set images on each of the logos.
-   */
-  private void setLogos() {
+  private void setLogosAndImages() {
     File editLogo = new File
         ("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Logos/edit.png");
     File importLogo = new File
@@ -128,22 +113,6 @@ public class BattleManagerController implements Initializable {
         ("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Logos/list-minus.png");
     File playLogo = new File
         ("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Logos/play.png");
-
-    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
-    addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));
-    importA1Logo.setImage(new Image(importLogo.toURI().toString()));
-    removeA1Logo.setImage(new Image(listMinusLogo.toURI().toString()));
-
-    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
-    addA2Logo.setImage(new Image(listPlusLogo.toURI().toString()));
-    importA2Logo.setImage(new Image(importLogo.toURI().toString()));
-    removeA2Logo.setImage(new Image(listMinusLogo.toURI().toString()));
-
-    importBattleLogo.setImage(new Image(importLogo.toURI().toString()));
-    simulateLogo.setImage(new Image(playLogo.toURI().toString()));
-  }
-
-  private void gifSetup() {
     File forestGIF = new File
         ("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Images/forest.gif");
     File hillsGIF = new File
@@ -151,9 +120,51 @@ public class BattleManagerController implements Initializable {
     File plainsGIF = new File
         ("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Images/plains.gif");
 
+    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));
+    importA1Logo.setImage(new Image(importLogo.toURI().toString()));
+    removeA1Logo.setImage(new Image(listMinusLogo.toURI().toString()));
+    simulateLogo.setImage(new Image(playLogo.toURI().toString()));
+    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    addA2Logo.setImage(new Image(listPlusLogo.toURI().toString()));
+    importA2Logo.setImage(new Image(importLogo.toURI().toString()));
+    removeA2Logo.setImage(new Image(listMinusLogo.toURI().toString()));
+
+    importBattleLogo.setImage(new Image(importLogo.toURI().toString()));
+
     forestView.setImage(new Image(forestGIF.toURI().toString()));
     hillView.setImage(new Image(hillsGIF.toURI().toString()));
     plainsView.setImage(new Image(plainsGIF.toURI().toString()));
+  }
+
+  private void setLabels() {
+    infantryCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
+    rangedCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
+    cavalryCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
+    commanderCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
+    totalCountA1.setText(String.valueOf(battleModel.getArmy1().getUnits().size()));
+
+    infantryCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
+    rangedCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
+    cavalryCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
+    commanderCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
+    totalCountA2.setText(String.valueOf(battleModel.getArmy2().getUnits().size()));
+  }
+
+  private void refreshLists() {
+    army1Name = battleModel.getBattle().getArmy1().getName();
+    army2Name = battleModel.getBattle().getArmy2().getName();
+    armyOneName.setText(army1Name);
+    armyTwoName.setText(army2Name);
+    ObservableList<Unit> observableListOfUnitsArmyOne =
+        FXCollections.observableList(battleModel.getBattle().getArmy1().getUnits());
+    ObservableList<Unit> observableListOfUnitsArmyTwo =
+        FXCollections.observableList(battleModel.getBattle().getArmy2().getUnits());
+    battleModel.getBattle().getArmy1().setUnits(observableListOfUnitsArmyOne);
+    battleModel.getBattle().getArmy2().setUnits(observableListOfUnitsArmyTwo);
+    armyOneTableView.setItems(observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
+    armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
+    setLabels();
   }
 
   /**
@@ -161,7 +172,7 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onCloseButtonClicked() {
-    GUI.exit((Stage)armyOneName.getScene().getWindow());
+    Main.exit((Stage)armyOneName.getScene().getWindow());
   }
 
   /**
@@ -196,7 +207,7 @@ public class BattleManagerController implements Initializable {
         battleModel.makeDuplicateArmies();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
         Stage stage = (Stage) simulateLogo.getScene().getWindow();
-        Scene scene = new Scene(fxmlLoader.load(), 815, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 875, 615);
         stage.setScene(scene);
       }
     } catch (Exception e) {
@@ -289,7 +300,7 @@ public class BattleManagerController implements Initializable {
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
         BattleModel.getInstance().readFromFile(selectedFile.getPath(), battleModel.getBattle());
-        init();
+        refreshLists();
       }
     } catch (Exception e) {
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
@@ -298,24 +309,6 @@ public class BattleManagerController implements Initializable {
       noFileExists.setContentText("Remember only .csv files are supported.");
       noFileExists.showAndWait();
     }
-  }
-
-  /**
-   * Army 1's method to open add units dialog.
-   */
-  @FXML
-  private void onAddUnitArmy1Clicked() {
-    AddUnitsDialog army1Add = new AddUnitsDialog();
-    army1Add.showDialog(1);
-  }
-
-  /**
-   * Army 2's method to open add units dialog.
-   */
-  @FXML
-  private void onAddUnitArmyTwoClicked() {
-    AddUnitsDialog army2Add = new AddUnitsDialog();
-    army2Add.showDialog(2);
   }
 
   /**
@@ -376,7 +369,7 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void onOpenToArmy1ButtonClicked() {
     addArmyFromFile(battleModel.getArmy1());
-    init();
+    refreshLists();
   }
 
   /**
@@ -385,7 +378,25 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void onOpenToArmy2ButtonClicked() {
     addArmyFromFile(battleModel.getArmy2());
-    init();
+    refreshLists();
+  }
+
+  /**
+   * Army 1's method to open add units dialog.
+   */
+  @FXML
+  private void onAddUnitArmy1Clicked() {
+    AddUnitsDialog army1Add = new AddUnitsDialog();
+    army1Add.showDialog(1);
+  }
+
+  /**
+   * Army 2's method to open add units dialog.
+   */
+  @FXML
+  private void onAddUnitArmyTwoClicked() {
+    AddUnitsDialog army2Add = new AddUnitsDialog();
+    army2Add.showDialog(2);
   }
 
   /**
@@ -441,26 +452,58 @@ public class BattleManagerController implements Initializable {
       newArmy2Name.close();
   }
 
+  /**
+   * Button to select terrain type forest.
+   */
   @FXML
   private void onForestButtonClicked() {
-    BattleModel.getInstance().setTerrain("Forest");
+    terrainSelected("Forest");
     terrainLabel.setText("Forest");
   }
 
+  /**
+   * Button to select terrain type hill.
+   */
   @FXML
   private void onHillsButtonClicked() {
-    BattleModel.getInstance().setTerrain("Hill");
+    terrainSelected("Hill");
     terrainLabel.setText("Hill");
   }
 
+  /**
+   * Button to select terrain type plains.
+   */
   @FXML
   private void onPlainsButtonClicked() {
-    BattleModel.getInstance().setTerrain("Plains");
+    terrainSelected("Plains");
     terrainLabel.setText("Plains");
   }
 
+  /**
+   * Terrain selector, common code extracted.
+   * @param terrain Terrain selection as string.
+   */
+  private void terrainSelected(String terrain) {
+    try {
+      BattleModel.getInstance().setTerrain(terrain);
+    } catch (Exception e) {
+      new Alert(Alert.AlertType.ERROR, "Terrain error: " + e.getMessage());
+    }
+  }
+
+  /**
+   * Opens dialog with information about BattleManager's features.
+   */
   public void onHelpPressed() {
     BMHelpDialog bmHelpDialog = new BMHelpDialog();
     bmHelpDialog.showDialog();
+  }
+
+  /**
+   * Button in menu to reset the battle.
+   */
+  public void onResetButtonPressed() {
+    battleModel.reset();
+    refreshLists();
   }
 }

@@ -88,6 +88,11 @@ public class Army {
             this.name = name;
     }
 
+    /**
+     * Setter for units.
+     * @param units
+     * @throws IllegalArgumentException
+     */
     public void setUnits(List<Unit> units) throws IllegalArgumentException {
         if (units == null) {
             throw new IllegalArgumentException("List may not be null or empty!");

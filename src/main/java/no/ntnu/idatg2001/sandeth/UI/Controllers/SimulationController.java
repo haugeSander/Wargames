@@ -7,7 +7,7 @@ import java.util.Set;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 import no.ntnu.idatg2001.sandeth.Simulation.BattleObserver;
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
-import no.ntnu.idatg2001.sandeth.UI.GUI;
+import no.ntnu.idatg2001.sandeth.UI.Main;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -73,12 +73,12 @@ public class SimulationController implements Initializable, BattleObserver {
   @FXML private Label army2Name;
   private ListView<String> logNo1;
   private ListView<String> logNo2;
-  private int threadSpeed;
+  private int threadSpeed = 10; //Initial speed of simulation.
 
   private XYChart.Series<String,Number> unitsArmy1Chart;
   private XYChart.Series<String,Number> unitsArmy2Chart;
 
-  private int counter = 0;
+  private int counter;
   private Timeline timeline;
   private int army1Size;
   private int army2Size;
@@ -110,42 +110,33 @@ public class SimulationController implements Initializable, BattleObserver {
     army1HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
     army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
-    init();
-
     File podiumImage = new File("src/main/resources/no/ntnu/idatg2001/sandeth/UI/Controllers/Images/podium.png");
     podium.setImage(new Image(podiumImage.toURI().toString()));
-  }
-
-  /**
-   * Initialize method available to classes in simulationController.
-   */
-  private void init() {
-    afterSimulationRefresh();
-
-    army1Name.setText(battleModel.getArmy1().getName());
-    army2Name.setText(battleModel.getArmy2().getName());
 
     battleModel.subscribeController(this);
+    refresh();
   }
 
   /**
    * Method to refresh after simulation.
    */
-  private void afterSimulationRefresh() {
+  private void refresh() {
+    if (timeline != null)
+      timeline.stop();
+
+    army1Name.setText(battleModel.getArmy1().getName());
+    army2Name.setText(battleModel.getArmy2().getName());
     unitsArmy1Chart = new XYChart.Series<>();
     unitsArmy2Chart = new XYChart.Series<>();
     chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart);
 
-    ObservableList<Unit> observableListArmy1 =
-        FXCollections.observableList(battleModel.getArmy1().getUnits());
-    ObservableList<Unit> observableListArmy2 =
-        FXCollections.observableList(battleModel.getArmy2().getUnits());
+    ObservableList<Unit> observableListArmy1 = FXCollections.observableList(battleModel.getArmy1().getUnits());
+    ObservableList<Unit> observableListArmy2 = FXCollections.observableList(battleModel.getArmy2().getUnits());
     battleModel.getArmy1().setUnits(observableListArmy1); //Makes the lists loop. By doing this the list does
     battleModel.getArmy2().setUnits(observableListArmy2); //not need to be updated everytime something happens.
 
     army1View.setItems(observableListArmy1); //Sets the list in armies as the observable list
     army2View.setItems(observableListArmy2);
-    counter = 0;
   }
 
   /**
@@ -156,13 +147,8 @@ public class SimulationController implements Initializable, BattleObserver {
   private void onRunSimulationPressed() {
     logNo1 = new ListView<>();
     logNo2 = new ListView<>();
-
-    if (threadSpeed == 0)
-      threadSpeed = 10;
-
-    if (battleModel.isEmpty()) {
-      onRefreshPressed();
-    }
+    counter = 0;
+    refresh();
 
     timeline = new Timeline(new KeyFrame(Duration.millis(threadSpeed),this::step));
     timeline.setCycleCount(Animation.INDEFINITE); //No time limit to timeline.
@@ -220,7 +206,7 @@ public class SimulationController implements Initializable, BattleObserver {
         for (int i = 0; i < amount; i++) {
           winnerEachRound.add(battleModel.runSimulation());
         }
-        afterSimulationRefresh();
+        refresh();
         createPieChart(winnerEachRound);
         logNo1.getItems().setAll(winnerEachRound);
         logNo2 = null; //Log of multiple simulations will now contain only one listView.
@@ -283,7 +269,7 @@ public class SimulationController implements Initializable, BattleObserver {
     Optional<ButtonType> result = goBackConfirmation.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
-      onRefreshPressed();
+      refresh();
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 800, 600);
       Stage stage = (Stage) winnerLabel.getScene().getWindow();
@@ -297,11 +283,8 @@ public class SimulationController implements Initializable, BattleObserver {
    */
   @FXML
   private void onRefreshPressed() {
-    if (timeline != null)
-      timeline.stop();
-
     battleModel.update();
-    afterSimulationRefresh();
+    refresh();
   }
 
   /**
@@ -309,7 +292,7 @@ public class SimulationController implements Initializable, BattleObserver {
    */
   @FXML
   private void onClosePressed() {
-    GUI.exit((Stage)winnerLabel.getScene().getWindow());
+    Main.exit((Stage)winnerLabel.getScene().getWindow());
   }
 
   /**
@@ -353,6 +336,10 @@ public class SimulationController implements Initializable, BattleObserver {
     textField.textProperty().addListener(cl);
   }
 
+  /**
+   * Observer of events in simulateStep.
+   * @param status Events in a simulateStep.
+   */
   @Override
   public void update(String status) {
     if (!status.isEmpty()) {
@@ -366,6 +353,11 @@ public class SimulationController implements Initializable, BattleObserver {
     }
   }
 
+  /**
+   * Observer
+   * @param army1Amount Updated size of army1.
+   * @param army2Amount Updated size of army2.
+   */
   @Override
   public void updateSize(int army1Amount, int army2Amount) {
     army1Size = army1Amount;

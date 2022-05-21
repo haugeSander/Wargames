@@ -10,7 +10,6 @@ import java.io.File;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -82,8 +81,15 @@ public class ArmyTest {
         } catch (Exception e){
             System.out.println(e.getMessage());
         }
+        Army readFromFile = null;
 
-        Army readFromFile = FileHandler.readFile("ArmyOne.csv").get(0);
+        try {
+            readFromFile = FileHandler.readFile("ArmyOne.csv").get(0);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        assert readFromFile != null;
         assertEquals(armyOne.toString(), readFromFile.toString());
 
         Army armyTwo = new Army("Russia");
@@ -91,12 +97,11 @@ public class ArmyTest {
 
         try {
             FileHandler.writeFile(test, new File(armyOne.getName()));
-        } catch (Exception e){
+            assertNotEquals(FileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
+            assertEquals(FileHandler.readFile("Russia.csv").get(0).toString(), armyTwo.toString());
+        } catch (Exception e) {
             System.out.println(e.getMessage());
         }
-
-        assertNotEquals(FileHandler.readFile(armyTwo.getName()).toString(), armyOne.toString());
-        assertEquals(FileHandler.readFile("Russia.csv").get(0).toString(), armyTwo.toString());
     }
 
     /**

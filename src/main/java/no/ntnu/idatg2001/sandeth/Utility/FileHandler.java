@@ -47,7 +47,7 @@ public class FileHandler {
    * @param fileName String name of file.
    * @return Battle object created from file.
    */
-  public static List<Army> readFile(String fileName) {
+  public static List<Army> readFile(String fileName) throws Exception {
     Path path = Path.of(fileName);
     Army army1 = new Army("");
     Army army2 = new Army("");
@@ -74,8 +74,8 @@ public class FileHandler {
               Integer.parseInt(words[2].strip())));
         }
       }
-    } catch (IOException e) {
-      e.getMessage();
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
     }
 
     readFromFile.add(army1);

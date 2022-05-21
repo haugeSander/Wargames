@@ -62,14 +62,6 @@ public class BattleModel {
   }
 
   /**
-   * Subscribe method for observing the battleSimulation.
-   * @param battleObserver Observer for battle class.
-   */
-  public void subscribeController(BattleObserver battleObserver) {
-    battle.subscribe(battleObserver);
-  }
-
-  /**
    * Method to clear armies and set default name.
    */
   public void reset() {
@@ -83,10 +75,22 @@ public class BattleModel {
     battle = new Battle(army1, army2);
   }
 
+  /**
+   * Method to update armies to duplicates made
+   * earlier. Then updates previous duplicates.
+   */
   public void update() {
     army1.setUnits(duplicateArmy1.getUnits());
     army2.setUnits(duplicateArmy2.getUnits());
     makeDuplicateArmies();
+  }
+
+  /**
+   * Subscribe method for observing the battleSimulation.
+   * @param battleObserver Observer for battle class.
+   */
+  public void subscribeController(BattleObserver battleObserver) {
+    battle.subscribe(battleObserver);
   }
 
   /**
@@ -98,8 +102,14 @@ public class BattleModel {
    * @param pathAsString Path of where the file is found.
    * @param armyOrBattle Object of any type.
    */
-  public void readFromFile(String pathAsString, Object armyOrBattle) {
-    List<Army> listFromFile = FileHandler.readFile(pathAsString);
+  public void readFromFile(String pathAsString, Object armyOrBattle) throws Exception {
+    List<Army> listFromFile;
+
+    try {
+      listFromFile = FileHandler.readFile(pathAsString);
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
 
     if (armyOrBattle.equals(army1)) {
       army1.setName(listFromFile.get(0).getName());
@@ -193,8 +203,13 @@ public class BattleModel {
    * @param terrain String representation of
    *                bonuses Enum.
    */
-  public void setTerrain(String terrain) {
-    this.terrain = terrain;
+  public void setTerrain(String terrain) throws Exception {
+    try {
+      battle.setTerrain(terrain);
+      this.terrain = terrain;
+    } catch (Exception e) {
+      throw new Exception(e.getMessage());
+    }
   }
 
   /**

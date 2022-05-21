@@ -8,7 +8,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
-public class GUI extends Application {
+public class Main extends Application {
 
   /**
    * Starts application, and opens main menu.fxml.
@@ -16,11 +16,11 @@ public class GUI extends Application {
   @Override
   public void start(Stage stage) throws Exception {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Controllers/main-menu.fxml"));
-    Scene scene = new Scene(fxmlLoader.load(), 815, 600);
+    Scene scene = new Scene(fxmlLoader.load(), 875, 615);
 
     stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/Logos/Tank.png"))));
     stage.setTitle("Wargames");
-    stage.setResizable(false);
+    stage.setResizable(true);
     stage.setScene(scene);
 
     stage.setOnCloseRequest(windowEvent -> {
