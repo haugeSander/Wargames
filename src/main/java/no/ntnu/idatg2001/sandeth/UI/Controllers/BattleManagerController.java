@@ -1,12 +1,12 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
 import java.util.ArrayList;
+import javafx.event.ActionEvent;
 import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.sandeth.Army.Units.Unit;
 
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
-import no.ntnu.idatg2001.sandeth.UI.AddUnitsDialog;
-import no.ntnu.idatg2001.sandeth.UI.GUI;
+import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.AddUnitsDialog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -30,6 +30,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.BMHelpDialog;
+import no.ntnu.idatg2001.sandeth.UI.GUI;
 
 public class BattleManagerController implements Initializable {
   @FXML private Label terrainLabel;
@@ -159,7 +161,7 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onCloseButtonClicked() {
-    GUI.exit((Stage) simulateLogo.getScene().getWindow());
+    GUI.exit((Stage)armyOneName.getScene().getWindow());
   }
 
   /**
@@ -455,5 +457,10 @@ public class BattleManagerController implements Initializable {
   private void onPlainsButtonClicked() {
     BattleModel.getInstance().setTerrain("Plains");
     terrainLabel.setText("Plains");
+  }
+
+  public void onHelpPressed() {
+    BMHelpDialog bmHelpDialog = new BMHelpDialog();
+    bmHelpDialog.showDialog();
   }
 }

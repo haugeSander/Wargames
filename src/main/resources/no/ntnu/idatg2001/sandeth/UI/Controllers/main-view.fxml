@@ -144,11 +144,16 @@
    <center>
       <VBox alignment="CENTER" prefHeight="200.0" prefWidth="222.0" spacing="20.0">
          <children>
-            <Label text="Terrain selection">
-               <font>
-                  <Font name="System Bold" size="17.0" />
-               </font>
-            </Label>
+            <HBox alignment="CENTER">
+               <children>
+                  <Label text="Terrain selection">
+                     <font>
+                        <Font name="System Bold" size="17.0" />
+                     </font>
+                  </Label>
+                  <Button mnemonicParsing="false" onAction="#onHelpPressed" text="?" />
+               </children>
+            </HBox>
             <Button mnemonicParsing="false" onAction="#onForestButtonClicked">
                <graphic>
                   <ImageView fx:id="forestView" fitHeight="100.0" fitWidth="150.0" pickOnBounds="true" preserveRatio="true" />

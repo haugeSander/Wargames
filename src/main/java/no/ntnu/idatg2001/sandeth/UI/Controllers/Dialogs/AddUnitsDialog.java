@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.sandeth.UI;
+package no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs;
 
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;

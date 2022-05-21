@@ -75,8 +75,6 @@ public class SimulationController implements Initializable, BattleObserver {
   private ListView<String> logNo2;
   private int threadSpeed;
 
-  private ObservableList<Unit> observableListArmy1;
-  private ObservableList<Unit> observableListArmy2;
   private XYChart.Series<String,Number> unitsArmy1Chart;
   private XYChart.Series<String,Number> unitsArmy2Chart;
 
@@ -138,8 +136,10 @@ public class SimulationController implements Initializable, BattleObserver {
     unitsArmy2Chart = new XYChart.Series<>();
     chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart);
 
-    observableListArmy1 = FXCollections.observableList(battleModel.getArmy1().getUnits());
-    observableListArmy2 = FXCollections.observableList(battleModel.getArmy2().getUnits());
+    ObservableList<Unit> observableListArmy1 =
+        FXCollections.observableList(battleModel.getArmy1().getUnits());
+    ObservableList<Unit> observableListArmy2 =
+        FXCollections.observableList(battleModel.getArmy2().getUnits());
     battleModel.getArmy1().setUnits(observableListArmy1); //Makes the lists loop. By doing this the list does
     battleModel.getArmy2().setUnits(observableListArmy2); //not need to be updated everytime something happens.
 

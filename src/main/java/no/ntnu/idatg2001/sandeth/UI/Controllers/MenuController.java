@@ -1,8 +1,6 @@
 package no.ntnu.idatg2001.sandeth.UI.Controllers;
 
 import no.ntnu.idatg2001.sandeth.Model.BattleModel;
-import no.ntnu.idatg2001.sandeth.UI.GUI;
-import no.ntnu.idatg2001.sandeth.Model.Model;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -15,6 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs.MainHelpDialog;
+import no.ntnu.idatg2001.sandeth.UI.GUI;
 
 public class MenuController implements Initializable {
   @FXML private ImageView openSimLogo;
@@ -96,5 +96,7 @@ public class MenuController implements Initializable {
   }
 
   public void onHelpButtonPressed() {
+    MainHelpDialog faq = new MainHelpDialog();
+    faq.showDialog();
   }
 }

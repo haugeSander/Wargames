@@ -17,4 +17,6 @@ module Wargames.Sandeth {
   exports no.ntnu.idatg2001.sandeth.Utility to javafx.graphics;
   exports no.ntnu.idatg2001.sandeth.Model to javafx.graphics;
   opens no.ntnu.idatg2001.sandeth.Model to javafx.base, javafx.fxml;
+  exports no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs to javafx.graphics;
+  opens no.ntnu.idatg2001.sandeth.UI.Controllers.Dialogs to javafx.fxml;
 }

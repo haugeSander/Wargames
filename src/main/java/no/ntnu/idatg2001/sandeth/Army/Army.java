@@ -1,5 +1,4 @@
 package no.ntnu.idatg2001.sandeth.Army;
-import no.ntnu.idatg2001.sandeth.Army.*;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -111,7 +110,6 @@ public class Army {
     public List<Unit> getUnits() {
         return units;
     }
-
 
     /**
      * Method which adds infantry units in its own list of units.

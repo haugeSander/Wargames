@@ -83,8 +83,8 @@ public class Battle extends BattleUpdater {
         else
             stepEvent = "";
 
-        battleActions(stepEvent);
-        battleStatus(army1.getUnits().size(), army2.getUnits().size());
+        battleActions(stepEvent); //Observer which takes stepEvent and updates subscribers.
+        battleStatus(army1.getUnits().size(), army2.getUnits().size()); //Same for size of armies.
     }
 
     /**
