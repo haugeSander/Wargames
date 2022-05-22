@@ -75,6 +75,8 @@ public class BattleManagerController implements Initializable {
 
   /**
    * Constructor for the controller.
+   * @param url Takes an outside url, will open for example a webpage.
+   * @param resourceBundle Local specific object.
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -120,12 +122,12 @@ public class BattleManagerController implements Initializable {
     File plainsGIF = new File
         ("src/main/resources/no/ntnu/idatg2001/wargames/UI/Controllers/Images/plains.gif");
 
-    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString()))); //Not duplicates.
     addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));
     importA1Logo.setImage(new Image(importLogo.toURI().toString()));
     removeA1Logo.setImage(new Image(listMinusLogo.toURI().toString()));
     simulateLogo.setImage(new Image(playLogo.toURI().toString()));
-    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString()))); //Sets different logos.
     addA2Logo.setImage(new Image(listPlusLogo.toURI().toString()));
     importA2Logo.setImage(new Image(importLogo.toURI().toString()));
     removeA2Logo.setImage(new Image(listMinusLogo.toURI().toString()));

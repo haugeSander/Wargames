@@ -31,7 +31,7 @@ public class Main extends Application {
   }
 
   /**
-   * PSVM launches the GUI.
+   * Public static void main launches the GUI.
    */
   public static void main(String[] args) {
     launch(args);

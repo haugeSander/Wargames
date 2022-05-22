@@ -21,6 +21,10 @@ public class ArmyTest {
     private Unit ranged1;
     private Army armyOne;
 
+    /**
+     * Creates objects used for tests before they are run.
+     * Sort of a constructor.
+     */
     @BeforeEach
     void constructor() {
         list = new ArrayList<>();
@@ -49,6 +53,9 @@ public class ArmyTest {
             armyOne.remove(ranged1), "Unit does not exist.");
     }
 
+    /**
+     * Tests the add method in Army.
+     */
     @Test
     void add() {
         assertFalse(armyOne.hasUnits());
@@ -73,6 +80,18 @@ public class ArmyTest {
     }
 
     /**
+     * Tests the setName method in Army.
+     */
+    @Test
+    void setName() {
+        armyOne.setName("Test");
+        assertEquals(armyOne.getName(), "Test");
+
+        Assertions.assertThrows(IllegalArgumentException.class, () ->
+        armyOne.setName(""), "Name cannot be null or empty.");
+    }
+
+    /**
      * Tests the four methods in Army,
      * which returns a list of a specified class type.
      */
@@ -87,15 +106,6 @@ public class ArmyTest {
         assertEquals(armyOne.getInfantryUnits(), list);
         armyOne.remove(infantry1);
         assertNotEquals(armyOne.getInfantryUnits(), list);
-    }
-
-    @Test
-    void setName() {
-        armyOne.setName("Test");
-        assertEquals(armyOne.getName(), "Test");
-
-        Assertions.assertThrows(IllegalArgumentException.class, () ->
-        armyOne.setName(""), "Name cannot be null or empty.");
     }
 
     @Test

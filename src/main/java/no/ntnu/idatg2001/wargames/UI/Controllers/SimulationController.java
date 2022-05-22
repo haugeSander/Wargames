@@ -69,7 +69,7 @@ public class SimulationController implements Initializable, BattleObserver {
   @FXML private TableColumn<Unit, Integer> army2HPColumn;
   @FXML private Label terrain;
   @FXML private Label winnerLabel;
-  @FXML private LineChart chart;
+  @FXML private LineChart chart; //Difficult to generify.
   @FXML private Label army1Name;
   @FXML private Label army2Name;
   private ListView<String> logNo1;
@@ -88,6 +88,11 @@ public class SimulationController implements Initializable, BattleObserver {
 
   private BattleModel battleModel;
 
+  /**
+   * Initializes GUI for simulation view.
+   * @param url Takes an outside url, will open for example a webpage.
+   * @param resourceBundle ResourceBundle Local specific object.
+   */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
     battleModel = BattleModel.getInstance();
@@ -149,7 +154,7 @@ public class SimulationController implements Initializable, BattleObserver {
 
     unitsArmy1Chart = new XYChart.Series<>();
     unitsArmy2Chart = new XYChart.Series<>();
-    chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart);
+    chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart); //Not generified.
     refresh();
 
     timeline = new Timeline(new KeyFrame(Duration.millis(threadSpeed),this::step));

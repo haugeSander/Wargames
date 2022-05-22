@@ -22,6 +22,10 @@ class FileHandlerTest {
   private Army armyOne;
   private Battle testBattleSave;
 
+  /**
+   * Creates objects used for tests before they are run.
+   * Sort of a constructor.
+   */
   @BeforeEach
   void constructor() {
     list = new ArrayList<>();
@@ -72,6 +76,7 @@ class FileHandlerTest {
 
     Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
         FileHandler.readFile("Blue.csv").get(1), "Index out of bounds, list size 1!");
+    //Result is ignored, but tested. Tests to make sure it never saves two armies when one is input.
 
     try {
       readFromFile = FileHandler.readFile("Blue-vs-Red.csv");

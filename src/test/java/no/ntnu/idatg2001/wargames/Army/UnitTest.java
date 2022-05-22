@@ -18,6 +18,10 @@ class UnitTest {
     private Unit ranged;
     private Unit cavalry;
 
+    /**
+     * Creates objects used for tests before they are run.
+     * Sort of a constructor.
+     */
     @BeforeEach
     void createUnits() {
         infantry = new InfantryUnit("Alpha", 100);

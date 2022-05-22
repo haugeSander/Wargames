@@ -68,7 +68,7 @@ public class FileHandler {
               Integer.parseInt(words[2].strip())));
         } else if (twoArmies && words.length < 2) {
           army2.setName(lineOfText);
-        } else if (twoArmies) {
+        } else if (twoArmies) { //Not always true.
           army2.add(UnitFactory.createUnit(words[0].strip(), words[1].strip(),
               Integer.parseInt(words[2].strip())));
         }

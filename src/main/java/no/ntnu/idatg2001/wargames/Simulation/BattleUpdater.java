@@ -9,7 +9,7 @@ import java.util.List;
  * changes its state.
  */
 public abstract class BattleUpdater {
-  private List<BattleObserver> observers = new ArrayList<>();
+  private final List<BattleObserver> observers = new ArrayList<>();
 
   /**
    * Method to subscribe a new observer.

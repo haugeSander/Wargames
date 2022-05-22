@@ -10,23 +10,25 @@ import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
 class BattleTest {
-    Unit CavalryBlue;
-    Unit CavalryRed;
-    Army blue;
-    Army red;
-    Battle battle;
+    private Army blue;
+    private Army red;
+    private Battle battle;
 
+    /**
+     * Creates objects used for tests before they are run.
+     * Sort of a constructor.
+     */
     @BeforeEach
     void constructor() {
-        CavalryBlue = new CavalryUnit("Alfa Blue", 20);
-        CavalryRed = new CavalryUnit("Alfa Red", 20);
+        Unit cavalryBlue = new CavalryUnit("Alfa Blue", 20);
+        Unit cavalryRed = new CavalryUnit("Alfa Red", 20);
 
         blue = new Army("Blue");
         red = new Army("Red");
         battle = new Battle(blue, red);
 
-        blue.add(CavalryBlue);
-        red.add(CavalryRed);
+        blue.add(cavalryBlue);
+        red.add(cavalryRed);
     }
 
     /**
@@ -38,6 +40,9 @@ class BattleTest {
         assertEquals(battle.simulate(), red.getName());
     }
 
+    /**
+     * Tests simulateStep method in Battle.
+     */
     @Test
     void simulateStep() {
         blue.getUnits().clear();
@@ -47,6 +52,9 @@ class BattleTest {
             battle.simulateStep(blue, red), "");
     }
 
+    /**
+     * Tests the updateArmies method.
+     */
     @Test
     void testUpdateArmies() {
         Army newArmy1 = new Army("Test");
@@ -57,6 +65,9 @@ class BattleTest {
         assertEquals(battle.getArmy2(), newArmy2);
     }
 
+    /**
+     * Tests setTerrain method in battle.
+     */
     @Test
     void setTerrain() {
         Assertions.assertThrows(IllegalArgumentException.class, () ->

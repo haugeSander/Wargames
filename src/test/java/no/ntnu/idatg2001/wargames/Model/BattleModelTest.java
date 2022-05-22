@@ -1,7 +1,6 @@
 package no.ntnu.idatg2001.wargames.Model;
 
 import static org.junit.jupiter.api.Assertions.*;
-
 import no.ntnu.idatg2001.wargames.Army.Army;
 import no.ntnu.idatg2001.wargames.Army.Units.InfantryUnit;
 import org.junit.jupiter.api.BeforeEach;
@@ -9,16 +8,18 @@ import org.junit.jupiter.api.Test;
 
 class BattleModelTest {
   private Army test1;
-  private Army test2;
   private BattleModel battleModel;
-  private InfantryUnit testInfantry;
 
+  /**
+   * Creates objects used for tests before they are run.
+   * Sort of a constructor.
+   */
   @BeforeEach
   void constructor() {
     test1 = new Army("Test1");
-    test2 = new Army("Test2");
+    Army test2 = new Army("Test2");
     battleModel = BattleModel.getInstance();
-    testInfantry = new InfantryUnit("TestInfantry", 10);
+    InfantryUnit testInfantry = new InfantryUnit("TestInfantry", 10);
 
     test1.add(testInfantry);
     test1.add(new InfantryUnit("Infantry2", 10));
@@ -31,6 +32,9 @@ class BattleModelTest {
     battleModel.getArmy2().setUnits(test2.getUnits());
   }
 
+  /**
+   * Tests the reset() method in battleModel.
+   */
   @Test
   void reset() {
     assertEquals(battleModel.getArmy1().toString(), test1.toString());
@@ -39,6 +43,9 @@ class BattleModelTest {
     assertNotEquals(battleModel.getArmy1().toString(), test1.toString());
   }
 
+  /**
+   * Tests refreshDuplicates() and makeDuplicateArmies() in battleModel.
+   */
   @Test
   void refreshDuplicates() {
     assertEquals(battleModel.getArmy1().toString(), test1.toString());
@@ -48,6 +55,9 @@ class BattleModelTest {
     assertNotEquals(battleModel.getArmy1().toString(), test1.toString());
   }
 
+  /**
+   * Tests setTerrain in battleModel.
+   */
   @Test
   void setTerrain() {
     try {
@@ -58,6 +68,9 @@ class BattleModelTest {
     }
   }
 
+  /**
+   * Tests getTerrain method in battleModel.
+   */
   @Test
   void getTerrain() {
     setTerrain();

@@ -23,8 +23,9 @@ public class MenuController implements Initializable {
   @FXML private ImageView exitLogo;
 
   /**
-   * Constructor for main menu.
-   * Sets image.
+   * Constructor for main menu. Sets images/logos.
+   * @param url Takes an outside url, will open for example a webpage.
+   * @param resourceBundle Local specific object.
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {

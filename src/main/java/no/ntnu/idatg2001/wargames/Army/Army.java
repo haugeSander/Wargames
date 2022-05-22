@@ -89,9 +89,9 @@ public class Army {
     }
 
     /**
-     * Setter for units.
+     * Setter for units. AddAll adds, this method switches units.
      * @param units List of units.
-     * @throws IllegalArgumentException
+     * @throws IllegalArgumentException If units is empty or null.
      */
     public void setUnits(List<Unit> units) throws IllegalArgumentException {
         if (units == null) {
