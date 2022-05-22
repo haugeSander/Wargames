@@ -1,14 +1,14 @@
-package no.ntnu.idatg2001.wargames.Army;
+package no.ntnu.idatg2001.wargames.army;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
-import no.ntnu.idatg2001.wargames.Army.Units.CavalryUnit;
-import no.ntnu.idatg2001.wargames.Army.Units.CommanderUnit;
-import no.ntnu.idatg2001.wargames.Army.Units.InfantryUnit;
-import no.ntnu.idatg2001.wargames.Army.Units.RangedUnit;
-import no.ntnu.idatg2001.wargames.Army.Units.Unit;
+import no.ntnu.idatg2001.wargames.army.units.CavalryUnit;
+import no.ntnu.idatg2001.wargames.army.units.CommanderUnit;
+import no.ntnu.idatg2001.wargames.army.units.InfantryUnit;
+import no.ntnu.idatg2001.wargames.army.units.RangedUnit;
+import no.ntnu.idatg2001.wargames.army.units.Unit;
 
 /**
  * Constructor for army class.

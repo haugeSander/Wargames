@@ -19,7 +19,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="615.0" prefWidth="875.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="no.ntnu.idatg2001.wargames.UI.Controllers.SimulationController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="615.0" prefWidth="875.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="no.ntnu.idatg2001.wargames.ui.controllers.SimulationController">
    <top>
       <VBox BorderPane.alignment="CENTER">
          <children>
@@ -53,7 +53,7 @@
                         </Label>
                         <TableView fx:id="army1View" prefHeight="200.0" prefWidth="150.0">
                           <columns>
-                            <TableColumn fx:id="army1NameColumn" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="army1NameColumn" prefWidth="75.0" text="Type" />
                             <TableColumn fx:id="army1HPColumn" prefWidth="75.0" text="HP" />
                           </columns>
                         </TableView>
@@ -71,7 +71,7 @@
                         </Label>
                         <TableView fx:id="army2View" prefHeight="200.0" prefWidth="150.0">
                           <columns>
-                            <TableColumn fx:id="army2NameColumn" prefWidth="75.0" text="Name" />
+                            <TableColumn fx:id="army2NameColumn" prefWidth="75.0" text="Type" />
                             <TableColumn fx:id="army2HPColumn" prefWidth="75.0" text="HP" />
                           </columns>
                            <VBox.margin>

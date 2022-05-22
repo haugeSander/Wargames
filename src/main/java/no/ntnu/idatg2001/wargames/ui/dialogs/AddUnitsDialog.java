@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.UI.Dialogs;
+package no.ntnu.idatg2001.wargames.ui.dialogs;
 
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;
@@ -11,7 +11,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import no.ntnu.idatg2001.wargames.Model.BattleModel;
+import no.ntnu.idatg2001.wargames.model.BattleModel;
 
 /**
  * Custom dialog class for adding units to an army.

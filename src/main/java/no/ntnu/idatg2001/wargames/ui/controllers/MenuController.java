@@ -1,6 +1,6 @@
-package no.ntnu.idatg2001.wargames.UI.Controllers;
+package no.ntnu.idatg2001.wargames.ui.controllers;
 
-import no.ntnu.idatg2001.wargames.Model.BattleModel;
+import no.ntnu.idatg2001.wargames.model.BattleModel;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -13,8 +13,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import no.ntnu.idatg2001.wargames.UI.Dialogs.MainHelpDialog;
-import no.ntnu.idatg2001.wargames.UI.Main;
+import no.ntnu.idatg2001.wargames.ui.dialogs.MainHelpDialog;
+import no.ntnu.idatg2001.wargames.ui.Main;
 
 public class MenuController implements Initializable {
   @FXML private ImageView openSimLogo;

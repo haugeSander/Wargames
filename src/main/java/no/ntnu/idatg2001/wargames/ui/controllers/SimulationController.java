@@ -1,14 +1,14 @@
-package no.ntnu.idatg2001.wargames.UI.Controllers;
+package no.ntnu.idatg2001.wargames.ui.controllers;
 
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
-import no.ntnu.idatg2001.wargames.Army.Units.Unit;
-import no.ntnu.idatg2001.wargames.Simulation.BattleObserver;
-import no.ntnu.idatg2001.wargames.Model.BattleModel;
-import no.ntnu.idatg2001.wargames.UI.Dialogs.SimulationHelpDialog;
-import no.ntnu.idatg2001.wargames.UI.Main;
+import no.ntnu.idatg2001.wargames.army.units.Unit;
+import no.ntnu.idatg2001.wargames.simulation.BattleObserver;
+import no.ntnu.idatg2001.wargames.model.BattleModel;
+import no.ntnu.idatg2001.wargames.ui.dialogs.SimulationHelpDialog;
+import no.ntnu.idatg2001.wargames.ui.Main;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -111,8 +111,8 @@ public class SimulationController implements Initializable, BattleObserver {
     speedSelection.valueProperty().addListener(
         (observableValue, oldValue, newValue) -> threadSpeed =  (newValue)); //Spinner listener.
 
-    army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
-    army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
+    army1NameColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
+    army2NameColumn.setCellValueFactory(new PropertyValueFactory<>("className"));
     army1HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
     army2HPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 

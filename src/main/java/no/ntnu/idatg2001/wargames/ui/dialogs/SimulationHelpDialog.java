@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.UI.Dialogs;
+package no.ntnu.idatg2001.wargames.ui.dialogs;
 
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;

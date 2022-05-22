@@ -1,9 +1,9 @@
-package no.ntnu.idatg2001.wargames.Utility;
+package no.ntnu.idatg2001.wargames.utility;
 
 import java.io.IOException;
-import no.ntnu.idatg2001.wargames.Army.Army;
-import no.ntnu.idatg2001.wargames.Army.Units.Unit;
-import no.ntnu.idatg2001.wargames.Army.Units.UnitFactory;
+import no.ntnu.idatg2001.wargames.army.Army;
+import no.ntnu.idatg2001.wargames.army.units.Unit;
+import no.ntnu.idatg2001.wargames.army.units.UnitFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;

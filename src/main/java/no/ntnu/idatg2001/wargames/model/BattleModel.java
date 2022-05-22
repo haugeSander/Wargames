@@ -1,15 +1,15 @@
-package no.ntnu.idatg2001.wargames.Model;
+package no.ntnu.idatg2001.wargames.model;
 
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import no.ntnu.idatg2001.wargames.Army.Army;
-import no.ntnu.idatg2001.wargames.Army.Units.Unit;
-import no.ntnu.idatg2001.wargames.Army.Units.UnitFactory;
-import no.ntnu.idatg2001.wargames.Simulation.Battle;
-import no.ntnu.idatg2001.wargames.Simulation.BattleObserver;
-import no.ntnu.idatg2001.wargames.Utility.FileHandler;
+import no.ntnu.idatg2001.wargames.army.Army;
+import no.ntnu.idatg2001.wargames.army.units.Unit;
+import no.ntnu.idatg2001.wargames.army.units.UnitFactory;
+import no.ntnu.idatg2001.wargames.simulation.Battle;
+import no.ntnu.idatg2001.wargames.simulation.BattleObserver;
+import no.ntnu.idatg2001.wargames.utility.FileHandler;
 
 public class BattleModel {
   private static volatile BattleModel instance; //Stops other threads to access at the same time.

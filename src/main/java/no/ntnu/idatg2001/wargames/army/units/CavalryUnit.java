@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.Army.Units;
+package no.ntnu.idatg2001.wargames.army.units;
 
 /**
  * Subclass of unit.

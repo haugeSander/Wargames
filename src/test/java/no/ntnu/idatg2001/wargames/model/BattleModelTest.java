@@ -1,8 +1,8 @@
-package no.ntnu.idatg2001.wargames.Model;
+package no.ntnu.idatg2001.wargames.model;
 
 import static org.junit.jupiter.api.Assertions.*;
-import no.ntnu.idatg2001.wargames.Army.Army;
-import no.ntnu.idatg2001.wargames.Army.Units.InfantryUnit;
+import no.ntnu.idatg2001.wargames.army.Army;
+import no.ntnu.idatg2001.wargames.army.units.InfantryUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

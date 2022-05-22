@@ -1,10 +1,10 @@
-package no.ntnu.idatg2001.wargames.UI.Controllers;
+package no.ntnu.idatg2001.wargames.ui.controllers;
 
 import java.util.ArrayList;
 import javafx.scene.control.SelectionMode;
-import no.ntnu.idatg2001.wargames.Army.Units.Unit;
-import no.ntnu.idatg2001.wargames.Model.BattleModel;
-import no.ntnu.idatg2001.wargames.UI.Dialogs.AddUnitsDialog;
+import no.ntnu.idatg2001.wargames.army.units.Unit;
+import no.ntnu.idatg2001.wargames.model.BattleModel;
+import no.ntnu.idatg2001.wargames.ui.dialogs.AddUnitsDialog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,8 +28,8 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import no.ntnu.idatg2001.wargames.UI.Dialogs.BMHelpDialog;
-import no.ntnu.idatg2001.wargames.UI.Main;
+import no.ntnu.idatg2001.wargames.ui.dialogs.BMHelpDialog;
+import no.ntnu.idatg2001.wargames.ui.Main;
 
 public class BattleManagerController implements Initializable {
   @FXML private Label infantryCountA1;

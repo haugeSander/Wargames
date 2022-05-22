@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.UI;
+package no.ntnu.idatg2001.wargames.ui;
 
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
@@ -15,7 +15,7 @@ public class Main extends Application {
    */
   @Override
   public void start(Stage stage) throws Exception {
-    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("Controllers/main-menu.fxml"));
+    FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/main-menu.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 875, 615);
 
     stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/Logos/Tank.png"))));
