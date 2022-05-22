@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.wargames.Army.Units.Unit;
 import no.ntnu.idatg2001.wargames.Model.BattleModel;
-import no.ntnu.idatg2001.wargames.UI.Controllers.Dialogs.AddUnitsDialog;
+import no.ntnu.idatg2001.wargames.UI.Dialogs.AddUnitsDialog;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
@@ -28,7 +28,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import no.ntnu.idatg2001.wargames.UI.Controllers.Dialogs.BMHelpDialog;
+import no.ntnu.idatg2001.wargames.UI.Dialogs.BMHelpDialog;
 import no.ntnu.idatg2001.wargames.UI.Main;
 
 public class BattleManagerController implements Initializable {
@@ -69,6 +69,8 @@ public class BattleManagerController implements Initializable {
   @FXML private TableColumn<Unit, String> armyTwoNameColumn;
   @FXML private TableColumn<Unit, Integer> armyTwoHPColumn;
 
+  private static final String SAVE_FORMAT = "*.csv";
+  private static final String SAVE_FORMAT_COMMENT = "Comma Separated File";
   private BattleModel battleModel;
   private String army1Name;
   private String army2Name;
@@ -122,12 +124,12 @@ public class BattleManagerController implements Initializable {
     File plainsGIF = new File
         ("src/main/resources/no/ntnu/idatg2001/wargames/UI/Controllers/Images/plains.gif");
 
-    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString()))); //Not duplicates.
-    addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));
-    importA1Logo.setImage(new Image(importLogo.toURI().toString()));
+    changeArmy1Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
+    addUnitA1Logo.setImage(new Image(listPlusLogo.toURI().toString()));     //Not duplicates.
+    importA1Logo.setImage(new Image(importLogo.toURI().toString()));        //It sets different logos.
     removeA1Logo.setImage(new Image(listMinusLogo.toURI().toString()));
     simulateLogo.setImage(new Image(playLogo.toURI().toString()));
-    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString()))); //Sets different logos.
+    changeArmy2Name.setGraphic(new ImageView(new Image(editLogo.toURI().toString())));
     addA2Logo.setImage(new Image(listPlusLogo.toURI().toString()));
     importA2Logo.setImage(new Image(importLogo.toURI().toString()));
     removeA2Logo.setImage(new Image(listMinusLogo.toURI().toString()));
@@ -139,20 +141,28 @@ public class BattleManagerController implements Initializable {
     plainsView.setImage(new Image(plainsGIF.toURI().toString()));
   }
 
+  /**
+   * Method which set labels representing
+   * amount of each unit, as well as total units.
+   */
   private void setLabels() {
     infantryCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
-    rangedCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
-    cavalryCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
-    commanderCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
+    rangedCountA1.setText(String.valueOf(battleModel.getArmy1().getRangedUnits().size()));
+    cavalryCountA1.setText(String.valueOf(battleModel.getArmy1().getCavalryUnits().size()));
+    commanderCountA1.setText(String.valueOf(battleModel.getArmy1().getCommanderUnits().size()));
     totalCountA1.setText(String.valueOf(battleModel.getArmy1().getUnits().size()));
 
     infantryCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
-    rangedCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
-    cavalryCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
-    commanderCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
+    rangedCountA2.setText(String.valueOf(battleModel.getArmy2().getRangedUnits().size()));
+    cavalryCountA2.setText(String.valueOf(battleModel.getArmy2().getCavalryUnits().size()));
+    commanderCountA2.setText(String.valueOf(battleModel.getArmy2().getCommanderUnits().size()));
     totalCountA2.setText(String.valueOf(battleModel.getArmy2().getUnits().size()));
   }
 
+  /**
+   * Method which refreshes the observableList and resets armyName.
+   * It also runs setLabels method.
+   */
   private void refreshLists() {
     army1Name = battleModel.getBattle().getArmy1().getName();
     army2Name = battleModel.getBattle().getArmy2().getName();
@@ -199,7 +209,7 @@ public class BattleManagerController implements Initializable {
 
     try {
       if (battleModel.getTerrain() == null)
-        throw new Exception("Terrain not selected!");
+        throw new NullPointerException("Terrain not selected!");
 
       if (battleModel.isEmpty()) {
         alert.setHeaderText("No units to fight each other..");
@@ -239,7 +249,7 @@ public class BattleManagerController implements Initializable {
 
     Optional<ButtonType> selectionOfSave = saveSelector.showAndWait();
 
-    if (selectionOfSave.isPresent() && !(selectionOfSave.get() == ButtonType.CANCEL)) {
+    if (selectionOfSave.isPresent() && selectionOfSave.get() != ButtonType.CANCEL) {
       FileChooser chooser = new FileChooser();
 
       try {
@@ -258,7 +268,7 @@ public class BattleManagerController implements Initializable {
           toSave = battleModel.getBattle();
         }
         chooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
+            new FileChooser.ExtensionFilter(SAVE_FORMAT, SAVE_FORMAT_COMMENT));
         File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
         BattleModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
@@ -298,7 +308,7 @@ public class BattleManagerController implements Initializable {
     FileChooser chooser = new FileChooser();
     File selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
     chooser.getExtensionFilters().addAll
-        (new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
+        (new FileChooser.ExtensionFilter(SAVE_FORMAT, SAVE_FORMAT_COMMENT));
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
@@ -411,7 +421,8 @@ public class BattleManagerController implements Initializable {
     FileChooser chooser = new FileChooser();
 
     File selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
-    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("*.csv", "Comma Separated File"));
+    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(SAVE_FORMAT,
+        SAVE_FORMAT_COMMENT));
 
     try {
       if (selectedFile != null)

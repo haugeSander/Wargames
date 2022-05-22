@@ -10,6 +10,7 @@ import java.util.Random;
 public class Battle extends BattleUpdater {
     private Army army1;
     private Army army2;
+    private Random random;
 
     /**
      * Main constructor to take two armies.
@@ -19,6 +20,7 @@ public class Battle extends BattleUpdater {
     public Battle(Army army1, Army army2) {
         this.army1 = army1;
         this.army2 = army2;
+        random = new Random();
     }
 
     /**
@@ -59,7 +61,7 @@ public class Battle extends BattleUpdater {
         Unit randomArmy1Unit = army1.getRandom();
         Unit randomArmy2Unit = army2.getRandom();
         String stepEvent; //Main event this step.
-        int randomInt = new Random().nextInt(2);
+        int randomInt = random.nextInt(2);
 
         if (randomInt == 0 && randomArmy1Unit.getIsAlive()) //Army 1 gets to attack.
             randomArmy1Unit.attack(randomArmy2Unit);

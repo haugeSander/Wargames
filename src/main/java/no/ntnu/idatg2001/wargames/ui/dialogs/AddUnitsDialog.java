@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.UI.Controllers.Dialogs;
+package no.ntnu.idatg2001.wargames.UI.Dialogs;
 
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;
@@ -15,6 +15,7 @@ import no.ntnu.idatg2001.wargames.Model.BattleModel;
 
 /**
  * Custom dialog class for adding units to an army.
+ * Does not use constructor.
  */
 public class AddUnitsDialog {
 
@@ -22,12 +23,6 @@ public class AddUnitsDialog {
   private ComboBox<String> typeUnit;
   private TextField hp;
   private TextField amount;
-
-  /**
-   * Constructor for custom dialog class.
-   */
-  public AddUnitsDialog() {
-  }
 
   /**
    * Shows the dialog after it is created.
@@ -87,11 +82,11 @@ public class AddUnitsDialog {
     typeHBox.setAlignment(Pos.CENTER);
     HBox nameHBox = new HBox(labelName, name);
     nameHBox.setAlignment(Pos.CENTER);
-    HBox HPHBox = new HBox(labelHp, hp);
-    HPHBox.setAlignment(Pos.CENTER);
+    HBox healthHBox = new HBox(labelHp, hp);
+    healthHBox.setAlignment(Pos.CENTER);
     HBox amountHBox = new HBox(labelAmount, amount);
     amountHBox.setAlignment(Pos.CENTER);
-    VBox vBox = new VBox(typeHBox, nameHBox, HPHBox, amountHBox);
+    VBox vBox = new VBox(typeHBox, nameHBox, healthHBox, amountHBox);
     vBox.setSpacing(10);
     addUnits.getDialogPane().setContent(vBox);
 

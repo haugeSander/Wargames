@@ -1,6 +1,7 @@
 package no.ntnu.idatg2001.wargames.Model;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idatg2001.wargames.Army.Army;
@@ -108,13 +109,13 @@ public class BattleModel {
    * @param pathAsString Path of where the file is found.
    * @param armyOrBattle Object of any type.
    */
-  public void readFromFile(String pathAsString, Object armyOrBattle) throws Exception {
+  public void readFromFile(String pathAsString, Object armyOrBattle) throws IOException {
     List<Army> listFromFile;
 
     try {
       listFromFile = FileHandler.readFile(pathAsString);
     } catch (Exception e) {
-      throw new Exception(e.getMessage());
+      throw new IOException(e.getMessage());
     }
 
     if (armyOrBattle.equals(army1)) {
@@ -209,12 +210,12 @@ public class BattleModel {
    * @param terrain String representation of
    *                bonuses Enum.
    */
-  public void setTerrain(String terrain) throws Exception {
+  public void setTerrain(String terrain) throws IllegalArgumentException {
     try {
       battle.setTerrain(terrain);
       this.terrain = terrain;
     } catch (Exception e) {
-      throw new Exception(e.getMessage());
+      throw new IllegalArgumentException(e.getMessage());
     }
   }
 

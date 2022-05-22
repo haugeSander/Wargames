@@ -13,7 +13,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import no.ntnu.idatg2001.wargames.UI.Controllers.Dialogs.MainHelpDialog;
+import no.ntnu.idatg2001.wargames.UI.Dialogs.MainHelpDialog;
 import no.ntnu.idatg2001.wargames.UI.Main;
 
 public class MenuController implements Initializable {

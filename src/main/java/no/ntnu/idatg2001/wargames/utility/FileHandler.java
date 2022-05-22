@@ -1,5 +1,6 @@
 package no.ntnu.idatg2001.wargames.Utility;
 
+import java.io.IOException;
 import no.ntnu.idatg2001.wargames.Army.Army;
 import no.ntnu.idatg2001.wargames.Army.Units.Unit;
 import no.ntnu.idatg2001.wargames.Army.Units.UnitFactory;
@@ -12,7 +13,16 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Class which handles files, both reading and writing.
+ */
 public class FileHandler {
+
+  /**
+   * Static classes does not require constructor.
+   */
+  private FileHandler() {
+  }
 
   /**
    * Method which saves army, and also saves battles.
@@ -20,9 +30,11 @@ public class FileHandler {
    * @param armies List of armies to be saved.
    * @param fileName File to be saved.
    */
-  public static void writeFile(List<Army> armies, File fileName) throws Exception {
+  public static void writeFile(List<Army> armies, File fileName) throws IOException {
+    BufferedWriter writer = null;
+
     try {
-      BufferedWriter writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
+      writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
       writer.write(armies.get(0).getName());
 
       for (Unit u : armies.get(0).getUnits())
@@ -34,10 +46,11 @@ public class FileHandler {
         for (Unit u : armies.get(1).getUnits())
           writer.write("\n" + u.getClass().getName() + "," + u.getName() + "," + u.getHealth());
       }
-      writer.close();
-
     } catch (Exception e) {
-      throw new Exception(e.getMessage());
+      throw new IOException(e.getMessage());
+    } finally {
+      assert writer != null;
+      writer.close();
     }
   }
 
@@ -46,7 +59,7 @@ public class FileHandler {
    * @param fileName String name of file.
    * @return Battle object created from file.
    */
-  public static List<Army> readFile(String fileName) throws Exception {
+  public static List<Army> readFile(String fileName) throws IOException {
     Path path = Path.of(fileName);
     Army army1 = new Army("");
     Army army2 = new Army("");
@@ -74,7 +87,7 @@ public class FileHandler {
         }
       }
     } catch (Exception e) {
-      throw new Exception(e.getMessage());
+      throw new IOException(e.getMessage());
     }
 
     readFromFile.add(army1);

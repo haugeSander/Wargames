@@ -17,7 +17,14 @@ public abstract class Unit implements Bonuses {
     private int hitsTaken; //Count hits received.
     private terrain terrain; //Enum terrain from bonus interface.
 
-    public Unit(String name, int health, int attack, int armor) {
+    /**
+     * Class must only be accessed by its children and package.
+     * @param name Name of unit.
+     * @param health Health of unit.
+     * @param attack Attack stat of unit.
+     * @param armor Armor stat of unit, resistance against damage.
+     */
+    protected Unit(String name, int health, int attack, int armor) {
         setName(name);
         setHealth(health);
         this.attack = attack;

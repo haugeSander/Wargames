@@ -7,7 +7,7 @@ import java.util.Set;
 import no.ntnu.idatg2001.wargames.Army.Units.Unit;
 import no.ntnu.idatg2001.wargames.Simulation.BattleObserver;
 import no.ntnu.idatg2001.wargames.Model.BattleModel;
-import no.ntnu.idatg2001.wargames.UI.Controllers.Dialogs.SimulationHelpDialog;
+import no.ntnu.idatg2001.wargames.UI.Dialogs.SimulationHelpDialog;
 import no.ntnu.idatg2001.wargames.UI.Main;
 import java.io.File;
 import java.io.IOException;
@@ -159,7 +159,7 @@ public class SimulationController implements Initializable, BattleObserver {
 
     timeline = new Timeline(new KeyFrame(Duration.millis(threadSpeed),this::step));
     timeline.setCycleCount(Animation.INDEFINITE); //No time limit to timeline.
-    //chart.getXAxis().setTickLabelsVisible(false);
+    chart.getXAxis().setTickLabelsVisible(false);
     chart.verticalGridLinesVisibleProperty().setValue(false);
     chart.horizontalGridLinesVisibleProperty().setValue(false);
     chart.getXAxis().setLabel("Time");

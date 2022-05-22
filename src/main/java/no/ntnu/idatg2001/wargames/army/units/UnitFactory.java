@@ -4,9 +4,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Factory for units.
+ * Factory class for units.
+ * Not a singleton since it is a static class.
  */
 public class UnitFactory {
+  /**
+   * Static classes does not need public constructors.
+   */
+  private UnitFactory() {
+  }
 
   /**
    * Method which creates different types of units

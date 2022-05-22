@@ -162,6 +162,15 @@ public class Army {
     }
 
     /**
+     * Equals override requires hashCode override.
+     * @return Integer of hashcode of object.
+     */
+    @Override
+    public int hashCode() {
+        return super.hashCode();
+    }
+
+    /**
      * toString override for armies.
      * @return String information about army.
      */
