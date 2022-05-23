@@ -13,6 +13,8 @@ import java.util.List;
 
 /**
  * Class which handles files, both reading and writing.
+ * @author Sander Hauge.
+ * @version 1.0-SNAPSHOT
  */
 public class FileHandler {
 

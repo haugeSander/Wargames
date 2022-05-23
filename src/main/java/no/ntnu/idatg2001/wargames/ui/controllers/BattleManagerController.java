@@ -3,7 +3,7 @@ package no.ntnu.idatg2001.wargames.ui.controllers;
 import java.util.ArrayList;
 import javafx.scene.control.SelectionMode;
 import no.ntnu.idatg2001.wargames.army.units.Unit;
-import no.ntnu.idatg2001.wargames.model.BattleModel;
+import no.ntnu.idatg2001.wargames.model.WargamesModel;
 import no.ntnu.idatg2001.wargames.ui.dialogs.AddUnitsDialog;
 import java.io.File;
 import java.io.IOException;
@@ -31,6 +31,12 @@ import javafx.stage.Stage;
 import no.ntnu.idatg2001.wargames.ui.dialogs.BMHelpDialog;
 import no.ntnu.idatg2001.wargames.ui.Main;
 
+/**
+ * Controller class for main-view fxml page.
+ * Page is used to manage armies before simulating.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 public class BattleManagerController implements Initializable {
   @FXML private Label infantryCountA1;
   @FXML private Label rangedCountA1;
@@ -71,7 +77,7 @@ public class BattleManagerController implements Initializable {
 
   private static final String SAVE_FORMAT = "*.csv";
   private static final String SAVE_FORMAT_COMMENT = "Comma Separated File";
-  private BattleModel battleModel;
+  private WargamesModel wargamesModel;
   private String army1Name;
   private String army2Name;
 
@@ -82,7 +88,7 @@ public class BattleManagerController implements Initializable {
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
-    battleModel = BattleModel.getInstance();
+    wargamesModel = WargamesModel.getInstance();
 
     armyOneTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     armyTwoTableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
@@ -96,8 +102,8 @@ public class BattleManagerController implements Initializable {
     armyTwoNameColumn.setCellValueFactory(new PropertyValueFactory<>("name"));
     armyTwoHPColumn.setCellValueFactory(new PropertyValueFactory<>("health"));
 
-    if (battleModel.getTerrain() != null)
-      terrainLabel.setText(battleModel.getTerrain());
+    if (wargamesModel.getTerrain() != null)
+      terrainLabel.setText(wargamesModel.getTerrain());
 
     setLogosAndImages();
     refreshLists();
@@ -146,17 +152,17 @@ public class BattleManagerController implements Initializable {
    * amount of each unit, as well as total units.
    */
   private void setLabels() {
-    infantryCountA1.setText(String.valueOf(battleModel.getArmy1().getInfantryUnits().size()));
-    rangedCountA1.setText(String.valueOf(battleModel.getArmy1().getRangedUnits().size()));
-    cavalryCountA1.setText(String.valueOf(battleModel.getArmy1().getCavalryUnits().size()));
-    commanderCountA1.setText(String.valueOf(battleModel.getArmy1().getCommanderUnits().size()));
-    totalCountA1.setText(String.valueOf(battleModel.getArmy1().getUnits().size()));
+    infantryCountA1.setText(String.valueOf(wargamesModel.getArmy1().getInfantryUnits().size()));
+    rangedCountA1.setText(String.valueOf(wargamesModel.getArmy1().getRangedUnits().size()));
+    cavalryCountA1.setText(String.valueOf(wargamesModel.getArmy1().getCavalryUnits().size()));
+    commanderCountA1.setText(String.valueOf(wargamesModel.getArmy1().getCommanderUnits().size()));
+    totalCountA1.setText(String.valueOf(wargamesModel.getArmy1().getUnits().size()));
 
-    infantryCountA2.setText(String.valueOf(battleModel.getArmy2().getInfantryUnits().size()));
-    rangedCountA2.setText(String.valueOf(battleModel.getArmy2().getRangedUnits().size()));
-    cavalryCountA2.setText(String.valueOf(battleModel.getArmy2().getCavalryUnits().size()));
-    commanderCountA2.setText(String.valueOf(battleModel.getArmy2().getCommanderUnits().size()));
-    totalCountA2.setText(String.valueOf(battleModel.getArmy2().getUnits().size()));
+    infantryCountA2.setText(String.valueOf(wargamesModel.getArmy2().getInfantryUnits().size()));
+    rangedCountA2.setText(String.valueOf(wargamesModel.getArmy2().getRangedUnits().size()));
+    cavalryCountA2.setText(String.valueOf(wargamesModel.getArmy2().getCavalryUnits().size()));
+    commanderCountA2.setText(String.valueOf(wargamesModel.getArmy2().getCommanderUnits().size()));
+    totalCountA2.setText(String.valueOf(wargamesModel.getArmy2().getUnits().size()));
   }
 
   /**
@@ -164,16 +170,16 @@ public class BattleManagerController implements Initializable {
    * It also runs setLabels method.
    */
   private void refreshLists() {
-    army1Name = battleModel.getBattle().getArmy1().getName();
-    army2Name = battleModel.getBattle().getArmy2().getName();
+    army1Name = wargamesModel.getBattle().getArmy1().getName();
+    army2Name = wargamesModel.getBattle().getArmy2().getName();
     armyOneName.setText(army1Name);
     armyTwoName.setText(army2Name);
     ObservableList<Unit> observableListOfUnitsArmyOne =
-        FXCollections.observableList(battleModel.getBattle().getArmy1().getUnits());
+        FXCollections.observableList(wargamesModel.getBattle().getArmy1().getUnits());
     ObservableList<Unit> observableListOfUnitsArmyTwo =
-        FXCollections.observableList(battleModel.getBattle().getArmy2().getUnits());
-    battleModel.getBattle().getArmy1().setUnits(observableListOfUnitsArmyOne);
-    battleModel.getBattle().getArmy2().setUnits(observableListOfUnitsArmyTwo);
+        FXCollections.observableList(wargamesModel.getBattle().getArmy2().getUnits());
+    wargamesModel.getBattle().getArmy1().setUnits(observableListOfUnitsArmyOne);
+    wargamesModel.getBattle().getArmy2().setUnits(observableListOfUnitsArmyTwo);
     armyOneTableView.setItems(observableListOfUnitsArmyOne); //Sets the list in armies as the observable list
     armyTwoTableView.setItems(observableListOfUnitsArmyTwo);
     setLabels();
@@ -208,22 +214,22 @@ public class BattleManagerController implements Initializable {
     Alert alert = new Alert(Alert.AlertType.WARNING);
 
     try {
-      if (battleModel.getTerrain() == null)
+      if (wargamesModel.getTerrain() == null)
         throw new NullPointerException("Terrain not selected!");
 
-      if (battleModel.isEmpty()) {
+      if (wargamesModel.isEmpty()) {
         alert.setHeaderText("No units to fight each other..");
         alert.setContentText("To simulate add units.");
         alert.showAndWait();
       } else {
-        battleModel.makeDuplicateArmies();
+        wargamesModel.makeDuplicateArmies();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("simulation-view.fxml"));
         Stage stage = (Stage) simulateLogo.getScene().getWindow();
         Scene scene = new Scene(fxmlLoader.load(), 875, 615);
         stage.setScene(scene);
       }
     } catch (Exception e) {
-      if (BattleModel.getInstance().getTerrain() == null) {
+      if (WargamesModel.getInstance().getTerrain() == null) {
         alert.setHeaderText("Select a terrain to continue.");
       } else {
         alert.setHeaderText("An error has occurred.");
@@ -257,20 +263,20 @@ public class BattleManagerController implements Initializable {
 
         if (selectionOfSave.get() == army1Save) {
           chooser.setInitialFileName(army1Name.strip());
-          toSave = battleModel.getArmy1();
+          toSave = wargamesModel.getArmy1();
         }
         else if (selectionOfSave.get() == army2Save) {
           chooser.setInitialFileName(army2Name.strip());
-          toSave = battleModel.getArmy2();
+          toSave = wargamesModel.getArmy2();
         }
         else if (selectionOfSave.get() == battleSave) {
           chooser.setInitialFileName(army1Name.strip() + "-vs-" + army2Name.strip());
-          toSave = battleModel.getBattle();
+          toSave = wargamesModel.getBattle();
         }
         chooser.getExtensionFilters().addAll(
             new FileChooser.ExtensionFilter(SAVE_FORMAT_COMMENT, SAVE_FORMAT));
         File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
-        BattleModel.getInstance().saveToFile(selectedPath, toSave);
+        WargamesModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setHeaderText("Something went wrong.");
@@ -290,7 +296,7 @@ public class BattleManagerController implements Initializable {
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
-      battleModel.reset();
+      wargamesModel.reset();
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 875, 615);
       Stage stage = (Stage) simulateLogo.getScene().getWindow();
@@ -312,7 +318,7 @@ public class BattleManagerController implements Initializable {
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        BattleModel.getInstance().readFromFile(selectedFile.getPath(), battleModel.getBattle());
+        WargamesModel.getInstance().readFromFile(selectedFile.getPath(), wargamesModel.getBattle());
         refreshLists();
       }
     } catch (Exception e) {
@@ -381,7 +387,7 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onOpenToArmy1ButtonClicked() {
-    addArmyFromFile(battleModel.getArmy1());
+    addArmyFromFile(wargamesModel.getArmy1());
     refreshLists();
   }
 
@@ -390,7 +396,7 @@ public class BattleManagerController implements Initializable {
    */
   @FXML
   private void onOpenToArmy2ButtonClicked() {
-    addArmyFromFile(battleModel.getArmy2());
+    addArmyFromFile(wargamesModel.getArmy2());
     refreshLists();
   }
 
@@ -425,7 +431,7 @@ public class BattleManagerController implements Initializable {
 
     try {
       if (selectedFile != null)
-        BattleModel.getInstance().readFromFile(selectedFile.getPath(), obj);
+        WargamesModel.getInstance().readFromFile(selectedFile.getPath(), obj);
     }catch(Exception e){
       Alert noFileExists = new Alert(Alert.AlertType.WARNING);
       noFileExists.setTitle("File error");
@@ -445,7 +451,7 @@ public class BattleManagerController implements Initializable {
     Optional<String> result = newArmy1Name.showAndWait();
 
     if (result.isPresent()) {
-      battleModel.getBattle().getArmy1().setName(result.get());
+      wargamesModel.getBattle().getArmy1().setName(result.get());
       army1Name = result.get();
       armyOneName.setText(result.get());
     } else
@@ -462,7 +468,7 @@ public class BattleManagerController implements Initializable {
     newArmy2Name.setHeaderText("Enter new name.");
 
     if (result.isPresent()) {
-      battleModel.getBattle().getArmy2().setName(result.get());
+      wargamesModel.getBattle().getArmy2().setName(result.get());
       army2Name = result.get();
       armyTwoName.setText(result.get());
     } else
@@ -502,7 +508,7 @@ public class BattleManagerController implements Initializable {
    */
   private void terrainSelected(String terrain) {
     try {
-      BattleModel.getInstance().setTerrain(terrain);
+      WargamesModel.getInstance().setTerrain(terrain);
     } catch (Exception e) {
       new Alert(Alert.AlertType.ERROR, "Terrain error: " + e.getMessage());
     }
@@ -520,7 +526,7 @@ public class BattleManagerController implements Initializable {
    * Button in menu to reset the battle.
    */
   public void onResetButtonPressed() {
-    battleModel.reset();
+    wargamesModel.reset();
     refreshLists();
   }
 }

@@ -3,6 +3,8 @@ package no.ntnu.idatg2001.wargames.army.units;
 /**
  * Subclass of unit.
  * Unit specialises in long range attacks.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class RangedUnit extends Unit {
 
@@ -44,7 +46,7 @@ public class RangedUnit extends Unit {
         else if (getTerrain() == Bonuses.terrain.HILL) //Hills make these units stronger.
             return 4;
         else if (getHitsTaken() < 1) //If another unit has hit ranged 2 times they are considered close and ranged will do less dmg.
-            return 4;
+            return 6;
         else
             return 0;
     }

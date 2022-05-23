@@ -1,23 +1,30 @@
 package no.ntnu.idatg2001.wargames.ui.dialogs;
 
+import java.io.File;
 import javafx.geometry.Pos;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 /**
  * Class to show help dialog in simulateController.
  * It is used to display useful information about
  * the features on the page.
+ * @author Sander Hauge.
+ * @version 1.0-SNAPSHOT
  */
-public class SimulationHelpDialog {
+public class SimulationHelpDialog extends Dialog<ButtonType> {
   private final String boldFont;
 
   /**
-   * Constructor for simulationHelpDialog.
+   * Constructor to call for super(): Dialog constructor,
+   * to create a dialog object. CSS boldFont also set as string.
    */
   public SimulationHelpDialog() {
+    super();
     boldFont = "-fx-font-weight: bold";
   }
 
@@ -25,6 +32,9 @@ public class SimulationHelpDialog {
    * Method which shows help dialog in battleManager class.
    */
   public void showDialog() {
+    File logo = new File
+        ("src/main/resources/no/ntnu/idatg2001/wargames/ui/controllers/Logos/Tank.png");
+    ((Stage)getDialogPane().getScene().getWindow()).getIcons().add(new Image(logo.toURI().toString())); //Sets logo.
     createDialog();
   }
 
@@ -32,17 +42,16 @@ public class SimulationHelpDialog {
    * Method to create FAQ/Help dialog in the simulateController.
    */
   private void createDialog() {
-    Dialog<ButtonType> helpSimulationPage = new Dialog<>();
-    helpSimulationPage.setTitle("Simulation - Info");
+    setTitle("Simulation - Info");
     Label information = new Label("This is the Simulation page where you can place the armies\n" +
         "made in the previous page against each other. You may run both single\n" +
         "and multiple simulations at the same time.");
-    helpSimulationPage.getDialogPane().getButtonTypes().addAll(ButtonType.OK);
+    getDialogPane().getButtonTypes().addAll(ButtonType.OK);
     VBox faq = new VBox(information, functionalityInformation());
     faq.setAlignment(Pos.CENTER);
     faq.setSpacing(20);
-    helpSimulationPage.getDialogPane().setContent(faq);
-    helpSimulationPage.showAndWait();
+    getDialogPane().setContent(faq);
+    showAndWait();
   }
 
   /**

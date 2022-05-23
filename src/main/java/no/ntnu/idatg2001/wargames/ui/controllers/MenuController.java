@@ -1,6 +1,6 @@
 package no.ntnu.idatg2001.wargames.ui.controllers;
 
-import no.ntnu.idatg2001.wargames.model.BattleModel;
+import no.ntnu.idatg2001.wargames.model.WargamesModel;
 import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -16,6 +16,12 @@ import javafx.stage.Stage;
 import no.ntnu.idatg2001.wargames.ui.dialogs.MainHelpDialog;
 import no.ntnu.idatg2001.wargames.ui.Main;
 
+/**
+ * Controller class for main-menu fxml file.
+ * Page is used as front page of application.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 public class MenuController implements Initializable {
   @FXML private ImageView openSimLogo;
   @FXML private ImageView newSimLogo;
@@ -79,7 +85,7 @@ public class MenuController implements Initializable {
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
-        BattleModel.getInstance().readFromFile(selectedFile.getPath(), "");
+        WargamesModel.getInstance().readFromFile(selectedFile.getPath(), "");
         //Empty string counts as an object. Battle file is read, when anything but army objects are passed.
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
         Stage stage = (Stage) logo.getScene().getWindow();

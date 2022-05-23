@@ -1,5 +1,6 @@
 package no.ntnu.idatg2001.wargames.ui.dialogs;
 
+import java.io.File;
 import java.util.Optional;
 import javafx.beans.value.ChangeListener;
 import javafx.geometry.Pos;
@@ -9,40 +10,55 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import no.ntnu.idatg2001.wargames.model.BattleModel;
+import javafx.stage.Stage;
+import no.ntnu.idatg2001.wargames.model.WargamesModel;
 
 /**
  * Custom dialog class for adding units to an army.
- * Does not use constructor.
+ * Extends dialog.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
-public class AddUnitsDialog {
-
+public class AddUnitsDialog extends Dialog<ButtonType> {
   private TextField name;
   private ComboBox<String> typeUnit;
   private TextField hp;
   private TextField amount;
 
   /**
+   * Constructor calling super(): Dialog constructor,
+   * to create its dialog object.
+   */
+  public AddUnitsDialog() {
+    super();
+  }
+
+  /**
    * Shows the dialog after it is created.
    * @param armyNumber Takes an armyNumber of which army to add the units to.
    */
   public void showDialog(int armyNumber) {
+    File logo = new File
+        ("src/main/resources/no/ntnu/idatg2001/wargames/ui/controllers/Logos/Tank.png");
+    ((Stage)getDialogPane().getScene().getWindow()).getIcons().add(new Image(logo.toURI().toString())); //Sets logo.
+    setTitle("Add units to army " + armyNumber);
     Optional<ButtonType> result = createDialog();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
-      BattleModel battleModel = BattleModel.getInstance();
+      WargamesModel wargamesModel = WargamesModel.getInstance();
 
       try {
         int hpInt = Integer.parseInt(hp.getText());
         int amountInt = Integer.parseInt(amount.getText());
 
         if (armyNumber == 1)
-          BattleModel.getInstance().createNewUnits(battleModel.getArmy1(), typeUnit.getValue(),
+          WargamesModel.getInstance().createNewUnits(wargamesModel.getArmy1(), typeUnit.getValue(),
               name.getText(), hpInt, amountInt);
         else if (armyNumber == 2)
-          BattleModel.getInstance().createNewUnits(battleModel.getArmy2(), typeUnit.getValue(),
+          WargamesModel.getInstance().createNewUnits(wargamesModel.getArmy2(), typeUnit.getValue(),
               name.getText(), hpInt, amountInt);
       } catch (Exception e) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
@@ -58,13 +74,12 @@ public class AddUnitsDialog {
    * @return ButtonType selection, either "OK" or "Cancel".
    */
   private Optional<ButtonType> createDialog() {
-    Dialog<ButtonType> addUnits = new Dialog<>();
     typeUnit = new ComboBox<>();
     typeUnit.getItems().addAll("InfantryUnit", "RangedUnit", "CavalryUnit", "CommanderUnit");
-    addUnits.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-    addUnits.getDialogPane().getChildren().addAll(typeUnit);
-    addUnits.getDialogPane().setPrefHeight(200);
-    addUnits.getDialogPane().setPrefWidth(250);
+    getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    getDialogPane().getChildren().addAll(typeUnit);
+    getDialogPane().setPrefHeight(200);
+    getDialogPane().setPrefWidth(250);
 
     name = new TextField();
     hp = new TextField();
@@ -88,9 +103,9 @@ public class AddUnitsDialog {
     amountHBox.setAlignment(Pos.CENTER);
     VBox vBox = new VBox(typeHBox, nameHBox, healthHBox, amountHBox);
     vBox.setSpacing(10);
-    addUnits.getDialogPane().setContent(vBox);
+    getDialogPane().setContent(vBox);
 
-    return addUnits.showAndWait();
+    return showAndWait();
   }
 
   /**

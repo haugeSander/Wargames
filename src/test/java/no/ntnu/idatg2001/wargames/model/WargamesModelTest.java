@@ -6,9 +6,9 @@ import no.ntnu.idatg2001.wargames.army.units.InfantryUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-class BattleModelTest {
+class WargamesModelTest {
   private Army test1;
-  private BattleModel battleModel;
+  private WargamesModel wargamesModel;
 
   /**
    * Creates objects used for tests before they are run.
@@ -18,7 +18,7 @@ class BattleModelTest {
   void constructor() {
     test1 = new Army("Test1");
     Army test2 = new Army("Test2");
-    battleModel = BattleModel.getInstance();
+    wargamesModel = WargamesModel.getInstance();
     InfantryUnit testInfantry = new InfantryUnit("TestInfantry", 10);
 
     test1.add(testInfantry);
@@ -26,10 +26,10 @@ class BattleModelTest {
     test2.add(new InfantryUnit("Infantry3", 10));
     test2.add(new InfantryUnit("Infantry4", 10));
 
-    battleModel.getArmy1().setName(test1.getName());
-    battleModel.getArmy2().setName(test2.getName());
-    battleModel.getArmy1().setUnits(test1.getUnits());
-    battleModel.getArmy2().setUnits(test2.getUnits());
+    wargamesModel.getArmy1().setName(test1.getName());
+    wargamesModel.getArmy2().setName(test2.getName());
+    wargamesModel.getArmy1().setUnits(test1.getUnits());
+    wargamesModel.getArmy2().setUnits(test2.getUnits());
   }
 
   /**
@@ -37,10 +37,10 @@ class BattleModelTest {
    */
   @Test
   void reset() {
-    assertEquals(battleModel.getArmy1().toString(), test1.toString());
-    battleModel.reset();
-    assertTrue(battleModel.isEmpty());
-    assertNotEquals(battleModel.getArmy1().toString(), test1.toString());
+    assertEquals(wargamesModel.getArmy1().toString(), test1.toString());
+    wargamesModel.reset();
+    assertTrue(wargamesModel.isEmpty());
+    assertNotEquals(wargamesModel.getArmy1().toString(), test1.toString());
   }
 
   /**
@@ -48,11 +48,11 @@ class BattleModelTest {
    */
   @Test
   void refreshDuplicates() {
-    assertEquals(battleModel.getArmy1().toString(), test1.toString());
-    battleModel.makeDuplicateArmies();
-    battleModel.getArmy1().getUnits().clear();
-    battleModel.refreshDuplicates();
-    assertNotEquals(battleModel.getArmy1().toString(), test1.toString());
+    assertEquals(wargamesModel.getArmy1().toString(), test1.toString());
+    wargamesModel.makeDuplicateArmies();
+    wargamesModel.getArmy1().getUnits().clear();
+    wargamesModel.refreshDuplicates();
+    assertNotEquals(wargamesModel.getArmy1().toString(), test1.toString());
   }
 
   /**
@@ -61,7 +61,7 @@ class BattleModelTest {
   @Test
   void setTerrain() {
     try {
-      battleModel.setTerrain("Hill");
+      wargamesModel.setTerrain("Hill");
     } catch (Exception e) {
       System.out.println(e.getMessage());
       fail();
@@ -74,6 +74,6 @@ class BattleModelTest {
   @Test
   void getTerrain() {
     setTerrain();
-    assertEquals(battleModel.getTerrain(), "Hill");
+    assertEquals(wargamesModel.getTerrain(), "Hill");
   }
 }

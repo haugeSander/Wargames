@@ -6,6 +6,8 @@ import java.util.Random;
 
 /**
  * Class which represent the simulation part of the application.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class Battle extends BattleUpdater {
     private Army army1;

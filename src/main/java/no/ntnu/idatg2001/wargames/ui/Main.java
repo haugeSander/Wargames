@@ -8,6 +8,11 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
+/**
+ * Main class which launches application.
+ * @author Sander Hauge.
+ * @version 1.0-SNAPSHOT
+ */
 public class Main extends Application {
 
   /**
@@ -17,8 +22,9 @@ public class Main extends Application {
   public void start(Stage stage) throws Exception {
     FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("controllers/main-menu.fxml"));
     Scene scene = new Scene(fxmlLoader.load(), 875, 615);
-
     stage.getIcons().add(new Image(String.valueOf(getClass().getResource("Controllers/Logos/Tank.png"))));
+    stage.setMinWidth(900);
+    stage.setMinHeight(640); //Bigger than fxml load because it is based on different window size.
     stage.setTitle("Wargames");
     stage.setResizable(true);
     stage.setScene(scene);

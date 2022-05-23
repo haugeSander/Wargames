@@ -3,6 +3,8 @@ package no.ntnu.idatg2001.wargames.army.units;
 /**
  * Subclass of CavalryUnit.
  * A stronger cavalry, should function as leader.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class CommanderUnit extends CavalryUnit {
 

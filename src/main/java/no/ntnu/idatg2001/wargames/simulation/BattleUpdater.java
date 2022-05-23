@@ -7,6 +7,8 @@ import java.util.List;
  * Updater in the observer pattern. Updates when something happens in battle.
  * This notifies the subscribers whenever the observer
  * changes its state.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public abstract class BattleUpdater {
   private final List<BattleObserver> observers = new ArrayList<>();
@@ -20,7 +22,8 @@ public abstract class BattleUpdater {
   }
 
   /**
-   * Method to remove an observer.
+   * Method to remove an observer, standard to include in observer classes.
+   * Never used in final version.
    * @param battleObserver Observer to be removed.
    */
   public void unsubscribe(BattleObserver battleObserver) {

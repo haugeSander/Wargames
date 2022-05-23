@@ -3,6 +3,8 @@ package no.ntnu.idatg2001.wargames.army.units;
 /**
  * Subclass of unit.
  * Unit which specialises in close combat.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class InfantryUnit extends Unit {
 
@@ -31,7 +33,7 @@ public class InfantryUnit extends Unit {
     @Override
     public int getAttackBonus() {
         if (getHitsTaken() > 2 && getTerrain() == Bonuses.terrain.FOREST) //To give the unit a close range bonus and when in forests.
-            return 5;
+            return 4;
         if (getTerrain() == Bonuses.terrain.FOREST) //Infantry is strongest in forests.
             return 3;
         else if (getHitsTaken() > 2) //When close range they do most damage.

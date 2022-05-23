@@ -13,6 +13,8 @@ import no.ntnu.idatg2001.wargames.army.units.Unit;
 /**
  * Constructor for army class.
  * Keeps a list of units, forming an army.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class Army {
     private String name;

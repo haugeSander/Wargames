@@ -33,6 +33,7 @@
                 <Menu mnemonicParsing="false" text="Edit">
                   <items>
                     <MenuItem mnemonicParsing="false" onAction="#onRefreshPressed" text="Refresh" />
+                        <MenuItem mnemonicParsing="false" onAction="#onResetGraphsPressed" text="Reset graphs" />
                   </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Help">
@@ -80,6 +81,18 @@
                         </TableView>
                      </children>
                   </VBox>
+                  <VBox alignment="TOP_CENTER">
+                     <children>
+                        <Button mnemonicParsing="false" onAction="#onInfoButtonPressed" prefHeight="25.0" prefWidth="25.0" styleClass="round-Button" stylesheets="@Style/style.css" text="?">
+                           <font>
+                              <Font size="10.0" />
+                           </font>
+                           <VBox.margin>
+                              <Insets top="10.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                  </VBox>
                   <VBox alignment="CENTER" prefHeight="192.0" prefWidth="128.0">
                      <children>
                         <HBox>
@@ -107,7 +120,7 @@
                         <ImageView fx:id="podium" fitHeight="95.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                      <HBox.margin>
-                        <Insets left="250.0" />
+                        <Insets left="200.0" />
                      </HBox.margin>
                   </VBox>
                </children>

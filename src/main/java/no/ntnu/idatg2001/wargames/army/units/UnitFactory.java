@@ -6,6 +6,8 @@ import java.util.List;
 /**
  * Factory class for units.
  * Not a singleton since it is a static class.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class UnitFactory {
   /**

@@ -10,8 +10,14 @@ import no.ntnu.idatg2001.wargames.simulation.Battle;
 import no.ntnu.idatg2001.wargames.simulation.BattleObserver;
 import no.ntnu.idatg2001.wargames.utility.FileHandler;
 
-public class BattleModel {
-  private static volatile BattleModel instance; //Stops other threads to access at the same time.
+/**
+ * Facade class named WargamesModel.
+ * Connects backend to GUI. Used to reduce coupling.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
+public class WargamesModel {
+  private static volatile WargamesModel instance; //Stops other threads to access at the same time.
   private Battle battle;
   private Army army1;
   private Army army2;
@@ -24,7 +30,7 @@ public class BattleModel {
   /**
    * Private constructor due to this being a singleton.
    */
-  private BattleModel() {
+  private WargamesModel() {
     army1 = new Army("Army1");
     army2 = new Army("Army2");
     battle = new Battle(army1, army2);
@@ -36,10 +42,10 @@ public class BattleModel {
    * is already made or creates it if not.
    * @return The one single item of facade.
    */
-  public static BattleModel getInstance() {
+  public static WargamesModel getInstance() {
     if (instance == null) {
-      synchronized (BattleModel.class) {
-        instance = new BattleModel();
+      synchronized (WargamesModel.class) {
+        instance = new WargamesModel();
       }
     }
     return instance;

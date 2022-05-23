@@ -3,6 +3,8 @@ package no.ntnu.idatg2001.wargames.army.units;
 /**
  * Subclass of unit.
  * Unit which should function as a soldier on a horse.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
  */
 public class CavalryUnit extends Unit {
 
