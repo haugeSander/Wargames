@@ -6,6 +6,11 @@ import no.ntnu.idatg2001.wargames.army.units.InfantryUnit;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for WargamesModel.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 class WargamesModelTest {
   private Army test1;
   private WargamesModel wargamesModel;
@@ -74,6 +79,6 @@ class WargamesModelTest {
   @Test
   void getTerrain() {
     setTerrain();
-    assertEquals(wargamesModel.getTerrain(), "Hill");
+    assertEquals("Hill", wargamesModel.getTerrain());
   }
 }

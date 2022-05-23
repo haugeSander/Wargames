@@ -13,6 +13,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+/**
+ * Test class for FileHandler.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 class FileHandlerTest {
   private List<Army> list;
   private Unit infantry1;
@@ -79,8 +84,9 @@ class FileHandlerTest {
       System.out.println(e.getMessage());
     }
 
+    List<Army> finalReadFromFile = readFromFile;
     Assertions.assertThrows(IndexOutOfBoundsException.class, () ->
-        FileHandler.readFile("Blue.csv").get(1), "Index out of bounds, list size 1!");
+        finalReadFromFile.get(1), "Index out of bounds, list size 1!");
     //Result is ignored, but tested. Tests to make sure it never saves two armies when one is input.
 
     try {

@@ -12,6 +12,12 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for unit and children classes.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ *
+ */
 class UnitTest {
     private Unit infantry;
     private Unit commander;
@@ -35,10 +41,10 @@ class UnitTest {
      */
     @Test
     void getAttack() {
-        assertEquals(infantry.getAttack(), 15);
-        assertEquals(commander.getAttack(), 25);
-        assertEquals(ranged.getAttack(), 15);
-        assertEquals(cavalry.getAttack(), 20);
+        assertEquals(15, infantry.getAttack());
+        assertEquals(25, commander.getAttack());
+        assertEquals(15, ranged.getAttack());
+        assertEquals(20, cavalry.getAttack());
     }
 
     /**
@@ -46,8 +52,8 @@ class UnitTest {
      */
     @Test
     void getHealth() {
-        assertEquals(infantry.getHealth(), 100);
-        assertEquals(ranged.getHealth(), 100);
+        assertEquals(100, infantry.getHealth());
+        assertEquals(100, ranged.getHealth());
 
         infantry.attack(ranged);
         assertEquals(ranged.getHealth(), (100 - (infantry.getAttack() + infantry.getAttackBonus()) +
@@ -70,15 +76,15 @@ class UnitTest {
      */
     @Test
     void getBaseAttackBonus() {
-        assertEquals(infantry.getAttackBonus(), 0);
-        assertEquals(commander.getAttackBonus(), 6);
-        assertEquals(ranged.getAttackBonus(), 4);
-        assertEquals(cavalry.getAttackBonus(), 6);
+        assertEquals(0, infantry.getAttackBonus());
+        assertEquals(6, commander.getAttackBonus());
+        assertEquals(6, ranged.getAttackBonus());
+        assertEquals(6, cavalry.getAttackBonus());
 
         cavalry.attack(ranged);
 
-        assertEquals(ranged.getAttackBonus(), 0);
-        assertEquals(cavalry.getAttackBonus(), 1);
+        assertEquals(0, ranged.getAttackBonus());
+        assertEquals(1, cavalry.getAttackBonus());
     }
 
     /**
@@ -86,18 +92,18 @@ class UnitTest {
      */
     @Test
     void getBaseResistBonus() {
-        assertEquals(infantry.getResistBonus(), 1);
-        assertEquals(ranged.getResistBonus(), 6);
-        assertEquals(cavalry.getResistBonus(), 0);
-        assertEquals(commander.getResistBonus(), 0);
+        assertEquals(1, infantry.getResistBonus());
+        assertEquals(6, ranged.getResistBonus());
+        assertEquals(0, cavalry.getResistBonus());
+        assertEquals(0, commander.getResistBonus());
     }
 
     @Test
     void getAndSetTerrain() {
         assertNull(infantry.getTerrain());
         infantry.setTerrain("Hill");
-        assertEquals(infantry.getTerrain(), Bonuses.terrain.HILL);
-        assertNotEquals(commander.getTerrain(), Bonuses.terrain.HILL);
+        assertEquals(Bonuses.terrain.HILL, infantry.getTerrain());
+        assertNotEquals(Bonuses.terrain.HILL, commander.getTerrain());
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
             infantry.setTerrain("Mountain"), "Mountain is an invalid terrain!");
@@ -109,8 +115,8 @@ class UnitTest {
     @Test
     void getAttackBonusWithTerrainBonus() {
         infantry.setTerrain("Forest");
-        assertEquals(infantry.getTerrain(), Bonuses.terrain.FOREST);
-        assertEquals(infantry.getAttackBonus(), 3);
+        assertEquals(Bonuses.terrain.FOREST, infantry.getTerrain());
+        assertEquals(3, infantry.getAttackBonus());
     }
 
     /**
@@ -118,16 +124,16 @@ class UnitTest {
      */
     @Test
     void getHitsTakenOrDealt() {
-        assertEquals(infantry.getHitsTaken(), 0);
-        assertEquals(infantry.getHitsDealt(), 0);
-        assertEquals(ranged.getHitsTaken(), 0);
-        assertEquals(ranged.getHitsDealt(), 0);
+        assertEquals(0, infantry.getHitsTaken());
+        assertEquals(0, infantry.getHitsDealt());
+        assertEquals(0, ranged.getHitsTaken());
+        assertEquals(0, ranged.getHitsDealt());
 
         ranged.attack(infantry);
 
-        assertEquals(infantry.getHitsTaken(), 1);
-        assertEquals(ranged.getHitsDealt(), 1);
-        assertEquals(ranged.getHitsTaken(), 0);
+        assertEquals(1, infantry.getHitsTaken());
+        assertEquals(1, ranged.getHitsDealt());
+        assertEquals(0, ranged.getHitsTaken());
     }
 
     /**
@@ -140,6 +146,6 @@ class UnitTest {
         commander.setName(""), "Name cannot be null or empty!");
 
         commander.setHealth(-5);
-        assertEquals(commander.getHealth(), 0);
+        assertEquals(0, commander.getHealth());
     }
 }

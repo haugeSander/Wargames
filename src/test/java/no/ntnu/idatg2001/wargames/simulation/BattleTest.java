@@ -9,6 +9,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for Battle.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 class BattleTest {
     private Army blue;
     private Army red;
@@ -74,6 +79,6 @@ class BattleTest {
             battle.setTerrain(""), "No such terrain exist");
 
         battle.setTerrain("Hill");
-        assertEquals(battle.getArmy1().getUnits().get(0).getTerrain().toString(), "HILL");
+        assertEquals("HILL", battle.getArmy1().getUnits().get(0).getTerrain().toString());
     }
 }

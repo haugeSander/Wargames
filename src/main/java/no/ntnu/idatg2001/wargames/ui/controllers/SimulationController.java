@@ -282,6 +282,7 @@ public class SimulationController implements Initializable, BattleObserver {
     Optional<ButtonType> result = goBackConfirmation.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
+      wargamesModel.refreshDuplicates();
       refresh();
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Scene scene = new Scene(fxmlLoader.load(), 875, 615);

@@ -13,6 +13,11 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Test class for Army.
+ * @author Sander Hauge
+ * @version 1.0-SNAPSHOT
+ */
 class ArmyTest {
     private List<Unit> list;
     private Unit infantry1;
