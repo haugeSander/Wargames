@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import no.ntnu.idatg2001.wargames.army.Army;
-import no.ntnu.idatg2001.wargames.army.units.Unit;
 import no.ntnu.idatg2001.wargames.army.units.UnitFactory;
 import no.ntnu.idatg2001.wargames.simulation.Battle;
 import no.ntnu.idatg2001.wargames.simulation.BattleObserver;
@@ -23,8 +22,7 @@ public class BattleModel {
   private Army duplicateArmy2;
 
   /**
-   * Private constructor due to this being a
-   * singleton.
+   * Private constructor due to this being a singleton.
    */
   private BattleModel() {
     army1 = new Army("Army1");
@@ -56,11 +54,11 @@ public class BattleModel {
     duplicateArmy2 = new Army(army2.getName());
 
     try {
-    for (Unit u : army1.getUnits()) {
-      duplicateArmy1.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
+    for (Object u : army1.getUnits()) { //Object toString override to make a unit copy.
+      duplicateArmy1.add(UnitFactory.toStringToUnit(u.toString()));
     }
-    for (Unit u : army2.getUnits()) {
-      duplicateArmy2.add(UnitFactory.createUnit(u.getClassName(), u.getName(), u.getHealth()));
+    for (Object u : army2.getUnits()) { //Model has no need to know of unit class this way.
+      duplicateArmy2.add(UnitFactory.toStringToUnit(u.toString()));
     }
     } catch (Exception e) {
       throw new IllegalArgumentException(e.getMessage());
@@ -140,20 +138,24 @@ public class BattleModel {
    * Removes dependencies between backend FileHandler and controller.
    * @param file File location to save.
    * @param armyOrBattle Object to save.
-   * @throws Exception If an error occurs.
+   * @throws IOException If an error occurs.
    */
-  public void saveToFile(File file, Object armyOrBattle) throws Exception {
+  public void saveToFile(File file, Object armyOrBattle) throws IOException {
     List<Army> listToFile = new ArrayList<>();
 
-    if (armyOrBattle.equals(army1)) {
-      listToFile.add(army1);
-    } else if (armyOrBattle.equals(army2)) {
-      listToFile.add(army2);
-    } else {
-      listToFile.add(army1);
-      listToFile.add(army2);
+    try {
+      if (armyOrBattle.equals(army1)) {
+        listToFile.add(army1);
+      } else if (armyOrBattle.equals(army2)) {
+        listToFile.add(army2);
+      } else {
+        listToFile.add(army1);
+        listToFile.add(army2);
+      }
+      FileHandler.writeFile(listToFile, file);
+    } catch (Exception e) {
+      throw new IOException(e.getMessage());
     }
-    FileHandler.writeFile(listToFile, file);
   }
 
   /**
@@ -183,7 +185,7 @@ public class BattleModel {
    */
   public boolean simulationStep() {
     isSimulationFinished = false;
-    battle.simulateStep(army1, army2);
+    battle.simulateStep();
 
     if (isEmpty()) {
       isSimulationFinished = true;
@@ -209,6 +211,7 @@ public class BattleModel {
    * Sets terrain for a battle.
    * @param terrain String representation of
    *                bonuses Enum.
+   * @throws IllegalArgumentException If terrain input is invalid.
    */
   public void setTerrain(String terrain) throws IllegalArgumentException {
     try {

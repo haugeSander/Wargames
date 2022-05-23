@@ -52,7 +52,7 @@ public abstract class Unit implements Bonuses {
      */
     @Override
     public String toString() {
-        return className + ": " + name + ", HP: " + health;
+        return className + "," + name + "," + health;
     }
 
     /**

@@ -42,7 +42,7 @@ public class Battle extends BattleUpdater {
             if (!army1.hasUnits() || !army2.hasUnits())
                 battleFinished = true;
             else {
-                simulateStep(army1, army2);
+                simulateStep();
             }
         }
 
@@ -54,10 +54,8 @@ public class Battle extends BattleUpdater {
 
     /**
      * Simulates one step at a time.
-     * @param army1 Army1 to battle.
-     * @param army2 Army2 to battle.
      */
-    public void simulateStep(Army army1, Army army2) {
+    public void simulateStep() {
         Unit randomArmy1Unit = army1.getRandom();
         Unit randomArmy2Unit = army2.getRandom();
         String stepEvent; //Main event this step.

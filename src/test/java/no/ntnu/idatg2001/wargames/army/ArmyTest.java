@@ -13,7 +13,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-public class ArmyTest {
+class ArmyTest {
     private List<Unit> list;
     private Unit infantry1;
     private Unit cavalry1;
@@ -85,7 +85,7 @@ public class ArmyTest {
     @Test
     void setName() {
         armyOne.setName("Test");
-        assertEquals(armyOne.getName(), "Test");
+        assertEquals("Test", armyOne.getName());
 
         Assertions.assertThrows(IllegalArgumentException.class, () ->
         armyOne.setName(""), "Name cannot be null or empty.");

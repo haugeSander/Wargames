@@ -37,6 +37,9 @@ class FileHandlerTest {
     testBattleSave = new Battle(armyOne, new Army("Red"));
   }
 
+  /**
+   * Tests writing of files in FileHandler.
+   */
   @Test
   void writeFile() {
     armyOne.add(infantry1);
@@ -47,15 +50,19 @@ class FileHandlerTest {
     list.add(armyOne);
 
     try {
-      FileHandler.writeFile(list, new File(armyOne.getName()));
+      FileHandler.writeFile(list, new File(armyOne.getName() + ".csv"));
       list.add(testBattleSave.getArmy2());
-      FileHandler.writeFile(list, new File(armyOne.getName()+"-vs-"+testBattleSave.getArmy2().getName()));
+      FileHandler.writeFile(list, new File(armyOne.getName() + "-vs-" +
+          testBattleSave.getArmy2().getName()+ ".csv"));
     } catch (Exception e){
       fail();
       System.out.println(e.getMessage());
     }
   }
 
+  /**
+   * Tests reading of files in FileHandler class.
+   */
   @Test
   void readFile() {
     List<Army> readFromFile = new ArrayList<>();
@@ -64,8 +71,6 @@ class FileHandlerTest {
     armyOne.add(cavalry1);
     armyOne.add(commander1);
     readFromFile.add(new Army("Red"));
-
-    System.out.println(InfantryUnit.class.getCanonicalName());
 
     try {
       readFromFile = FileHandler.readFile("Blue.csv");

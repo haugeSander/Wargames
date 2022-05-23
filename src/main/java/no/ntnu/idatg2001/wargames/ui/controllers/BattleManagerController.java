@@ -268,7 +268,7 @@ public class BattleManagerController implements Initializable {
           toSave = battleModel.getBattle();
         }
         chooser.getExtensionFilters().addAll(
-            new FileChooser.ExtensionFilter(SAVE_FORMAT, SAVE_FORMAT_COMMENT));
+            new FileChooser.ExtensionFilter(SAVE_FORMAT_COMMENT, SAVE_FORMAT));
         File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
         BattleModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
@@ -308,7 +308,7 @@ public class BattleManagerController implements Initializable {
     FileChooser chooser = new FileChooser();
     File selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
     chooser.getExtensionFilters().addAll
-        (new FileChooser.ExtensionFilter(SAVE_FORMAT, SAVE_FORMAT_COMMENT));
+        (new FileChooser.ExtensionFilter(SAVE_FORMAT_COMMENT, SAVE_FORMAT));
 
     try {
       if (selectedFile != null && selectedFile.getName().contains(".csv")) {
@@ -421,8 +421,7 @@ public class BattleManagerController implements Initializable {
     FileChooser chooser = new FileChooser();
 
     File selectedFile = chooser.showOpenDialog(simulateLogo.getScene().getWindow());
-    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(SAVE_FORMAT,
-        SAVE_FORMAT_COMMENT));
+    chooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter(SAVE_FORMAT_COMMENT, SAVE_FORMAT));
 
     try {
       if (selectedFile != null)

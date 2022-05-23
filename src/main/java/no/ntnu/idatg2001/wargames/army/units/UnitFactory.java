@@ -57,4 +57,25 @@ public class UnitFactory {
     }
     return listOfUnits;
   }
+
+  /**
+   * Method which takes toString input from unit and creates another unit.
+   * @param toStringField toString output from unit class.
+   * @return Unit copied.
+   */
+  public static Unit toStringToUnit(String toStringField) {
+    String[] split = toStringField.split(",");
+    String typeUnit;
+    String name;
+    int health;
+
+    try {
+      typeUnit = split[0];
+      name = split[1];
+      health = Integer.parseInt(split[2]);
+    } catch (Exception e) {
+      throw new IllegalArgumentException("Wrong values input.");
+    }
+    return createUnit(typeUnit, name, health);
+  }
 }

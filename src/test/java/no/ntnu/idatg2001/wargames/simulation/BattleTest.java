@@ -49,7 +49,7 @@ class BattleTest {
         red.getUnits().clear();
 
         Assertions.assertThrows(NullPointerException.class, () ->
-            battle.simulateStep(blue, red), "");
+            battle.simulateStep(), "");
     }
 
     /**

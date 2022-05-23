@@ -2,12 +2,10 @@ package no.ntnu.idatg2001.wargames.utility;
 
 import java.io.IOException;
 import no.ntnu.idatg2001.wargames.army.Army;
-import no.ntnu.idatg2001.wargames.army.units.Unit;
 import no.ntnu.idatg2001.wargames.army.units.UnitFactory;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -31,26 +29,21 @@ public class FileHandler {
    * @param fileName File to be saved.
    */
   public static void writeFile(List<Army> armies, File fileName) throws IOException {
-    BufferedWriter writer = null;
 
-    try {
-      writer = new BufferedWriter(new FileWriter(fileName + ".csv"));
+    try(BufferedWriter writer = Files.newBufferedWriter(fileName.toPath())) {
       writer.write(armies.get(0).getName());
 
-      for (Unit u : armies.get(0).getUnits())
-        writer.write("\n" + u.getClass().getName() + "," + u.getName() + "," + u.getHealth());
+      for (Object u : armies.get(0).getUnits())
+        writer.write("\n" + u.toString()); //Overridden toString into csv format.
 
       if (armies.size() == 2) {
         writer.write("\n\n" + armies.get(1).getName());
 
-        for (Unit u : armies.get(1).getUnits())
-          writer.write("\n" + u.getClass().getName() + "," + u.getName() + "," + u.getHealth());
+        for (Object u : armies.get(1).getUnits())
+          writer.write("\n" + u.toString());
       }
     } catch (Exception e) {
       throw new IOException(e.getMessage());
-    } finally {
-      assert writer != null;
-      writer.close();
     }
   }
 
@@ -72,7 +65,7 @@ public class FileHandler {
       while ((lineOfText = reader.readLine()) != null) {
         String[] words = lineOfText.split(",");
 
-        if (lineOfText.isEmpty()) {
+        if (lineOfText.isEmpty()) { //If there is a gap between armies, it sets this boolean to true.
           twoArmies = true;
         } else if (words.length < 2 && !twoArmies) {
           army1.setName(lineOfText);
