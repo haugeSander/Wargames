@@ -82,11 +82,13 @@ public class AddUnitsDialog extends Dialog<ButtonType> {
     getDialogPane().setPrefWidth(250);
 
     name = new TextField();
+    textFieldListener(name, ","); //Replaces commas with whitespace.
+    //Without this, if user input name with commas, save file may not work.
     hp = new TextField();
-    textFieldListener(hp);
+    textFieldListener(hp, "[^\\d]"); //Replaces digits with whitespace.
 
     amount = new TextField();
-    textFieldListener(amount);
+    textFieldListener(amount, "[^\\d]");
 
     Label type = new Label("Select type: ");
     Label labelName = new Label("Name of unit: ");
@@ -111,11 +113,12 @@ public class AddUnitsDialog extends Dialog<ButtonType> {
   /**
    * Method which restricts textField input to only being integers.
    * @param textField TextField in GUI.
+   * @param toReplace String of type to replace with whitespace.
    */
-  private void textFieldListener(TextField textField) {
+  private void textFieldListener(TextField textField, String toReplace) {
     ChangeListener<String> cl = (observableValue, oldValue, newValue) -> {
       if (!newValue.matches("\\d*")) {
-        textField.setText(newValue.replaceAll("[^\\d]", ""));
+        textField.setText(newValue.replaceAll(toReplace, ""));
       }
     };
     textField.textProperty().addListener(cl);

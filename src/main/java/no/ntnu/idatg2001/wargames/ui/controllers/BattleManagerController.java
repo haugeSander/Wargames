@@ -6,7 +6,6 @@ import no.ntnu.idatg2001.wargames.army.units.Unit;
 import no.ntnu.idatg2001.wargames.model.WargamesModel;
 import no.ntnu.idatg2001.wargames.ui.dialogs.AddUnitsDialog;
 import java.io.File;
-import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -194,18 +193,6 @@ public class BattleManagerController implements Initializable {
   }
 
   /**
-   * About button in menu shows information about creator and program.
-   */
-  @FXML
-  private void onAboutButtonClicked() {
-    Alert alert = new Alert(Alert.AlertType.INFORMATION, "About");
-    alert.setContentText("This is an application made by Sander!");
-    alert.setTitle("About");
-    alert.setHeaderText("This is a war simulator.");
-    alert.showAndWait();
-  }
-
-  /**
    * If units are available and terrain selected simulation page will be opened.
    * If not an alert telling user to add units or select terrain will show.
    */
@@ -278,10 +265,7 @@ public class BattleManagerController implements Initializable {
         File selectedPath = chooser.showSaveDialog(simulateLogo.getScene().getWindow());
         WargamesModel.getInstance().saveToFile(selectedPath, toSave);
       } catch (Exception e) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setHeaderText("Something went wrong.");
-        alert.setContentText(e.getMessage());
-        alert.showAndWait();
+        makeExceptionAlert(e.getMessage(), "File saving error.", "File save error", Alert.AlertType.ERROR);
       }
     }
   }
@@ -290,17 +274,22 @@ public class BattleManagerController implements Initializable {
    * Button which sends user back to front page.
    */
   @FXML
-  private void onBackButtonClicked() throws IOException {
+  private void onBackButtonClicked() {
     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Are you sure?");
     alert.setHeaderText("Are you sure you want to go back?");
     Optional<ButtonType> result = alert.showAndWait();
 
     if (result.isPresent() && result.get() == ButtonType.OK) {
-      wargamesModel.reset();
-      FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
-      Scene scene = new Scene(fxmlLoader.load(), 875, 615);
-      Stage stage = (Stage) simulateLogo.getScene().getWindow();
-      stage.setScene(scene);
+      try {
+        wargamesModel.reset();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-menu.fxml"));
+        Scene scene = new Scene(fxmlLoader.load(), 875, 615);
+        Stage stage = (Stage) simulateLogo.getScene().getWindow();
+        stage.setScene(scene);
+      } catch (Exception e) {
+        makeExceptionAlert(e.getMessage(), "Going to main menu failed.", "Error",
+            Alert.AlertType.ERROR);
+      }
     } else
       alert.close();
   }
@@ -322,11 +311,9 @@ public class BattleManagerController implements Initializable {
         refreshLists();
       }
     } catch (Exception e) {
-      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
-      noFileExists.setTitle("File error");
-      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
-      noFileExists.setContentText("Remember only .csv files are supported.");
-      noFileExists.showAndWait();
+      makeExceptionAlert(e.getMessage(), "The file selected not supported or nothing selected!\n" +
+              "Only .csv files are supported.",
+          "Open file error", Alert.AlertType.WARNING);
     }
   }
 
@@ -376,9 +363,7 @@ public class BattleManagerController implements Initializable {
         }
       }
     } catch (Exception e) {
-      Alert alert = new Alert(Alert.AlertType.ERROR, e.getMessage());
-      alert.setHeaderText("Unit does not exist.");
-      alert.showAndWait();
+      makeExceptionAlert(e.getMessage(), "Unit does not exist.", "Remove error", Alert.AlertType.ERROR);
     }
     setLabels();
   }
@@ -434,11 +419,8 @@ public class BattleManagerController implements Initializable {
       if (selectedFile != null)
         WargamesModel.getInstance().readFromFile(selectedFile.getPath(), obj);
     }catch(Exception e){
-      Alert noFileExists = new Alert(Alert.AlertType.WARNING);
-      noFileExists.setTitle("File error");
-      noFileExists.setHeaderText("The file selected not supported or nothing selected!");
-      noFileExists.setContentText("Remember only .csv files are supported.");
-      noFileExists.showAndWait();
+      makeExceptionAlert(e.getMessage(), "The file selected not supported or nothing selected!\n" +
+              "Remember only .csv files are supported.", "File error", Alert.AlertType.WARNING);
     }
   }
 
@@ -452,9 +434,10 @@ public class BattleManagerController implements Initializable {
     Optional<String> result = newArmy1Name.showAndWait();
 
     if (result.isPresent()) {
-      wargamesModel.getBattle().getArmy1().setName(result.get());
-      army1Name = result.get();
-      armyOneName.setText(result.get());
+      String formattedString = result.get().replace(",", "");
+      wargamesModel.getBattle().getArmy1().setName(formattedString);
+      army1Name = formattedString;
+      armyOneName.setText(formattedString);
     } else
       newArmy1Name.close();
   }
@@ -465,15 +448,30 @@ public class BattleManagerController implements Initializable {
   @FXML
   private void changeArmy2Name() {
     TextInputDialog newArmy2Name = new TextInputDialog();
-    Optional<String> result = newArmy2Name.showAndWait();
     newArmy2Name.setHeaderText("Enter new name.");
+    Optional<String> result = newArmy2Name.showAndWait();
 
     if (result.isPresent()) {
-      wargamesModel.getBattle().getArmy2().setName(result.get());
-      army2Name = result.get();
-      armyTwoName.setText(result.get());
+      String formattedString = result.get().replace(",", "");
+      wargamesModel.getBattle().getArmy2().setName(formattedString);
+      army2Name = formattedString;
+      armyTwoName.setText(formattedString);
     } else
       newArmy2Name.close();
+  }
+
+  /**
+   * Method to make alert.
+   * @param exceptionMessage Exception to get its message.
+   * @param info Header info about alert.
+   * @param alertType Alert type, error, warning etc.
+   */
+  private void makeExceptionAlert(String exceptionMessage, String info, String title,
+                                   Alert.AlertType alertType) {
+    Alert alert = new Alert(alertType);
+    alert.setTitle(title);
+    alert.setHeaderText(info);
+    alert.setContentText(exceptionMessage);
   }
 
   /**
@@ -511,14 +509,16 @@ public class BattleManagerController implements Initializable {
     try {
       WargamesModel.getInstance().setTerrain(terrain);
     } catch (Exception e) {
-      new Alert(Alert.AlertType.ERROR, "Terrain error: " + e.getMessage());
+      makeExceptionAlert(e.getMessage(), "Terrain selection error!", "Terrain error",
+          Alert.AlertType.ERROR);
     }
   }
 
   /**
    * Opens dialog with information about BattleManager's features.
    */
-  public void onHelpPressed() {
+  @FXML
+  private void onHelpPressed() {
     BMHelpDialog bmHelpDialog = new BMHelpDialog();
     bmHelpDialog.showDialog();
   }
@@ -526,8 +526,10 @@ public class BattleManagerController implements Initializable {
   /**
    * Button in menu to reset the battle.
    */
-  public void onResetButtonPressed() {
+  @FXML
+  private void onResetButtonPressed() {
     wargamesModel.reset();
+    terrainLabel.setText("Nothing selected.");
     refreshLists();
   }
 }

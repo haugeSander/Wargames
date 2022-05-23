@@ -60,12 +60,12 @@ public class WargamesModel {
     duplicateArmy2 = new Army(army2.getName());
 
     try {
-    for (Object u : army1.getUnits()) { //Object toString override to make a unit copy.
-      duplicateArmy1.add(UnitFactory.toStringToUnit(u.toString()));
-    }
-    for (Object u : army2.getUnits()) { //Model has no need to know of unit class this way.
-      duplicateArmy2.add(UnitFactory.toStringToUnit(u.toString()));
-    }
+      for (Object u : army1.getUnits()) { //Object toString override to make a unit copy.
+        duplicateArmy1.add(UnitFactory.toStringToUnit(u.toString()));
+      }
+      for (Object u : army2.getUnits()) { //Model has no need to know of unit class this way.
+        duplicateArmy2.add(UnitFactory.toStringToUnit(u.toString()));
+      }
     } catch (Exception e) {
       throw new IllegalArgumentException(e.getMessage());
     }
