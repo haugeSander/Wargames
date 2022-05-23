@@ -93,7 +93,7 @@
                         </Button>
                      </children>
                   </VBox>
-                  <VBox alignment="CENTER" prefHeight="192.0" prefWidth="128.0">
+                  <VBox alignment="CENTER" prefHeight="187.0" prefWidth="252.0">
                      <children>
                         <HBox>
                            <children>
@@ -120,7 +120,7 @@
                         <ImageView fx:id="podium" fitHeight="95.0" fitWidth="85.0" pickOnBounds="true" preserveRatio="true" />
                      </children>
                      <HBox.margin>
-                        <Insets left="200.0" />
+                        <Insets left="175.0" />
                      </HBox.margin>
                   </VBox>
                </children>

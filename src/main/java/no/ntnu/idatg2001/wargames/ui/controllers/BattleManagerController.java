@@ -380,6 +380,7 @@ public class BattleManagerController implements Initializable {
       alert.setHeaderText("Unit does not exist.");
       alert.showAndWait();
     }
+    setLabels();
   }
 
   /**

@@ -187,9 +187,9 @@ public class SimulationController implements Initializable, BattleObserver {
       timeline.stop();
 
       if (wargamesModel.getArmy1().hasUnits())
-        winnerLabel.setText(army2NameString);
-      else
         winnerLabel.setText(army1NameString);
+      else
+        winnerLabel.setText(army2NameString);
     }
 
     unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));

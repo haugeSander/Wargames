@@ -168,7 +168,7 @@ public abstract class Unit implements Bonuses {
     }
 
     /**
-     * Getter for className.
+     * Getter for className. Mostly used for TableView.
      * @return String for classname of subclasses.
      */
     public String getClassName() {
