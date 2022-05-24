@@ -1,15 +1,18 @@
-module Wargames.Sandeth {
+module no.ntnu.idatg2001 {
   requires javafx.controls;
-  requires javafx.fxml;
   requires javafx.graphics;
-  requires java.desktop;
+  requires javafx.fxml;
+  requires java.logging;
 
-  opens Army to javafx.fxml, javafx.base;
-  opens Army.Units to javafx.base;
-  opens Simulation to javafx.fxml, javafx.base;
-  opens UI to javafx.fxml;
-  opens UI.Controllers to javafx.fxml;
+  opens no.ntnu.idatg2001.wargames.army;
+  opens no.ntnu.idatg2001.wargames.army.units;
+  opens no.ntnu.idatg2001.wargames.model;
+  opens no.ntnu.idatg2001.wargames.simulation;
+  opens no.ntnu.idatg2001.wargames.ui.controllers;
+  opens no.ntnu.idatg2001.wargames.ui.dialogs;
+  opens no.ntnu.idatg2001.wargames.utility;
 
-  exports UI.Controllers;
-  exports UI to javafx.graphics;
+  exports no.ntnu.idatg2001.wargames.ui to javafx.graphics;
+  exports no.ntnu.idatg2001.wargames.ui.dialogs;
+  exports no.ntnu.idatg2001.wargames.ui.controllers;
 }

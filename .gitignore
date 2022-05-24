@@ -1,6 +1,7 @@
 .idea/*
-.target/*
-ArmyOne.csv
-Russia.csv
+target
+Blue.csv
+Blue-vs-Red.csv
 Wargames-Sandeth.iml
 battle.csv
+null.csv
