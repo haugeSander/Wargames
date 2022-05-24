@@ -1,4 +1,4 @@
-package no.ntnu.idatg2001.wargames.army;
+package no.ntnu.idatg2001.wargames.army.units;
 
 import no.ntnu.idatg2001.wargames.army.units.Bonuses;
 import no.ntnu.idatg2001.wargames.army.units.CavalryUnit;

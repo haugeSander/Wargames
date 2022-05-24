@@ -182,10 +182,12 @@ public class SimulationController implements Initializable, BattleObserver {
     if (wargamesModel.simulationStep()) { //Returns true if simulation is done.
       timeline.stop();
 
-      if (!wargamesModel.getArmy2().hasUnits())
+      if (wargamesModel.getArmy1().hasUnits()) {
         winnerLabel.setText(army1NameString);
-      else
+      } else {
         winnerLabel.setText(army2NameString);
+      }
+      wargamesModel.refreshDuplicates();
     }
     unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
     unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
@@ -352,7 +354,7 @@ public class SimulationController implements Initializable, BattleObserver {
   @Override
   public void update(String status) {
     if (!status.isEmpty()) {
-      if (status.contains(wargamesModel.getArmy1().getName())) {
+      if (status.contains(wargamesModel.getArmy1().getName()) && logNo1 != null) {
         logNo1.getItems().add(status);
         logNo1.refresh();
       } else if (status.contains(wargamesModel.getArmy2().getName()) && logNo2 != null){

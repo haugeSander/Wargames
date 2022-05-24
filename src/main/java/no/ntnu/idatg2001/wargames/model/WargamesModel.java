@@ -195,7 +195,6 @@ public class WargamesModel {
 
     if (isEmpty()) {
       isSimulationFinished = true;
-      refreshDuplicates();
     }
     return isSimulationFinished;
   }
