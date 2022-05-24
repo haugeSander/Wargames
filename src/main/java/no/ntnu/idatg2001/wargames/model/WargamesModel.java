@@ -18,8 +18,8 @@ import no.ntnu.idatg2001.wargames.utility.FileHandler;
  */
 public class WargamesModel {
   private static volatile WargamesModel instance; //Stops other threads to access at the same time.
-  private Battle battle;
-  private Army army1;
+  private Battle battle;                          //Is not perfect, but as we do not use threads
+  private Army army1;                             //it limits the possibility to a degree.
   private Army army2;
   private String terrain;
 

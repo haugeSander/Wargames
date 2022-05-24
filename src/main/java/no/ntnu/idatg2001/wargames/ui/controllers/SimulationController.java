@@ -73,26 +73,22 @@ public class SimulationController implements Initializable, BattleObserver {
   @FXML private LineChart<String, Number> chart; //Difficult to generify.
   @FXML private Label army1Name;
   @FXML private Label army2Name;
-  private ListView<String> logNo1;
-  private ListView<String> logNo2;
-  private int threadSpeed = 10; //Initial speed of simulation.
-
   private XYChart.Series<String,Number> unitsArmy1Chart;
   private XYChart.Series<String,Number> unitsArmy2Chart;
+  private ListView<String> logNo1;
+  private ListView<String> logNo2;
 
+  private int threadSpeed = 50; //Initial speed of simulation.
   private int counter;
   private Timeline timeline;
   private int army1Size;
   private int army2Size;
   private String army1NameString;
   private String army2NameString;
-
   private WargamesModel wargamesModel;
 
   /**
    * Initializes GUI for simulation view.
-   * @param url Takes an outside url, will open for example a webpage.
-   * @param resourceBundle ResourceBundle Local specific object.
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -106,9 +102,9 @@ public class SimulationController implements Initializable, BattleObserver {
                                                 //application if there was too many tick marks.
     SpinnerValueFactory<Integer> factory =
         new SpinnerValueFactory.IntegerSpinnerValueFactory(10, 1000, 10,10);
-    factory.setValue(10);
+    factory.setValue(50);
     speedSelection.setValueFactory(factory);
-    speedSelection.setEditable(true);
+    speedSelection.setEditable(false); //User may not write into spinner.
 
     speedSelection.valueProperty().addListener(
         (observableValue, oldValue, newValue) -> threadSpeed =  (newValue)); //Spinner listener.
@@ -132,8 +128,8 @@ public class SimulationController implements Initializable, BattleObserver {
     if (timeline != null)
       timeline.stop();
 
-    army1Name.setText(wargamesModel.getArmy1().getName());
-    army2Name.setText(wargamesModel.getArmy2().getName());
+    army1Name.setText(army1NameString);
+    army2Name.setText(army2NameString);
 
     ObservableList<Unit> observableListArmy1 = FXCollections.observableList(
         wargamesModel.getArmy1().getUnits());
@@ -160,7 +156,7 @@ public class SimulationController implements Initializable, BattleObserver {
 
     unitsArmy1Chart = new XYChart.Series<>();
     unitsArmy2Chart = new XYChart.Series<>();
-    chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart); //Not generified.
+    chart.getData().addAll(unitsArmy1Chart, unitsArmy2Chart); //IntelliJ does not think chart is generified.
     refresh();
 
     timeline = new Timeline(new KeyFrame(Duration.millis(threadSpeed),this::step));
@@ -186,12 +182,11 @@ public class SimulationController implements Initializable, BattleObserver {
     if (wargamesModel.simulationStep()) { //Returns true if simulation is done.
       timeline.stop();
 
-      if (wargamesModel.getArmy1().hasUnits())
+      if (!wargamesModel.getArmy2().hasUnits())
         winnerLabel.setText(army1NameString);
       else
         winnerLabel.setText(army2NameString);
     }
-
     unitsArmy1Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army1Size));
     unitsArmy2Chart.getData().add(new XYChart.Data<>(String.valueOf(counter), army2Size));
     //Adds data to chart for every iteration, armySize is updated by observers.

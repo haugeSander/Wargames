@@ -10,9 +10,9 @@ import java.util.Random;
  * @version 1.0-SNAPSHOT
  */
 public class Battle extends BattleUpdater {
+    private final Random random;
     private Army army1;
     private Army army2;
-    private Random random;
 
     /**
      * Main constructor to take two armies.
@@ -23,12 +23,6 @@ public class Battle extends BattleUpdater {
         this.army1 = army1;
         this.army2 = army2;
         random = new Random();
-    }
-
-    /**
-     * Overloading constructor with no parameters.
-     */
-    public Battle() {
     }
 
     /**

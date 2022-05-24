@@ -29,9 +29,7 @@ public class MenuController implements Initializable {
   @FXML private ImageView exitLogo;
 
   /**
-   * Constructor for main menu. Sets images/logos.
-   * @param url Takes an outside url, will open for example a webpage.
-   * @param resourceBundle Local specific object.
+   * Initialize for main menu. Primary function is to set images/logos.
    */
   @Override
   public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -54,7 +52,8 @@ public class MenuController implements Initializable {
    * Opens the main page with no units.
    * Prompts user to select a type of terrain.
    */
-  public void onNewSimulationButtonPressed() {
+  @FXML
+  private void onNewSimulationButtonPressed() {
     try {
       FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("main-view.fxml"));
       Stage stage = (Stage) logo.getScene().getWindow();
@@ -70,14 +69,16 @@ public class MenuController implements Initializable {
   /**
    * Exit button, exits application after a confirmation.
    */
-  public void onExitButtonPressed() {
+  @FXML
+  private void onExitButtonPressed() {
     Main.exit((Stage)logo.getScene().getWindow());
   }
 
   /**
    * Button to open a save file for battle.
    */
-  public void onOpenSimulationButtonPressed() {
+  @FXML
+  private void onOpenSimulationButtonPressed() {
     FileChooser chooser = new FileChooser();
     File selectedFile = chooser.showOpenDialog(logo.getScene().getWindow());
     chooser.getExtensionFilters().addAll(
@@ -102,7 +103,11 @@ public class MenuController implements Initializable {
     }
   }
 
-  public void onHelpButtonPressed() {
+  /**
+   * Shows a help dialog.
+   */
+  @FXML
+  private void onHelpButtonPressed() {
     MainHelpDialog faq = new MainHelpDialog();
     faq.showDialog();
   }
